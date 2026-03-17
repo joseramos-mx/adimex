@@ -94,7 +94,7 @@ export const Hero = () => {
       />
 
       {/* z-10 — content */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-between py-16 px-25 text-white w-[50%]">
+      <div className="absolute inset-0 z-10 flex flex-col justify-between py-12 px-6 lg:px-16 text-white w-full lg:w-[55%]">
 
         <div className="flex flex-col gap-8 flex-1 justify-center">
 
@@ -102,7 +102,7 @@ export const Hero = () => {
           <AnimatePresence mode="wait">
             <motion.h1
               key={`heading-${active}`}
-              className="text-5xl font-bold leading-tight tracking-tight"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight"
               style={{ fontFamily: "var(--font-geist-sans)" }}
               initial="hidden"
               animate="visible"
@@ -132,7 +132,7 @@ export const Hero = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={`desc-${active}`}
-              className="relative max-w-115 p-4 border border-white/50 shadow-xl"
+              className="relative max-w-sm lg:max-w-115 p-4 border border-white/50"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
@@ -152,8 +152,8 @@ export const Hero = () => {
           </AnimatePresence>
 
           {/* CTA buttons */}
-          <div className="flex gap-4" style={{ fontFamily: "var(--font-geist-sans)" }}>
-            <Link href="#" className="bg-black text-white px-6 py-3 text-xs font-medium hover:bg-black/80 transition-colors">
+          <div className="flex flex-wrap gap-3" style={{ fontFamily: "var(--font-geist-sans)" }}>
+            <Link href="#" className="bg-[#0d1a2d] text-white px-6 py-3 text-xs font-medium hover:bg-[#0d1a2d]/80 transition-colors">
               Ver catálogo
             </Link>
             <Link href="#" className="border border-white text-white px-6 py-3 text-xs font-medium hover:bg-white/10 transition-colors">
@@ -163,7 +163,7 @@ export const Hero = () => {
         </div>
 
         {/* Category tabs with progress bars */}
-        <div className="flex gap-10 font-mono text-xs text-white">
+        <div className="flex gap-6 lg:gap-10 font-mono text-xs text-white overflow-x-auto pb-1 scrollbar-none">
           {slides.map((cat, i) => (
             <button
               key={cat.name}

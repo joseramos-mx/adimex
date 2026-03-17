@@ -37,7 +37,7 @@ export default function Articles() {
         {cards.map((card) => (
           <div key={card.title} className="flex flex-col p-0 ">
             {/* Image area */}
-            <div className="w-full aspect-4/3 bg-[#111318] flex items-center justify-center">
+            <div className="w-full aspect-4/3 bg-[#07080c] flex items-center justify-center">
               {card.image ? (
                 <img
                   src={card.image}
@@ -45,7 +45,7 @@ export default function Articles() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-[#111318]" />
+                <div className="w-full h-full bg-[#07080c]" />
               )}
             </div>
 
