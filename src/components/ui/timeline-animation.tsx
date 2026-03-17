@@ -3,7 +3,7 @@
 import { motion, useInView, Variants } from "motion/react"
 import { ElementType, ReactNode, RefObject } from "react"
 
-interface TimelineContentProps extends Record<string, unknown> {
+interface TimelineContentProps {
     as?: ElementType
     className?: string
     animationNum?: number
@@ -13,6 +13,7 @@ interface TimelineContentProps extends Record<string, unknown> {
     }
     timelineRef: RefObject<HTMLElement | null>
     children: ReactNode
+    style?: React.CSSProperties
 }
 
 export function TimelineContent({
@@ -22,19 +23,20 @@ export function TimelineContent({
     customVariants,
     timelineRef,
     children,
-    ...rest
+    style,
 }: TimelineContentProps) {
     const isInView = useInView(timelineRef as RefObject<Element>, { once: true, margin: "-80px" })
-    const MotionTag = motion.create(Tag as string)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const MotionTag = motion.create(Tag as any) as any
 
     return (
         <MotionTag
             className={className}
+            style={style}
             custom={animationNum}
             variants={customVariants as Variants}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
-            {...rest}
         >
             {children}
         </MotionTag>
