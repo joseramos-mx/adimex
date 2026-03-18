@@ -63,11 +63,12 @@ const regions = [
 ]
 
 const menuItems = [
-  { name: "Productos",        href: "#",     dropdown: "productos" },
-  { name: "Casos de estudio", href: "#",     dropdown: "casos"     },
-  { name: "Soporte",          href: "#link", dropdown: null        },
-  { name: "Nosotros",         href: "#link", dropdown: null        },
-  { name: "Descargas",        href: "#link", dropdown: null        },
+  { name: "Productos",        href: "#",      dropdown: "productos" },
+  { name: "Casos de estudio", href: "#",      dropdown: "casos"     },
+  { name: "Blog",             href: "/blog",  dropdown: null        },
+  { name: "Soporte",          href: "#link",  dropdown: null        },
+  { name: "Nosotros",         href: "#link",  dropdown: null        },
+  { name: "Descargas",        href: "#link",  dropdown: null        },
 ]
 
 // ─── Mega-menu panels ──────────────────────────────────────────────────────────
@@ -78,12 +79,12 @@ function ProductosPanel() {
       <div className="grid grid-cols-[220px_1fr] divide-x divide-white/10">
         <div className="flex flex-col gap-3 p-8">
           <p className="text-[10px] tracking-widest text-white/40 uppercase">{productosDropdown.label}</p>
-          <p className="text-sm font-medium text-white leading-snug max-w-[160px]">{productosDropdown.tagline}</p>
+          <p className="text-xs text-white leading-relaxed max-w-[160px]">{productosDropdown.tagline}</p>
         </div>
-        <div className="grid grid-cols-2 divide-x divide-white/10">
+        <div className="grid grid-cols-2 divide-x divide-white/10 border-r border-white/10" style={{ fontFamily: "var(--font-geist-mono)" }}>
           {productosDropdown.items.map((item) => (
             <Link key={item.name} href={item.href}
-              className="flex items-start gap-3 p-5 border-b border-white/10 hover:bg-white/5 transition-colors group">
+              className="flex items-start gap-3 p-5  border-white/10 hover:bg-white/5 transition-colors group">
               <item.icon size={16} className="text-[#017bfd] mt-0.5 shrink-0" />
               <div>
                 <p className="text-xs font-medium text-white group-hover:text-[#017bfd] transition-colors">{item.name}</p>
@@ -93,7 +94,7 @@ function ProductosPanel() {
           ))}
         </div>
       </div>
-      <div className="border-t border-white/10">
+      <div className="border-t border-white/10" style={{ fontFamily: "var(--font-geist-mono)" }}>
         <Link href={productosDropdown.viewAll.href}
           className="flex items-center justify-between px-8 py-4 text-xs text-white/50 hover:text-white hover:bg-white/5 transition-colors group">
           <span>{productosDropdown.viewAll.label}</span>
@@ -106,11 +107,11 @@ function ProductosPanel() {
 
 function CasosPanel() {
   return (
-    <div className="flex flex-col" style={{ fontFamily: "var(--font-geist-sans)" }}>
+    <div className="flex flex-col" style={{ fontFamily: "var(--font-geist-mono)" }}>
       <div className="grid grid-cols-[220px_1fr_1fr] divide-x divide-white/10">
         <div className="flex flex-col gap-3 p-8">
           <p className="text-[10px] tracking-widest text-white/40 uppercase">{casosDropdown.label}</p>
-          <p className="text-sm font-medium text-white leading-snug max-w-[160px]">{casosDropdown.tagline}</p>
+          <p className="text-xs text-white leading-relaxed max-w-[160px]" style={{ fontFamily: "var(--font-geist-sans)" }}>{casosDropdown.tagline}</p>
         </div>
         <div className="flex flex-col">
           <p className="text-[10px] tracking-widest text-white/40 uppercase px-6 pt-6 pb-3">{casosDropdown.byIndustry.heading}</p>
@@ -150,7 +151,7 @@ function CasosPanel() {
 
 // ─── Search command ────────────────────────────────────────────────────────────
 
-function SearchCommand() {
+function SearchCommand({ isDark }: { isDark: boolean }) {
   const [open, setOpen] = React.useState(false)
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -163,12 +164,17 @@ function SearchCommand() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="hidden lg:inline-flex items-center gap-2 h-8 px-3 text-xs text-white/40 border border-white/15 hover:border-white/30 hover:text-white/60 transition-colors"
+        className={cn(
+          "hidden lg:inline-flex items-center gap-2 h-8 px-3 text-xs border transition-colors duration-200",
+          isDark
+            ? "text-white/60 border-white/35 hover:border-white/50 hover:text-white/80 bg-white/5 hover:bg-white/10"
+            : "text-[#07080c]/50 border-black/20 hover:border-black/30 hover:text-[#07080c]/70 bg-transparent hover:bg-black/5"
+        )}
         style={{ fontFamily: "var(--font-geist-sans)" }}
       >
         <Search size={12} />
-        <span>Buscar</span>
-        <kbd className="ml-1 text-[10px] bg-white/10 px-1.5 py-0.5">Ctrl K</kbd>
+        <span>Buscar mis componentes...</span>
+        <kbd className={cn("ml-1 text-[10px] px-1.5 py-0.5", isDark ? "bg-white/20" : "bg-black/10")}>Ctrl K</kbd>
       </button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Buscar productos, soluciones..." />
@@ -253,10 +259,10 @@ export const Header = () => {
         <div className="px-6 h-full flex items-center justify-between gap-6">
 
           {/* Logo */}
-          <a href="#" aria-label="home" className="shrink-0">
+          <Link href="/" aria-label="home" className="shrink-0">
             <img src="/logo.svg" alt="ADIMEX" className="h-4 w-auto transition-[filter] duration-200"
               style={{ filter: isLight && !activeDropdown ? "brightness(0)" : "none" }} />
-          </a>
+          </Link>
 
           {/* Desktop nav links */}
           <ul className="hidden lg:flex items-center gap-8 text-xs">
@@ -279,13 +285,18 @@ export const Header = () => {
 
           {/* Right side */}
           <div className="hidden lg:flex items-center gap-3 ml-auto">
-            <SearchCommand />
+            <SearchCommand isDark={!!isDark} />
 
             {/* Region picker */}
             <div className="relative">
               <button
                 onClick={() => setRegionOpen((o) => !o)}
-                className={cn("flex items-center gap-1.5 text-xs h-8 px-3 border border-white/15 hover:border-white/30 transition-colors", isDark ? "text-white/50 hover:text-white/80" : "text-[#07080c]/50 hover:text-[#07080c]")}
+                className={cn(
+                  "flex items-center gap-1.5 text-xs h-8 px-3 border transition-colors duration-200",
+                  isDark
+                    ? "text-white/50 hover:text-white/80 border-white/15 hover:border-white/30"
+                    : "text-[#07080c]/50 hover:text-[#07080c] border-black/20 hover:border-black/30"
+                )}
               >
                 <span>{region.flag}</span>
                 <span>{region.code}</span>
@@ -314,7 +325,12 @@ export const Header = () => {
             </div>
 
             {/* Auth */}
-            <Button asChild variant="outline" size="sm" className="text-xs h-8 border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white">
+            <Button asChild variant="outline" size="sm" className={cn(
+              "text-xs h-8 bg-transparent transition-colors duration-200",
+              isDark
+                ? "border-white/20 text-white hover:bg-white/10 hover:text-white"
+                : "border-black/20 text-[#07080c] hover:bg-black/5 hover:text-[#07080c]"
+            )}>
               <Link href="#">Login</Link>
             </Button>
             <Button asChild size="sm" className="text-xs h-8 bg-[#017bfd] hover:bg-[#0066d6] text-white border-0">

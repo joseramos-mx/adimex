@@ -12,6 +12,12 @@ const testimonials = [
         image: "/images/carlos-mendez.jpg",
         variant: "light",
         size: "large",
+        logo: "/logos/tremec.svg",
+        logoAlt: "Grupo TREMEC",
+        stats: [
+            { value: "35%", label: "reducción en tiempos de ciclo" },
+            { value: "2.1×", label: "aumento en throughput de planta" },
+        ],
     },
     {
         quote: "El soporte técnico de ADIMEX es excepcional. Siempre disponibles y con un profundo conocimiento de sus productos.",
@@ -60,6 +66,12 @@ const testimonials = [
         image: "https://images.unsplash.com/photo-1590086782957-93c06ef21604?q=80&w=687&auto=format&fit=crop",
         variant: "light",
         size: "large",
+        logo: "/logos/vitro.svg",
+        logoAlt: "Vitro",
+        stats: [
+            { value: "6 años", label: "como socio estratégico ADIMEX" },
+            { value: "99.4%", label: "uptime en líneas automatizadas" },
+        ],
     },
 ]
 
@@ -100,7 +112,7 @@ export default function Testimonial() {
             <div className="max-w-6xl mx-auto text-center space-y-3 mb-14">
                 <TimelineContent
                     as="h2"
-                    className="text-3xl xl:text-4xl font-bold text-[#07080c] tracking-tight"
+                    className="text-3xl xl:text-2xl font-bold text-[#07080c] tracking-tight"
                     animationNum={0}
                     customVariants={revealVariants}
                     timelineRef={testimonialRef as React.RefObject<HTMLElement>}
@@ -129,9 +141,22 @@ export default function Testimonial() {
                         animationNum={0}
                         customVariants={revealVariants}
                         timelineRef={testimonialRef as React.RefObject<HTMLElement>}
-                        className={`flex-[7] flex flex-col justify-between relative overflow-hidden p-6 ${cardStyles.light}`}
+                        className={`flex-[7] flex flex-col justify-between p-6 ${cardStyles.light}`}
                     >
-                        <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f12_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f12_1px,transparent_1px)] bg-[size:50px_56px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+                        {/* Logo + stats */}
+                        <div className="space-y-5 mb-6">
+                            <img src={col1[0].logo} alt={col1[0].logoAlt} className="h-8 w-auto object-contain" />
+                            <div className="grid grid-cols-2 divide-x divide-gray-200">
+                                {col1[0].stats!.map((s) => (
+                                    <div key={s.label} className="pr-4 first:pr-4 last:pl-4 last:pr-0 space-y-1">
+                                        <p className="text-2xl font-bold text-[#07080c] tracking-tight flex items-start gap-1" style={{ fontFamily: "var(--font-geist-sans)" }}>
+                                            <span className="text-[#017bfd] text-lg mt-0.5">↗</span>{s.value}
+                                        </p>
+                                        <p className="text-xs text-gray-500 leading-snug" style={{ fontFamily: "var(--font-geist-sans)" }}>{s.label}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                         <article className="mt-auto space-y-5">
                             <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-geist-sans)" }}>
                                 "{col1[0].quote}"
@@ -217,9 +242,22 @@ export default function Testimonial() {
                         animationNum={6}
                         customVariants={revealVariants}
                         timelineRef={testimonialRef as React.RefObject<HTMLElement>}
-                        className={`flex-[7] flex flex-col justify-between relative overflow-hidden p-6 ${cardStyles.light}`}
+                        className={`flex-[7] flex flex-col justify-between p-6 ${cardStyles.light}`}
                     >
-                        <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f12_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f12_1px,transparent_1px)] bg-[size:50px_56px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+                        {/* Logo + stats */}
+                        <div className="space-y-5 mb-6">
+                            <img src={col3[1].logo} alt={col3[1].logoAlt} className="h-8 w-auto object-contain" />
+                            <div className="grid grid-cols-2 divide-x divide-gray-200">
+                                {col3[1].stats!.map((s) => (
+                                    <div key={s.label} className="pr-4 first:pr-4 last:pl-4 last:pr-0 space-y-1">
+                                        <p className="text-2xl font-bold text-[#07080c] tracking-tight flex items-start gap-1" style={{ fontFamily: "var(--font-geist-sans)" }}>
+                                            <span className="text-[#017bfd] text-lg mt-0.5">↗</span>{s.value}
+                                        </p>
+                                        <p className="text-xs text-gray-500 leading-snug" style={{ fontFamily: "var(--font-geist-sans)" }}>{s.label}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                         <article className="mt-auto space-y-5">
                             <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-geist-sans)" }}>
                                 "{col3[1].quote}"
