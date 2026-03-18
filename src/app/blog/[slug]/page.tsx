@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react"
 import { client } from "@/sanity/client"
 import { postBySlugQuery, postsQuery } from "@/sanity/queries"
 import { PortableText } from "next-sanity"
+import type { PortableTextBlock } from "@portabletext/types"
 import { Header } from "@/components/ui/header-04"
 
 type Post = {
@@ -15,7 +16,7 @@ type Post = {
   category?: string
   publishedAt?: string
   mainImage?: { asset: { _id: string; url: string }; alt?: string }
-  body?: unknown[]
+  body?: PortableTextBlock[]
 }
 
 export const revalidate = 60
