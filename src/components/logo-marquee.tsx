@@ -13,7 +13,7 @@ const track = Array(6).fill(logos).flat()
 
 export default function LogoMarquee() {
   return (
-    <div className="w-full bg-white py-10 overflow-hidden" style={{ fontFamily: "var(--font-geist-sans)" }}>
+    <div className="w-full bg-[#07080c] text-white py-10 overflow-hidden" style={{ fontFamily: "var(--font-geist-sans)" }}>
       <style>{`
         @keyframes marquee {
           from { transform: translateX(0); }
@@ -41,7 +41,7 @@ export default function LogoMarquee() {
               key={`${logo.name}-${i}`}
               src={logo.src}
               alt={logo.name}
-              className="h-6 w-auto object-contain invert opacity-20 hover:opacity-40 transition-opacity duration-200"
+              className="h-6 w-auto object-contain opacity-20 hover:opacity-40 transition-opacity duration-200"
             />
           ))}
         </div>
