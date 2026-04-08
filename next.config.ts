@@ -18,11 +18,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-<<<<<<< HEAD
         hostname: 'omo-oss-image.thefastimg.com',
-=======
+      },
+      {
+        protocol: 'https',
         hostname: 'cdn.sanity.io',
->>>>>>> 494de28323332d4b5ec48df9dec4894c78eabcc8
       },
     ],
   },
