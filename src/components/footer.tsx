@@ -25,11 +25,11 @@ const nav = [
         ],
     },
     {
-        heading: "Empresa",
+        heading: "Compañía",
         links: [
             { label: "Sobre nosotros", href: "#" },
             { label: "Contacto", href: "#" },
-            { label: "Documentos", href: "#" },
+            { label: "Documentación", href: "#" },
             { label: "Política de privacidad", href: "#" },
         ],
     },
@@ -40,10 +40,14 @@ export default function Footer() {
         <footer className="w-full " style={{ fontFamily: "var(--font-geist-sans)" }}>
 
             {/* Top SVG divider */}
-            <img src="/footer.svg" alt="" aria-hidden="true" className="w-[60%] block bg-white" />
+            <div className="w-full">
+                <img src="/footer.svg" alt="" aria-hidden="true" className="w-[60%] block" />
+            </div>
 
             {/* Main body */}
-            <div className="bg-[#0066FF] max-w-6xl mx-auto px-6 pt-16 pb-14 flex flex-col lg:flex-row gap-16">
+            <div className=" bg-[#0066FF] w-full">
+
+                <div className="bg-[#0066FF] max-w-6xl mx-auto px-6 pt-16 pb-14 flex flex-col lg:flex-row gap-16">
 
                 {/* Left — logo + tagline + newsletter */}
                 <div className="bg-[#0066FF] flex flex-col gap-8 lg:w-72 shrink-0">
@@ -101,6 +105,8 @@ export default function Footer() {
                 </div>
 
             </div>
+            </div>
+            
 
             {/* Bottom watermark + copyright */}
             <div className="bg-[#0066FF] relative">

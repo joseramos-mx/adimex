@@ -22,14 +22,14 @@ import {
 const productosDropdown = {
   label: "Todos los Productos",
   tagline: "La solución completa para automatización industrial avanzada.",
-  viewAll: { label: "Ver todos los productos", href: "#" },
+  viewAll: { label: "Ver todos los productos", href: "/productos" },
   items: [
-    { icon: Zap,       name: "Servomotores FV5-E",       desc: "Alta precisión y respuesta dinámica",  href: "#" },
-    { icon: Settings2, name: "Serie FS",                 desc: "Control de movimiento versátil",        href: "#" },
-    { icon: Cpu,       name: "PLCs FL7",                 desc: "Control lógico programable avanzado",   href: "#" },
-    { icon: Activity,  name: "Variadores de frecuencia", desc: "Ahorro energético hasta 22%",           href: "#" },
-    { icon: Monitor,   name: "HMI Industriales",         desc: "Interfaces táctiles robustas",           href: "#" },
-    { icon: BarChart3, name: "FlexSCADA",                desc: "Visibilidad en tiempo real",             href: "#" },
+    { icon: Zap,       name: "Servomotores FV5-E",       desc: "Alta precisión y respuesta dinámica",  href: "/productos/servo-fv5-e" },
+    { icon: Settings2, name: "Servomotores FV5-U3",      desc: "Control de movimiento versátil",        href: "/productos/servo-fv5-u3" },
+    { icon: Cpu,       name: "PLCs FL8",                 desc: "EtherCAT, hasta 32 ejes",               href: "/productos/plc-fl8" },
+    { icon: Cpu,       name: "PLCs FL7",                 desc: "Control lógico programable avanzado",   href: "/productos/plc-fl7" },
+    { icon: Monitor,   name: "HMI FE6300",               desc: "Interfaces táctiles IoT robustas",      href: "/productos/hmi-fe6300" },
+    { icon: BarChart3, name: "FlexSCADA",                desc: "Visibilidad en tiempo real",             href: "/productos/scada-flexscada" },
   ],
 }
 
@@ -175,13 +175,15 @@ function SearchCommand() {
         <CommandList>
           <CommandEmpty>Sin resultados.</CommandEmpty>
           <CommandGroup heading="Productos">
-            <CommandItem className="cursor-pointer"><Zap size={14} className="opacity-60" /><span className="pl-2">Servomotores FV5-E</span></CommandItem>
-            <CommandItem className="cursor-pointer"><Cpu size={14} className="opacity-60" /><span className="pl-2">PLCs FL7</span></CommandItem>
-            <CommandItem className="cursor-pointer"><BarChart3 size={14} className="opacity-60" /><span className="pl-2">FlexSCADA</span></CommandItem>
+            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos/servo-fv5-e" }}><Zap size={14} className="opacity-60" /><span className="pl-2">Servomotores FV5-E</span></CommandItem>
+            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos/plc-fl7" }}><Cpu size={14} className="opacity-60" /><span className="pl-2">PLCs FL7</span></CommandItem>
+            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos/plc-fl8" }}><Cpu size={14} className="opacity-60" /><span className="pl-2">PLCs FL8</span></CommandItem>
+            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos/scada-flexscada" }}><BarChart3 size={14} className="opacity-60" /><span className="pl-2">FlexSCADA</span></CommandItem>
+            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos/iot-fbox" }}><Radio size={14} className="opacity-60" /><span className="pl-2">FBox IoT Gateway</span></CommandItem>
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Navegar">
-            <CommandItem className="cursor-pointer"><ArrowUpRightIcon size={14} className="opacity-60" /><span className="pl-2">Ver catálogo</span><CommandShortcut>↗</CommandShortcut></CommandItem>
+            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos" }}><ArrowUpRightIcon size={14} className="opacity-60" /><span className="pl-2">Ver catálogo</span><CommandShortcut>↗</CommandShortcut></CommandItem>
             <CommandItem className="cursor-pointer"><PaletteIcon size={14} className="opacity-60" /><span className="pl-2">Agendar demo</span></CommandItem>
           </CommandGroup>
         </CommandList>
@@ -253,7 +255,7 @@ export const Header = () => {
         <div className="px-6 h-full flex items-center justify-between gap-6">
 
           {/* Logo */}
-          <a href="#" aria-label="home" className="shrink-0">
+          <a href="/" aria-label="home" className="shrink-0">
             <img src="/logo.svg" alt="ADIMEX" className="h-4 w-auto transition-[filter] duration-200"
               style={{ filter: isLight && !activeDropdown ? "brightness(0)" : "none" }} />
           </a>
