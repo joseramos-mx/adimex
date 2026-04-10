@@ -29,7 +29,7 @@ export default function LogoMarquee() {
 
       {/* Fade edges */}
       <div
-        className="relative"
+        className="relative overflow-hidden"
         style={{
           maskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
           WebkitMaskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",

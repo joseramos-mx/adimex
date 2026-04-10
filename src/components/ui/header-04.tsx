@@ -39,19 +39,19 @@ const casosDropdown = {
   byIndustry: {
     heading: "Por industria",
     items: [
-      { icon: Car,     name: "Automotriz",   href: "#" },
-      { icon: Factory, name: "Manufactura",  href: "#" },
-      { icon: Layers,  name: "Alimentos",    href: "#" },
-      { icon: Radio,   name: "Farmacéutico", href: "#" },
+      { icon: Car,     name: "Automotriz",   href: "/casos/tremec-servomotores-linea-ensamble" },
+      { icon: Factory, name: "Manufactura",  href: "/casos/mabe-scada-visibilidad-produccion"  },
+      { icon: Layers,  name: "Vidrio",       href: "/casos/vitro-variadores-ahorro-energia"    },
+      { icon: Radio,   name: "Cementera",    href: "/casos/cemex-plc-control-proceso"          },
     ],
   },
   bySolution: {
     heading: "Por solución",
     items: [
-      { icon: Zap,       name: "Servomotores",        href: "#" },
-      { icon: BarChart3, name: "SCADA",               href: "#" },
-      { icon: Cpu,       name: "Control de procesos", href: "#" },
-      { icon: Activity,  name: "AI + IOT",            href: "#" },
+      { icon: Zap,       name: "Servomotores",        href: "/casos/tremec-servomotores-linea-ensamble" },
+      { icon: BarChart3, name: "SCADA",               href: "/casos/mabe-scada-visibilidad-produccion"  },
+      { icon: Cpu,       name: "Control de procesos", href: "/casos/cemex-plc-control-proceso"          },
+      { icon: Activity,  name: "Eficiencia energética", href: "/casos/vitro-variadores-ahorro-energia"  },
     ],
   },
 }
@@ -64,9 +64,9 @@ const regions = [
 
 const menuItems = [
   { name: "Productos",        href: "#",     dropdown: "productos" },
-  { name: "Casos de estudio", href: "#",     dropdown: "casos"     },
+  { name: "Casos de estudio", href: "/casos", dropdown: "casos"    },
   { name: "Soporte",          href: "#link", dropdown: null        },
-  { name: "Nosotros",         href: "#link", dropdown: null        },
+  { name: "Nosotros",         href: "/nosotros", dropdown: null     },
   { name: "Descargas",        href: "#link", dropdown: null        },
 ]
 
@@ -135,11 +135,11 @@ function CasosPanel() {
       </div>
       <div className="border-t border-white/10 grid grid-cols-[220px_1fr_1fr] divide-x divide-white/10">
         <div />
-        <Link href="#" className="flex items-center justify-between px-6 py-4 text-xs text-white/40 hover:text-white hover:bg-white/5 transition-colors group">
+        <Link href="/casos" className="flex items-center justify-between px-6 py-4 text-xs text-white/40 hover:text-white hover:bg-white/5 transition-colors group">
           <span>Ver todas las industrias</span>
           <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
         </Link>
-        <Link href="#" className="flex items-center justify-between px-6 py-4 text-xs text-white/40 hover:text-white hover:bg-white/5 transition-colors group">
+        <Link href="/casos" className="flex items-center justify-between px-6 py-4 text-xs text-white/40 hover:text-white hover:bg-white/5 transition-colors group">
           <span>Ver todas las soluciones</span>
           <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
         </Link>
@@ -150,7 +150,7 @@ function CasosPanel() {
 
 // ─── Search command ────────────────────────────────────────────────────────────
 
-function SearchCommand() {
+function SearchCommand({ isDark }: { isDark: boolean }) {
   const [open, setOpen] = React.useState(false)
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -163,12 +163,17 @@ function SearchCommand() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="hidden lg:inline-flex items-center gap-2 h-8 px-3 text-xs text-white/40 border border-white/15 hover:border-white/30 hover:text-white/60 transition-colors"
+        className={cn(
+          "hidden lg:inline-flex items-center gap-2 h-8 px-3 text-xs transition-colors",
+          isDark
+            ? "text-white/40 border border-white/15 hover:border-white/30 hover:text-white/60"
+            : "text-[#07080c]/40 border border-black/15 hover:border-black/30 hover:text-[#07080c]/70"
+        )}
         style={{ fontFamily: "var(--font-geist-sans)" }}
       >
         <Search size={12} />
         <span>Buscar</span>
-        <kbd className="ml-1 text-[10px] bg-white/10 px-1.5 py-0.5">Ctrl K</kbd>
+        <kbd className={cn("ml-1 text-[10px] px-1.5 py-0.5", isDark ? "bg-white/10" : "bg-black/8")}>Ctrl K</kbd>
       </button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Buscar productos, soluciones..." />
@@ -281,13 +286,18 @@ export const Header = () => {
 
           {/* Right side */}
           <div className="hidden lg:flex items-center gap-3 ml-auto">
-            <SearchCommand />
+            <SearchCommand isDark={!!isDark} />
 
             {/* Region picker */}
             <div className="relative">
               <button
                 onClick={() => setRegionOpen((o) => !o)}
-                className={cn("flex items-center gap-1.5 text-xs h-8 px-3 border border-white/15 hover:border-white/30 transition-colors", isDark ? "text-white/50 hover:text-white/80" : "text-[#07080c]/50 hover:text-[#07080c]")}
+                className={cn(
+                  "flex items-center gap-1.5 text-xs h-8 px-3 border transition-colors",
+                  isDark
+                    ? "border-white/15 hover:border-white/30 text-white/50 hover:text-white/80"
+                    : "border-black/15 hover:border-black/30 text-[#07080c]/50 hover:text-[#07080c]"
+                )}
               >
                 <span>{region.flag}</span>
                 <span>{region.code}</span>
@@ -316,7 +326,12 @@ export const Header = () => {
             </div>
 
             {/* Auth */}
-            <Button asChild variant="outline" size="sm" className="text-xs h-8 border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white">
+            <Button asChild variant="outline" size="sm" className={cn(
+              "text-xs h-8 bg-transparent",
+              isDark
+                ? "border-white/20 text-white hover:bg-white/10 hover:text-white"
+                : "border-black/20 text-[#07080c] hover:bg-black/8 hover:text-[#07080c]"
+            )}>
               <Link href="#">Login</Link>
             </Button>
             <Button asChild size="sm" className="text-xs h-8 bg-[#017bfd] hover:bg-[#0066d6] text-white border-0">

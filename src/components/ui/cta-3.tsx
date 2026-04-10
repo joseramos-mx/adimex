@@ -20,10 +20,10 @@ export function CallToAction() {
 
   return (
     <div className="relative w-full sm:w-[80%] lg:w-[60%] mx-auto flex flex-col justify-center items-center gap-y-8 bg-[radial-gradient(35%_80%_at_25%_0%,rgba(1,123,253,0.07),transparent)] px-4 py-16">
-      <div className="pointer-events-none absolute top-0 -left-10 -right-10 h-px bg-[#07080c]/20" />
-      <div className="pointer-events-none absolute bottom-0 -left-10 -right-10 h-px bg-[#07080c]/20" />
-      <div className="pointer-events-none absolute -top-10 -bottom-10 left-0 w-px bg-[#07080c]/20" />
-      <div className="pointer-events-none absolute -top-10 -bottom-10 right-0 w-px bg-[#07080c]/20" />
+      <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-[#07080c]/20" />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-[#07080c]/20" />
+      <div className="pointer-events-none absolute top-0 bottom-0 left-0 w-px bg-[#07080c]/20" />
+      <div className="pointer-events-none absolute top-0 bottom-0 right-0 w-px bg-[#07080c]/20" />
       <div className="-z-10 absolute top-0 left-1/2 h-full border-l border-dashed border-[#07080c]/20" />
 
       <div className="space-y-2">

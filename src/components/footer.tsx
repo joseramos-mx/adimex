@@ -27,7 +27,7 @@ const nav = [
     {
         heading: "Compañía",
         links: [
-            { label: "Sobre nosotros", href: "#" },
+            { label: "Sobre nosotros", href: "/nosotros" },
             { label: "Contacto", href: "#" },
             { label: "Documentación", href: "#" },
             { label: "Política de privacidad", href: "#" },
