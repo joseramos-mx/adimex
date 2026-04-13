@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:es.flexem.com)",
-      "WebFetch(domain:www.gigaenergy.com)"
+      "WebFetch(domain:www.gigaenergy.com)",
+      "WebSearch",
+      "WebFetch(domain:shopify.dev)",
+      "WebFetch(domain:community.shopify.dev)"
     ]
   }
 }

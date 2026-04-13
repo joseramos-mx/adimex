@@ -66,10 +66,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 variant="outline"
                 className="h-9 text-xs border-black/15 bg-white text-[#07080c] hover:bg-gray-50"
               >
-                <a href={product.externalUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5">
-                  <span>Ver en FLEXEM</span>
+                <Link href={`/soporte/${product.slug}`} className="flex items-center gap-1.5">
+                  <span>Ver documentación</span>
                   <ExternalLink size={11} />
-                </a>
+                </Link>
               </Button>
             </div>
           </div>

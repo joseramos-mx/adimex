@@ -65,7 +65,7 @@ const regions = [
 const menuItems = [
   { name: "Productos",        href: "#",     dropdown: "productos" },
   { name: "Casos de estudio", href: "/casos", dropdown: "casos"    },
-  { name: "Soporte",          href: "#link", dropdown: null        },
+  { name: "Soporte",           href: "/soporte", dropdown: null     },
   { name: "Nosotros",         href: "/nosotros", dropdown: null     },
   { name: "Descargas",        href: "#link", dropdown: null        },
 ]
