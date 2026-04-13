@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:es.flexem.com)",
+      "WebFetch(domain:www.gigaenergy.com)",
+      "WebSearch",
+      "WebFetch(domain:shopify.dev)",
+      "WebFetch(domain:community.shopify.dev)",
+      "Bash(npm install:*)",
+      "Bash(shopify app:*)",
+      "Bash(curl -X POST https://adimex-3931.myshopify.com/admin/api/2026-04/storefront_access_tokens.json -H 'X-Shopify-Access-Token: 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' -H 'Content-Type: application/json' -d '{\"storefront_access_token\":{\"title\":\"ADIMEX Headless\"}}')",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(k,'=',v\\) for k,v in d.items\\(\\) if 'token' in k.lower\\(\\) or 'access' in k.lower\\(\\) or 'storefront' in k.lower\\(\\) or 'adimex' in k.lower\\(\\)]\")",
+      "Bash(curl -s -X POST https://adimex-3931.myshopify.com/admin/api/2026-04/graphql.json -H 'Content-Type: application/json' -H 'X-Shopify-Access-Token: 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' -d '{\"query\":\"{ shop { name } }\"}')",
+      "Bash(curl -s -X POST 'http://localhost:3457/graphiql/graphql.json?key=f6c0a89c6c9ce40a63e7e7aef0972b6dc70749b04d362ce22518c4bdac8423db&api_version=2026-04' -H 'Content-Type: application/json' -d '{\"query\":\"mutation { storefrontAccessTokenCreate\\(input: {title: \\\\\"ADIMEX Next.js\\\\\"}\\) { storefrontAccessToken { accessToken } userErrors { field message } } }\"}')"
+    ]
+  }
+}
