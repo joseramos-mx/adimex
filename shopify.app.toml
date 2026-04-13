@@ -1,0 +1,13 @@
+name = "ADIMEX Headless"
+client_id = "31c16a28f72b6241b445cb32c750cdec"
+application_url = "http://localhost:3000"
+embedded = false
+
+[auth]
+redirect_urls = ["http://localhost:3000/auth/callback"]
+
+[access.storefront]
+scopes = "unauthenticated_read_product_listings,unauthenticated_read_product_inventory,unauthenticated_read_content,unauthenticated_read_checkouts"
+
+[webhooks]
+api_version = "2026-04"

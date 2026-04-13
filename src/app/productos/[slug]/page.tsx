@@ -4,12 +4,13 @@ import Image from "next/image"
 import { ArrowLeft, ArrowRight, ExternalLink, CheckCircle2 } from "lucide-react"
 import { Header } from "@/components/ui/header-04"
 import Footer from "@/components/footer"
-import { products } from "@/data/products"
-import { getProductBySlug, categoryMeta } from "@/lib/products"
+import { getProductBySlug, categoryMeta, getProducts } from "@/lib/products"
 import { Button } from "@/components/ui/button"
+import AddToCart from "@/components/add-to-cart"
 
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }))
+export async function generateStaticParams() {
+  const all = await getProducts({})
+  return all.map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -27,7 +28,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const product = await getProductBySlug(slug)
   if (!product) notFound()
 
-  const related = products.filter((p) => p.category === product.category && p.slug !== product.slug).slice(0, 2)
+  const allProducts = await getProducts({ category: product.category })
+  const related = allProducts.filter((p) => p.slug !== product.slug).slice(0, 2)
   const meta = categoryMeta[product.category]
 
   return (
@@ -57,21 +59,33 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               {product.name}
             </h1>
             <p className="text-base text-[#494F5F] leading-relaxed">{product.tagline}</p>
-            <div className="flex flex-wrap gap-3 pt-2">
-              <Button asChild className="h-9 text-xs bg-[#017bfd] hover:bg-[#0066d6] text-white border-0">
-                <Link href="#">Solicitar cotización</Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="h-9 text-xs border-black/15 bg-white text-[#07080c] hover:bg-gray-50"
-              >
-                <Link href={`/soporte/${product.slug}`} className="flex items-center gap-1.5">
-                  <span>Ver documentación</span>
-                  <ExternalLink size={11} />
-                </Link>
-              </Button>
-            </div>
+
+            {product.variantId && product.price ? (
+              <AddToCart
+                variantId={product.variantId}
+                price={product.price}
+                currencyCode={product.currencyCode ?? 'MXN'}
+                availableForSale={product.availableForSale ?? false}
+                quantityAvailable={product.quantityAvailable ?? 0}
+                productName={product.name}
+              />
+            ) : (
+              <div className="flex flex-wrap gap-3 pt-2">
+                <Button asChild className="h-9 text-xs bg-[#017bfd] hover:bg-[#0066d6] text-white border-0">
+                  <Link href="#">Solicitar cotización</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="h-9 text-xs border-black/15 bg-white text-[#07080c] hover:bg-gray-50"
+                >
+                  <Link href={`/soporte/${product.slug}`} className="flex items-center gap-1.5">
+                    <span>Ver documentación</span>
+                    <ExternalLink size={11} />
+                  </Link>
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Image */}

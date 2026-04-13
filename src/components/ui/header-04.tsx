@@ -7,7 +7,7 @@ import {
   Zap, Cpu, Activity, Monitor, BarChart3, Settings2,
   Car, Factory, Layers, Radio,
   FilePlus2Icon, LayoutTemplateIcon, PenToolIcon,
-  ArrowUpRightIcon, PaletteIcon,
+  ArrowUpRightIcon, PaletteIcon, ShoppingCart,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useScroll, motion, AnimatePresence } from "motion/react"
@@ -16,6 +16,7 @@ import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput,
   CommandItem, CommandList, CommandSeparator, CommandShortcut,
 } from "@/components/ui/command"
+import { useCart } from "@/context/cart-context"
 
 // ─── Dropdown data ─────────────────────────────────────────────────────────────
 
@@ -207,6 +208,7 @@ export const Header = () => {
   const [region, setRegion] = React.useState(regions[0])
   const [regionOpen, setRegionOpen] = React.useState(false)
   const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const { itemCount, openCart } = useCart()
 
   const { scrollYProgress } = useScroll()
 
@@ -325,6 +327,25 @@ export const Header = () => {
               </AnimatePresence>
             </div>
 
+            {/* Cart button */}
+            <button
+              onClick={openCart}
+              aria-label="Abrir carrito"
+              className={cn(
+                "relative flex items-center justify-center w-8 h-8 border transition-colors",
+                isDark
+                  ? "border-white/15 hover:border-white/30 text-white/60 hover:text-white"
+                  : "border-black/15 hover:border-black/30 text-[#07080c]/60 hover:text-[#07080c]"
+              )}
+            >
+              <ShoppingCart size={14} />
+              {itemCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 bg-[#017bfd] text-white text-[9px] font-mono flex items-center justify-center">
+                  {itemCount > 99 ? '99+' : itemCount}
+                </span>
+              )}
+            </button>
+
             {/* Auth */}
             <Button asChild variant="outline" size="sm" className={cn(
               "text-xs h-8 bg-transparent",
@@ -385,6 +406,20 @@ export const Header = () => {
           ))}
         </ul>
         <div className="px-6 pb-6 flex flex-col gap-3">
+          <button
+            onClick={() => { setMenuState(false); openCart() }}
+            className="w-full flex items-center justify-between px-4 h-9 border border-white/20 text-xs text-white hover:bg-white/5 transition-colors"
+          >
+            <span className="flex items-center gap-2">
+              <ShoppingCart size={13} />
+              Carrito
+            </span>
+            {itemCount > 0 && (
+              <span className="bg-[#017bfd] text-white text-[9px] font-mono px-1.5 py-0.5">
+                {itemCount}
+              </span>
+            )}
+          </button>
           <Button asChild variant="outline" className="w-full text-xs border-white/20 bg-transparent text-white">
             <Link href="#">Login</Link>
           </Button>

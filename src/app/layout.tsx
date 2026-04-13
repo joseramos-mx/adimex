@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import WhatsAppButton from "@/components/whatsapp-button";
+import { CartProvider } from "@/context/cart-context";
+import CartDrawer from "@/components/cart-drawer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,10 +30,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
+        suppressHydrationWarning
       >
         <ThemeProvider attribute="class" forcedTheme="light">
-          {children}
-          <WhatsAppButton />
+          <CartProvider>
+            {children}
+            <CartDrawer />
+            <WhatsAppButton />
+          </CartProvider>
         </ThemeProvider>
       </body>
     </html>

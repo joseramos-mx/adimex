@@ -43,6 +43,12 @@ export interface Product {
   externalUrl: string
   /** Used by Shopify integration — leave undefined for static products */
   shopifyHandle?: string
+  /** Shopify commerce fields — populated when product comes from Shopify */
+  variantId?: string
+  price?: string
+  currencyCode?: string
+  availableForSale?: boolean
+  quantityAvailable?: number
 }
 
 const CDN = "https://omo-oss-image.thefastimg.com"
