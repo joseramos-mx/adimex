@@ -4,18 +4,28 @@ import { useEffect } from 'react'
 import { useAuth } from '@/context/auth-context'
 import { Header } from '@/components/ui/header-04'
 import Footer from '@/components/footer'
-import { Package, ArrowRight } from 'lucide-react'
+import { Package, ArrowRight, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
 export default function CuentaPage() {
-  const { customer, isLoggedIn, login } = useAuth()
+  const { customer, isLoggedIn, ready, login } = useAuth()
 
-  // Redirect to login if not authenticated
+  // Only redirect after the cookie check is done and the user is not logged in
   useEffect(() => {
-    if (!isLoggedIn) login()
-  }, [isLoggedIn, login])
+    if (ready && !isLoggedIn) login()
+  }, [ready, isLoggedIn, login])
 
+  // Still checking cookie — show spinner to avoid flash/loop
+  if (!ready) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 size={20} className="animate-spin text-gray-300" />
+      </div>
+    )
+  }
+
+  // Auth confirmed but no customer data yet (shouldn't happen, just a guard)
   if (!customer) return null
 
   return (
@@ -36,9 +46,7 @@ export default function CuentaPage() {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[10px] tracking-widest text-gray-400 uppercase font-mono mb-1">Mi cuenta</p>
-            <h1 className="text-2xl font-semibold text-[#07080c]">
-              Hola, {customer.firstName}
-            </h1>
+            <h1 className="text-2xl font-semibold text-[#07080c]">Bienvenido</h1>
             <p className="text-sm text-gray-400 mt-1">{customer.email}</p>
           </div>
           <Button
@@ -66,7 +74,7 @@ export default function CuentaPage() {
               className="h-8 text-xs bg-[#017bfd] hover:bg-[#0066d6] text-white border-0 flex items-center gap-1.5"
             >
               <a
-                href={`https://shopify.com/67101950161/account/orders`}
+                href="https://shopify.com/67101950161/account/orders"
                 target="_blank"
                 rel="noopener noreferrer"
               >

@@ -14,6 +14,7 @@ export interface Customer {
 interface AuthContextValue {
   customer: Customer | null
   isLoggedIn: boolean
+  ready: boolean   // true once the cookie check is done
   login: () => void
   logout: () => void
 }
@@ -26,6 +27,7 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [customer, setCustomer] = useState<Customer | null>(null)
+  const [ready, setReady] = useState(false)
 
   // Read customer info from the non-httpOnly cookie on mount
   useEffect(() => {
@@ -42,6 +44,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch {
       // cookie absent or malformed — user not logged in
+    } finally {
+      setReady(true)
     }
   }, [])
 
@@ -50,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ customer, isLoggedIn: !!customer, login, logout }}
+      value={{ customer, isLoggedIn: !!customer, ready, login, logout }}
     >
       {children}
     </AuthContext.Provider>
