@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import WhatsAppButton from "@/components/whatsapp-button";
 import { CartProvider } from "@/context/cart-context";
+import { AuthProvider } from "@/context/auth-context";
 import CartDrawer from "@/components/cart-drawer";
 import "./globals.css";
 
@@ -33,11 +34,13 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ThemeProvider attribute="class" forcedTheme="light">
-          <CartProvider>
-            {children}
-            <CartDrawer />
-            <WhatsAppButton />
-          </CartProvider>
+          <AuthProvider>
+            <CartProvider>
+              {children}
+              <CartDrawer />
+              <WhatsAppButton />
+            </CartProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

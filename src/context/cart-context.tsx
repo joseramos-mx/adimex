@@ -140,7 +140,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   )
 
   const goToCheckout = useCallback(() => {
-    if (cart?.checkoutUrl) window.location.href = cart.checkoutUrl
+    if (!cart?.checkoutUrl) return
+    // `return_to` sets the "Continue shopping" button destination in Shopify checkout
+    const url = new URL(cart.checkoutUrl)
+    url.searchParams.set('return_to', '/')
+    window.location.href = url.toString()
   }, [cart?.checkoutUrl])
 
   const itemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0

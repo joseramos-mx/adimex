@@ -17,6 +17,7 @@ import {
   CommandItem, CommandList, CommandSeparator, CommandShortcut,
 } from "@/components/ui/command"
 import { useCart } from "@/context/cart-context"
+import { useAuth } from "@/context/auth-context"
 
 // ─── Dropdown data ─────────────────────────────────────────────────────────────
 
@@ -209,6 +210,7 @@ export const Header = () => {
   const [regionOpen, setRegionOpen] = React.useState(false)
   const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   const { itemCount, openCart } = useCart()
+  const { customer, isLoggedIn, login, logout } = useAuth()
 
   const { scrollYProgress } = useScroll()
 
@@ -347,14 +349,66 @@ export const Header = () => {
             </button>
 
             {/* Auth */}
-            <Button asChild variant="outline" size="sm" className={cn(
-              "text-xs h-8 bg-transparent",
-              isDark
-                ? "border-white/20 text-white hover:bg-white/10 hover:text-white"
-                : "border-black/20 text-[#07080c] hover:bg-black/8 hover:text-[#07080c]"
-            )}>
-              <Link href="#">Login</Link>
-            </Button>
+            {isLoggedIn ? (
+              <div className="relative">
+                <button
+                  onClick={() => setRegionOpen(false)}
+                  onMouseEnter={() => setActiveDropdown('user')}
+                  onMouseLeave={scheduleClose}
+                  className={cn(
+                    "flex items-center gap-1.5 text-xs h-8 px-3 border transition-colors",
+                    isDark
+                      ? "border-white/15 hover:border-white/30 text-white/70 hover:text-white"
+                      : "border-black/15 hover:border-black/30 text-[#07080c]/70 hover:text-[#07080c]"
+                  )}
+                >
+                  <span className="w-4 h-4 rounded-full bg-[#017bfd] text-white text-[9px] flex items-center justify-center shrink-0">
+                    {customer?.firstName?.[0]?.toUpperCase() ?? '?'}
+                  </span>
+                  <span>{customer?.firstName}</span>
+                  <ChevronDown size={11} className={cn("transition-transform duration-200", activeDropdown === 'user' && "rotate-180")} />
+                </button>
+                <AnimatePresence>
+                  {activeDropdown === 'user' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.12 }}
+                      className="absolute right-0 top-10 w-44 bg-[#07080c] border border-white/10 z-40 py-1"
+                      style={{ fontFamily: "var(--font-geist-sans)" }}
+                      onMouseEnter={() => { if (closeTimer.current) clearTimeout(closeTimer.current) }}
+                      onMouseLeave={scheduleClose}
+                    >
+                      <div className="px-4 py-2.5 border-b border-white/10">
+                        <p className="text-xs text-white truncate">{customer?.firstName} {customer?.lastName}</p>
+                        <p className="text-[10px] text-white/40 truncate mt-0.5">{customer?.email}</p>
+                      </div>
+                      <Link href="/cuenta" className="flex items-center gap-2 px-4 py-2.5 text-xs text-white/60 hover:text-white hover:bg-white/5 transition-colors">
+                        Mis pedidos
+                      </Link>
+                      <button onClick={logout} className="w-full flex items-center gap-2 px-4 py-2.5 text-xs text-white/60 hover:text-white hover:bg-white/5 transition-colors">
+                        Cerrar sesión
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Button
+                onClick={login}
+                variant="outline"
+                size="sm"
+                className={cn(
+                  "text-xs h-8 bg-transparent",
+                  isDark
+                    ? "border-white/20 text-white hover:bg-white/10 hover:text-white"
+                    : "border-black/20 text-[#07080c] hover:bg-black/8 hover:text-[#07080c]"
+                )}
+              >
+                Login
+              </Button>
+            )}
             <Button asChild size="sm" className="text-xs h-8 bg-[#017bfd] hover:bg-[#0066d6] text-white border-0">
               <Link href="#">Agendar demo</Link>
             </Button>
@@ -420,9 +474,20 @@ export const Header = () => {
               </span>
             )}
           </button>
-          <Button asChild variant="outline" className="w-full text-xs border-white/20 bg-transparent text-white">
-            <Link href="#">Login</Link>
-          </Button>
+          {isLoggedIn ? (
+            <div className="flex flex-col gap-1">
+              <p className="text-xs text-white/50 px-1">
+                {customer?.firstName} {customer?.lastName}
+              </p>
+              <Button variant="outline" onClick={logout} className="w-full text-xs border-white/20 bg-transparent text-white">
+                Cerrar sesión
+              </Button>
+            </div>
+          ) : (
+            <Button variant="outline" onClick={login} className="w-full text-xs border-white/20 bg-transparent text-white">
+              Login
+            </Button>
+          )}
           <Button asChild className="w-full text-xs bg-[#017bfd] hover:bg-[#0066d6] text-white border-0">
             <Link href="#">Agendar demo</Link>
           </Button>
