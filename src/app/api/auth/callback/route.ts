@@ -69,15 +69,6 @@ export async function GET(req: NextRequest) {
     })
   }
 
-  // Store non-sensitive customer info in a readable cookie for the client
-  if (customer) {
-    res.cookies.set('sh_customer', JSON.stringify(customer), {
-      httpOnly: false, secure, sameSite: 'lax',
-      maxAge: tokens.expires_in ?? 3600,
-      path: '/',
-    })
-  }
-
   // Clear PKCE cookies
   res.cookies.delete('sh_auth_state')
   res.cookies.delete('sh_auth_nonce')

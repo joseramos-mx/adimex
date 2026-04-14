@@ -14,7 +14,7 @@ export interface Customer {
 interface AuthContextValue {
   customer: Customer | null
   isLoggedIn: boolean
-  ready: boolean   // true once the cookie check is done
+  ready: boolean
   login: () => void
   logout: () => void
 }
@@ -29,24 +29,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [customer, setCustomer] = useState<Customer | null>(null)
   const [ready, setReady] = useState(false)
 
-  // Read customer info from the non-httpOnly cookie on mount
+  // Ask the server if we have a valid session (reads the httpOnly cookie)
   useEffect(() => {
-    try {
-      const raw = document.cookie
-        .split('; ')
-        .find((c) => c.startsWith('sh_customer='))
-        ?.split('=')
-        .slice(1)
-        .join('=')
-
-      if (raw) {
-        setCustomer(JSON.parse(decodeURIComponent(raw)))
-      }
-    } catch {
-      // cookie absent or malformed — user not logged in
-    } finally {
-      setReady(true)
-    }
+    fetch('/api/auth/me')
+      .then((r) => (r.ok ? r.json() : { customer: null }))
+      .then(({ customer }) => { if (customer) setCustomer(customer) })
+      .catch(() => {})
+      .finally(() => setReady(true))
   }, [])
 
   const login  = () => { window.location.href = '/api/auth/login' }

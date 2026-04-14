@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   const res = NextResponse.redirect(logoutUrl.toString())
 
   // Clear all auth cookies
-  const cookiesToDelete = ['sh_access_token', 'sh_id_token', 'sh_refresh_token', 'sh_customer']
+  const cookiesToDelete = ['sh_access_token', 'sh_id_token', 'sh_refresh_token']
   for (const name of cookiesToDelete) {
     res.cookies.delete({ name, path: '/' })
   }

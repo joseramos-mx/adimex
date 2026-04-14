@@ -264,10 +264,10 @@ export const Header = () => {
         <div className="px-6 h-full flex items-center justify-between gap-6">
 
           {/* Logo */}
-          <a href="/" aria-label="home" className="shrink-0">
+          <Link href="/" aria-label="home" className="shrink-0">
             <img src="/logo.svg" alt="ADIMEX" className="h-4 w-auto transition-[filter] duration-200"
               style={{ filter: isLight && !activeDropdown ? "brightness(0)" : "none" }} />
-          </a>
+          </Link>
 
           {/* Desktop nav links */}
           <ul className="hidden lg:flex items-center gap-8 text-xs">
