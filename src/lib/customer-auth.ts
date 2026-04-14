@@ -62,10 +62,16 @@ export interface CustomerInfo {
 export function extractCustomerInfo(idToken: string): CustomerInfo | null {
   const payload = decodeJwtPayload(idToken)
   if (!payload) return null
+
+  // `given_name`/`family_name` come from the `profile` scope (not always available).
+  // Fall back to the email prefix so the header always has something to show.
+  const emailStr = (payload.email as string) ?? ''
+  const fallbackName = emailStr.split('@')[0] ?? ''
+
   return {
     id: (payload.sub as string) ?? '',
-    email: (payload.email as string) ?? '',
-    firstName: (payload.given_name as string) ?? '',
+    email: emailStr,
+    firstName: (payload.given_name as string) || fallbackName,
     lastName: (payload.family_name as string) ?? '',
   }
 }

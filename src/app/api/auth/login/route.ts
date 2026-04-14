@@ -22,7 +22,7 @@ export async function GET() {
   authUrl.searchParams.set('client_id',             CLIENT_ID)
   authUrl.searchParams.set('response_type',         'code')
   authUrl.searchParams.set('redirect_uri',          `${APP_URL}/api/auth/callback`)
-  authUrl.searchParams.set('scope',                 'openid email profile')
+  authUrl.searchParams.set('scope',                 'openid email')
   authUrl.searchParams.set('state',                 state)
   authUrl.searchParams.set('nonce',                 nonce)
   authUrl.searchParams.set('code_challenge',        codeChallenge)
