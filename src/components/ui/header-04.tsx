@@ -152,15 +152,14 @@ function CasosPanel() {
 
 // ─── Search command ────────────────────────────────────────────────────────────
 
-function SearchCommand({ isDark }: { isDark: boolean }) {
-  const [open, setOpen] = React.useState(false)
+function SearchCommand({ isDark, open, setOpen }: { isDark: boolean; open: boolean; setOpen: (v: boolean) => void }) {
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); setOpen((o) => !o) }
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); setOpen(!open) }
     }
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
-  }, [])
+  }, [open, setOpen])
   return (
     <>
       <button
@@ -209,6 +208,7 @@ export const Header = () => {
   const [region, setRegion] = React.useState(regions[0])
   const [regionOpen, setRegionOpen] = React.useState(false)
   const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [searchOpen, setSearchOpen] = React.useState(false)
   const { itemCount, openCart } = useCart()
   const { customer, isLoggedIn, login, logout } = useAuth()
 
@@ -290,7 +290,7 @@ export const Header = () => {
 
           {/* Right side */}
           <div className="hidden lg:flex items-center gap-3 ml-auto">
-            <SearchCommand isDark={!!isDark} />
+            <SearchCommand isDark={!!isDark} open={searchOpen} setOpen={setSearchOpen} />
 
             {/* Region picker */}
             <div className="relative">
@@ -450,7 +450,19 @@ export const Header = () => {
         "fixed inset-x-0 top-14 z-20 bg-[#07080c] border-b border-white/10 lg:hidden overflow-hidden transition-all duration-300",
         menuState ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
       )} style={{ fontFamily: "var(--font-geist-sans)" }}>
-        <ul className="flex flex-col p-6 gap-5">
+        {/* Search */}
+        <div className="px-6 pt-4">
+          <button
+            onClick={() => { setMenuState(false); setSearchOpen(true) }}
+            className="w-full flex items-center gap-2 h-9 px-3 border border-white/15 text-xs text-white/50 hover:text-white hover:border-white/30 transition-colors"
+          >
+            <Search size={12} />
+            <span>Buscar productos...</span>
+            <kbd className="ml-auto text-[10px] bg-white/10 px-1.5 py-0.5">Ctrl K</kbd>
+          </button>
+        </div>
+
+        <ul className="flex flex-col px-6 pt-5 pb-2 gap-5">
           {menuItems.map((item) => (
             <li key={item.name}>
               <Link href={item.href} className="text-sm text-white/70 hover:text-white transition-colors" onClick={() => setMenuState(false)}>
@@ -459,7 +471,29 @@ export const Header = () => {
             </li>
           ))}
         </ul>
+
         <div className="px-6 pb-6 flex flex-col gap-3">
+          {/* Region picker */}
+          <div className="flex flex-col gap-1.5">
+            <p className="text-[10px] font-mono text-white/30 tracking-widest uppercase px-1">Región</p>
+            <div className="grid grid-cols-3 gap-1.5">
+              {regions.map((r) => (
+                <button
+                  key={r.code}
+                  onClick={() => setRegion(r)}
+                  className={cn(
+                    "flex items-center justify-center gap-1.5 h-8 border text-xs transition-colors",
+                    r.code === region.code
+                      ? "border-[#017bfd]/50 bg-[#017bfd]/10 text-white"
+                      : "border-white/10 text-white/40 hover:border-white/25 hover:text-white/70"
+                  )}
+                >
+                  <span>{r.flag}</span>
+                  <span className="font-mono text-[11px]">{r.code}</span>
+                </button>
+              ))}
+            </div>
+          </div>
           <button
             onClick={() => { setMenuState(false); openCart() }}
             className="w-full flex items-center justify-between px-4 h-9 border border-white/20 text-xs text-white hover:bg-white/5 transition-colors"
