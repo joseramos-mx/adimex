@@ -66,48 +66,75 @@ export default function CasosPage() {
               transition={{ duration: 0.5, delay: 0.1 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
               className="bg-[#07080c]"
             >
-              <Link href={`/casos/${caso.slug}`} className="group flex flex-col h-full p-8 hover:bg-white/[0.02] transition-colors">
-
-                {/* Top meta */}
-                <div className="flex items-center justify-between mb-6">
-                  <span className="text-[10px] font-mono tracking-widest text-[#017bfd] uppercase">
-                    {caso.industry}
-                  </span>
-                  <span className="text-[10px] font-mono text-white/20">{caso.year}</span>
-                </div>
-
-                {/* Title */}
-                <h2 className="text-base font-semibold text-white leading-snug mb-3 group-hover:text-white/90 transition-colors">
-                  {caso.title}
-                </h2>
-
-                <p className="text-xs text-white/35 leading-relaxed mb-8 flex-1">
-                  {caso.tagline}
-                </p>
-
-                {/* Metrics strip */}
-                <div className="grid grid-cols-2 gap-px bg-white/8 mb-6">
-                  {caso.metrics.slice(0, 2).map((m) => (
-                    <div key={m.label} className="bg-[#07080c] px-4 py-3">
-                      <p className="text-xl font-semibold text-white tabular-nums tracking-tight">{m.value}</p>
-                      <p className="text-[10px] font-mono text-white/30 mt-0.5">{m.label}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-white/60">{caso.client}</p>
-                    <p className="text-[10px] font-mono text-white/25">{caso.location}</p>
+              {caso.placeholder ? (
+                /* ── Placeholder card ── */
+                <div className="flex flex-col h-full p-8 opacity-40 cursor-default select-none">
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="text-[10px] font-mono tracking-widest text-[#017bfd] uppercase">
+                      {caso.industry}
+                    </span>
+                    <span className="text-[10px] font-mono border border-white/10 text-white/30 px-2 py-0.5">
+                      Próximamente
+                    </span>
                   </div>
-                  <ArrowRight
-                    size={14}
-                    className="text-white/20 group-hover:text-[#017bfd] group-hover:translate-x-1 transition-all"
-                  />
+                  <div className="h-3 w-3/4 bg-white/8 mb-3" />
+                  <div className="h-3 w-1/2 bg-white/5 mb-8" />
+                  <div className="grid grid-cols-2 gap-px bg-white/8 mb-6">
+                    <div className="bg-[#07080c] px-4 py-3">
+                      <div className="h-5 w-12 bg-white/8 mb-1" />
+                      <div className="h-2 w-20 bg-white/5" />
+                    </div>
+                    <div className="bg-[#07080c] px-4 py-3">
+                      <div className="h-5 w-12 bg-white/8 mb-1" />
+                      <div className="h-2 w-20 bg-white/5" />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-auto">
+                    <div>
+                      <div className="h-2.5 w-24 bg-white/8 mb-1.5" />
+                      <div className="h-2 w-16 bg-white/5" />
+                    </div>
+                  </div>
                 </div>
+              ) : (
+                /* ── Real case card ── */
+                <Link href={`/casos/${caso.slug}`} className="group flex flex-col h-full p-8 hover:bg-white/[0.02] transition-colors">
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="text-[10px] font-mono tracking-widest text-[#017bfd] uppercase">
+                      {caso.industry}
+                    </span>
+                    <span className="text-[10px] font-mono text-white/20">{caso.year}</span>
+                  </div>
 
-              </Link>
+                  <h2 className="text-base font-semibold text-white leading-snug mb-3 group-hover:text-white/90 transition-colors">
+                    {caso.title}
+                  </h2>
+
+                  <p className="text-xs text-white/35 leading-relaxed mb-8 flex-1">
+                    {caso.tagline}
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-px bg-white/8 mb-6">
+                    {caso.metrics.slice(0, 2).map((m) => (
+                      <div key={m.label} className="bg-[#07080c] px-4 py-3">
+                        <p className="text-xl font-semibold text-white tabular-nums tracking-tight">{m.value}</p>
+                        <p className="text-[10px] font-mono text-white/30 mt-0.5">{m.label}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-medium text-white/60">{caso.client}</p>
+                      <p className="text-[10px] font-mono text-white/25">{caso.location}</p>
+                    </div>
+                    <ArrowRight
+                      size={14}
+                      className="text-white/20 group-hover:text-[#017bfd] group-hover:translate-x-1 transition-all"
+                    />
+                  </div>
+                </Link>
+              )}
             </motion.div>
           ))}
         </div>

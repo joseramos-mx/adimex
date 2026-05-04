@@ -41,19 +41,19 @@ const casosDropdown = {
   byIndustry: {
     heading: "Por industria",
     items: [
-      { icon: Car,     name: "Automotriz",   href: "/casos/tremec-servomotores-linea-ensamble" },
-      { icon: Factory, name: "Manufactura",  href: "/casos/mabe-scada-visibilidad-produccion"  },
-      { icon: Layers,  name: "Vidrio",       href: "/casos/vitro-variadores-ahorro-energia"    },
-      { icon: Radio,   name: "Cementera",    href: "/casos/cemex-plc-control-proceso"          },
+      { icon: Activity, name: "Infraestructura", href: "/casos/sala-bombas-monitoreo-scada-iot", placeholder: false },
+      { icon: Factory,  name: "Manufactura",     href: "",                                        placeholder: true  },
+      { icon: Car,      name: "Automotriz",      href: "",                                        placeholder: true  },
+      { icon: Zap,      name: "Energía",         href: "",                                        placeholder: true  },
     ],
   },
   bySolution: {
     heading: "Por solución",
     items: [
-      { icon: Zap,       name: "Servomotores",        href: "/casos/tremec-servomotores-linea-ensamble" },
-      { icon: BarChart3, name: "SCADA",               href: "/casos/mabe-scada-visibilidad-produccion"  },
-      { icon: Cpu,       name: "Control de procesos", href: "/casos/cemex-plc-control-proceso"          },
-      { icon: Activity,  name: "Eficiencia energética", href: "/casos/vitro-variadores-ahorro-energia"  },
+      { icon: BarChart3, name: "SCADA",               href: "/casos/sala-bombas-monitoreo-scada-iot", placeholder: false },
+      { icon: Radio,     name: "IoT Industrial",      href: "/casos/sala-bombas-monitoreo-scada-iot", placeholder: false },
+      { icon: Cpu,       name: "Control de procesos", href: "",                                        placeholder: true  },
+      { icon: Settings2, name: "Eficiencia energética", href: "",                                     placeholder: true  },
     ],
   },
 }
@@ -116,23 +116,43 @@ function CasosPanel() {
         </div>
         <div className="flex flex-col">
           <p className="text-[10px] tracking-widest text-white/40 uppercase px-6 pt-6 pb-3">{casosDropdown.byIndustry.heading}</p>
-          {casosDropdown.byIndustry.items.map((item) => (
-            <Link key={item.name} href={item.href}
-              className="flex items-center gap-3 px-6 py-3 hover:bg-white/5 transition-colors group">
-              <item.icon size={14} className="text-white/30 group-hover:text-[#017bfd] transition-colors" />
-              <span className="text-xs text-white/70 group-hover:text-white transition-colors">{item.name}</span>
-            </Link>
-          ))}
+          {casosDropdown.byIndustry.items.map((item) =>
+            item.placeholder ? (
+              <div key={item.name} className="flex items-center justify-between px-6 py-3 opacity-30 cursor-default select-none">
+                <div className="flex items-center gap-3">
+                  <item.icon size={14} className="text-white/30" />
+                  <span className="text-xs text-white/50">{item.name}</span>
+                </div>
+                <span className="text-[9px] font-mono text-white/30 border border-white/15 px-1.5 py-0.5">Pronto</span>
+              </div>
+            ) : (
+              <Link key={item.name} href={item.href}
+                className="flex items-center gap-3 px-6 py-3 hover:bg-white/5 transition-colors group">
+                <item.icon size={14} className="text-white/30 group-hover:text-[#017bfd] transition-colors" />
+                <span className="text-xs text-white/70 group-hover:text-white transition-colors">{item.name}</span>
+              </Link>
+            )
+          )}
         </div>
         <div className="flex flex-col">
           <p className="text-[10px] tracking-widest text-white/40 uppercase px-6 pt-6 pb-3">{casosDropdown.bySolution.heading}</p>
-          {casosDropdown.bySolution.items.map((item) => (
-            <Link key={item.name} href={item.href}
-              className="flex items-center gap-3 px-6 py-3 hover:bg-white/5 transition-colors group">
-              <item.icon size={14} className="text-white/30 group-hover:text-[#017bfd] transition-colors" />
-              <span className="text-xs text-white/70 group-hover:text-white transition-colors">{item.name}</span>
-            </Link>
-          ))}
+          {casosDropdown.bySolution.items.map((item) =>
+            item.placeholder ? (
+              <div key={item.name} className="flex items-center justify-between px-6 py-3 opacity-30 cursor-default select-none">
+                <div className="flex items-center gap-3">
+                  <item.icon size={14} className="text-white/30" />
+                  <span className="text-xs text-white/50">{item.name}</span>
+                </div>
+                <span className="text-[9px] font-mono text-white/30 border border-white/15 px-1.5 py-0.5">Pronto</span>
+              </div>
+            ) : (
+              <Link key={item.name} href={item.href}
+                className="flex items-center gap-3 px-6 py-3 hover:bg-white/5 transition-colors group">
+                <item.icon size={14} className="text-white/30 group-hover:text-[#017bfd] transition-colors" />
+                <span className="text-xs text-white/70 group-hover:text-white transition-colors">{item.name}</span>
+              </Link>
+            )
+          )}
         </div>
       </div>
       <div className="border-t border-white/10 grid grid-cols-[220px_1fr_1fr] divide-x divide-white/10">

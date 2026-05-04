@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, ArrowRight, MapPin, Calendar, Building2 } from "lucide-react"
 import { Header } from "@/components/ui/header-04"
@@ -6,7 +6,7 @@ import Footer from "@/components/footer"
 import { casos } from "@/data/casos"
 
 export function generateStaticParams() {
-  return casos.map((c) => ({ slug: c.slug }))
+  return casos.filter((c) => !c.placeholder).map((c) => ({ slug: c.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -23,8 +23,9 @@ export default async function CasoDetailPage({ params }: { params: Promise<{ slu
   const { slug } = await params
   const caso = casos.find((c) => c.slug === slug)
   if (!caso) notFound()
+  if (caso.placeholder) redirect("/casos")
 
-  const related = casos.filter((c) => c.slug !== caso.slug).slice(0, 2)
+  const related = casos.filter((c) => c.slug !== caso.slug && !c.placeholder).slice(0, 2)
 
   return (
     <div
@@ -91,16 +92,63 @@ export default async function CasoDetailPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      {/* ── Image placeholder ── */}
-      <div className="border-b border-white/8 bg-[#0d0e12]">
-        <div className="max-w-5xl mx-auto px-6 py-0">
-          <div className="w-full aspect-[16/7] bg-[#111316] flex items-center justify-center">
-            <span className="text-[11px] font-mono text-white/15">
-              {caso.client} — {caso.location}
-            </span>
+      {/* ── Media section: videos or image placeholder ── */}
+      {caso.videos && caso.videos.length > 0 ? (
+        <div className="border-b border-white/8 bg-[#0a0b0f]">
+          <div className="max-w-5xl mx-auto px-6 py-8 flex flex-col gap-4">
+
+            {/* Main video */}
+            <div className="w-full aspect-video bg-black relative group overflow-hidden">
+              <video
+                src={caso.videos[0].src}
+                autoPlay
+                muted
+                loop
+                playsInline
+                controls
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/80 to-transparent pointer-events-none">
+                <p className="text-xs font-semibold text-white">{caso.videos[0].title}</p>
+                <p className="text-[11px] font-mono text-white/45">{caso.videos[0].description}</p>
+              </div>
+            </div>
+
+            {/* Secondary videos grid */}
+            {caso.videos.length > 1 && (
+              <div className="grid grid-cols-3 gap-4">
+                {caso.videos.slice(1).map((v) => (
+                  <div key={v.src} className="flex flex-col gap-2">
+                    <div className="w-full aspect-video bg-black overflow-hidden">
+                      <video
+                        src={v.src}
+                        controls
+                        playsInline
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-medium text-white/70">{v.title}</p>
+                      <p className="text-[10px] font-mono text-white/30 leading-relaxed">{v.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="border-b border-white/8 bg-[#0d0e12]">
+          <div className="max-w-5xl mx-auto px-6 py-0">
+            <div className="w-full aspect-[16/7] bg-[#111316] flex items-center justify-center">
+              <span className="text-[11px] font-mono text-white/15">
+                {caso.client} — {caso.location}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Content ── */}
       <main className="flex-1">
