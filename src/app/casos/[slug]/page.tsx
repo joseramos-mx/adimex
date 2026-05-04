@@ -122,8 +122,11 @@ export default async function CasoDetailPage({ params }: { params: Promise<{ slu
                     <div className="w-full aspect-video bg-black overflow-hidden">
                       <video
                         src={v.src}
-                        controls
+                        autoPlay
+                        muted
+                        loop
                         playsInline
+                        controls
                         className="w-full h-full object-cover"
                       />
                     </div>
