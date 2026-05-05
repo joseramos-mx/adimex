@@ -10,24 +10,21 @@ const slides = [
   {
     name: "AI + IoT",
     image: "/iotaibg.png",
-    subtitle: "Automatización totalmente integrada",
-    heading: ["AI + IoT"],
+    heading: ["Automatización totalmente integrada", "AI + IoT"],
     description:
       "Flexem AI+IoT logra una automatización totalmente integrada de software y hardware, rompe los silos de datos, optimiza los procesos de producción a través de algoritmos inteligentes, mejora significativamente la eficiencia y los beneficios, e impulsa actualizaciones inteligentes industriales.",
   },
   {
     name: "PLC FL7",
     image: "/bgfl7h.png",
-    subtitle: "Más preciso y más eficiente",
-    heading: ["PLC de la", "serie FL7"],
+    heading: ["Más preciso y más eficiente", "PLC de la", "serie FL7"],
     description:
       "El PLC de la serie FL7 está diseñado para aplicaciones complejas de automatización mecánica y control de movimiento multieje. Incorpora funciones integradas de entrada y salida de pulsos de alta velocidad, admite diversos algoritmos de interpolación y levas electrónicas, y puede controlar hasta 32 ejes simultáneamente.",
   },
   {
     name: "HMI Capacitiva",
     image: "/hmibg.png",
-    subtitle: "Estética industrial",
-    heading: ["HMI Capacitiva", "FLEXEM"],
+    heading: ["Estética industrial", "HMI Capacitiva", "FLEXEM"],
     description:
       "La HMI capacitiva FLEXEM presenta un diseño de estética industrial, una pantalla de alta definición y alto brillo, y amplios ángulos de visión. Su superficie resistente a rayones y duradera facilita una variedad de operaciones gestuales fluidas.",
   },
@@ -94,11 +91,12 @@ export const Hero = () => {
 
         <div className="flex flex-col gap-8 flex-1 justify-center">
 
-          {/* Heading — subtitle + each line animates in independently */}
+          {/* Heading — first line is subtitle (small), rest are large */}
           <AnimatePresence mode="wait">
-            <motion.div
+            <motion.h1
               key={`heading-${active}`}
-              className="flex flex-col gap-2"
+              className="flex flex-col gap-1"
+              style={{ fontFamily: "var(--font-geist-sans)" }}
               initial="hidden"
               animate="visible"
               exit="exit"
@@ -108,34 +106,23 @@ export const Hero = () => {
                 exit: { opacity: 0, transition: { duration: 0.3 } },
               }}
             >
-              <motion.span
-                className="block text-sm sm:text-base font-medium text-white/70 tracking-wide"
-                style={{ fontFamily: "var(--font-geist-sans)" }}
-                variants={{
-                  hidden: { y: 10, opacity: 0 },
-                  visible: { y: 0, opacity: 1, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
-                }}
-              >
-                {slide.subtitle}
-              </motion.span>
-              <h1
-                className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight"
-                style={{ fontFamily: "var(--font-geist-sans)" }}
-              >
-                {slide.heading.map((line, i) => (
-                  <motion.span
-                    key={i}
-                    className="block overflow-hidden"
-                    variants={{
-                      hidden: { y: "100%", opacity: 0 },
-                      visible: { y: 0, opacity: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
-                    }}
-                  >
-                    {line}
-                  </motion.span>
-                ))}
-              </h1>
-            </motion.div>
+              {slide.heading.map((line, i) => (
+                <motion.span
+                  key={i}
+                  className={`block overflow-hidden ${
+                    i === 0
+                      ? "text-sm sm:text-base font-medium text-white/70 tracking-wide"
+                      : "text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight"
+                  }`}
+                  variants={{
+                    hidden: { y: "100%", opacity: 0 },
+                    visible: { y: 0, opacity: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+                  }}
+                >
+                  {line}
+                </motion.span>
+              ))}
+            </motion.h1>
           </AnimatePresence>
 
           {/* Description */}
