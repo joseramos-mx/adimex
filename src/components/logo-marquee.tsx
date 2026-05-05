@@ -1,11 +1,8 @@
 "use client"
 
 const logos = [
-  { name: "logoipsum-388", src: "/logoipsum-388.svg" },
-  { name: "logoipsum-400", src: "/logoipsum-400(1).svg" },
-  { name: "logoipsum-408", src: "/logoipsum-408.svg" },
-  { name: "logoipsum-412", src: "/logoipsum-412.svg" },
-  { name: "logoipsum-4122", src: "/logoipsum-412.svg" },
+  { name: "FEMSA", src: "/femsalogo.svg" },
+  { name: "SmartFit", src: "/smartfitlogo.svg" },
 ]
 
 // Repeat enough times so one "half" is always wider than the viewport
@@ -24,7 +21,7 @@ export default function LogoMarquee() {
       `}</style>
 
       <p className="text-center text-xs text-muted-foreground mb-6 tracking-wide">
-        Trusted by world&apos;s leading companies
+        Empresas que confían en ADIMEX
       </p>
 
       {/* Fade edges */}
@@ -41,7 +38,7 @@ export default function LogoMarquee() {
               key={`${logo.name}-${i}`}
               src={logo.src}
               alt={logo.name}
-              className="h-6 w-auto object-contain opacity-20 hover:opacity-40 transition-opacity duration-200"
+              className="h-8 w-auto object-contain opacity-20 hover:opacity-40 transition-opacity duration-200"
             />
           ))}
         </div>

@@ -19,9 +19,10 @@ interface PageProps {
 }
 
 export const metadata = {
-  title: "Productos | ADIMEX",
+  title: "Productos",
   description:
-    "Catálogo completo de productos FLEXEM: servomotores, PLCs, HMI, gateways IoT, SCADA y plataforma cloud.",
+    "Catálogo completo de productos FLEXEM: servomotores, PLCs, HMI, gateways IoT, SCADA y plataforma cloud. Distribuidor autorizado en México.",
+  alternates: { canonical: "https://adimex.io/productos" },
 }
 
 export default async function ProductosPage({ searchParams }: PageProps) {
@@ -137,6 +138,18 @@ export default async function ProductosPage({ searchParams }: PageProps) {
         </div>
       </div>
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: "Catálogo de productos ADIMEX",
+            description: "Distribuidor autorizado FLEXEM en México — PLCs, servomotores, HMI, SCADA e IoT",
+            url: "https://adimex.io/productos",
+          }),
+        }}
+      />
       <Footer />
     </div>
   )

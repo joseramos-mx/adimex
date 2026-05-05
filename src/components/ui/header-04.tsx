@@ -5,8 +5,7 @@ import Link from "next/link"
 import {
   Menu, X, ChevronDown, ArrowRight, Search,
   Zap, Cpu, Activity, Monitor, BarChart3, Settings2,
-  Car, Factory, Layers, Radio,
-  FilePlus2Icon, LayoutTemplateIcon, PenToolIcon,
+  Car, Factory, Radio,
   ArrowUpRightIcon, PaletteIcon, ShoppingCart,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -69,7 +68,6 @@ const menuItems = [
   { name: "Casos de estudio", href: "/casos", dropdown: "casos"    },
   { name: "Soporte",           href: "/soporte", dropdown: null     },
   { name: "Nosotros",         href: "/nosotros", dropdown: null     },
-  { name: "Descargas",        href: "#link", dropdown: null        },
 ]
 
 // ─── Mega-menu panels ──────────────────────────────────────────────────────────

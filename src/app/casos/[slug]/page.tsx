@@ -27,11 +27,22 @@ export default async function CasoDetailPage({ params }: { params: Promise<{ slu
 
   const related = casos.filter((c) => c.slug !== caso.slug && !c.placeholder).slice(0, 2)
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: "https://adimex.io" },
+      { "@type": "ListItem", position: 2, name: "Casos de estudio", item: "https://adimex.io/casos" },
+      { "@type": "ListItem", position: 3, name: caso.client || caso.title, item: `https://adimex.io/casos/${caso.slug}` },
+    ],
+  }
+
   return (
     <div
       className="flex flex-col min-h-screen bg-[#07080c]"
       style={{ fontFamily: "var(--font-geist-sans)" }}
     >
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Header />
 
       {/* ── Breadcrumb ── */}

@@ -10,7 +10,7 @@ const slides = [
   {
     name: "AI + IoT",
     image: "/iotaibg.png",
-    heading: ["Automatización totalmente integrada", "AI + IoT"],
+    heading: ["Automatización industrial en México", "AI + IoT"],
     description:
       "Flexem AI+IoT logra una automatización totalmente integrada de software y hardware, rompe los silos de datos, optimiza los procesos de producción a través de algoritmos inteligentes, mejora significativamente la eficiencia y los beneficios, e impulsa actualizaciones inteligentes industriales.",
   },
