@@ -8,32 +8,28 @@ const SLIDE_DURATION = 5000
 
 const slides = [
   {
-    name: "AI + IOT",
-    image: "/hero-image.jpg",
-    heading: ["Discover the variety", "of automation", "solutions by ADIMEX"],
+    name: "AI + IoT",
+    image: "/iotaibg.png",
+    subtitle: "Automatización totalmente integrada",
+    heading: ["AI + IoT"],
     description:
-      "Our AI + IOT solutions allow you to integrate intelligent systems and real-time data components into customized production processes. Find out more.",
+      "Flexem AI+IoT logra una automatización totalmente integrada de software y hardware, rompe los silos de datos, optimiza los procesos de producción a través de algoritmos inteligentes, mejora significativamente la eficiencia y los beneficios, e impulsa actualizaciones inteligentes industriales.",
   },
   {
     name: "PLC FL7",
-    image: "/hero-image.jpg",
-    heading: ["Advanced PLC FL7", "control systems", "for modern industry"],
+    image: "/bgfl7h.png",
+    subtitle: "Más preciso y más eficiente",
+    heading: ["PLC de la", "serie FL7"],
     description:
-      "The PLC FL7 line delivers reliable programmable logic control for complex industrial environments with high precision and speed.",
+      "El PLC de la serie FL7 está diseñado para aplicaciones complejas de automatización mecánica y control de movimiento multieje. Incorpora funciones integradas de entrada y salida de pulsos de alta velocidad, admite diversos algoritmos de interpolación y levas electrónicas, y puede controlar hasta 32 ejes simultáneamente.",
   },
   {
-    name: "FLEXEM Servo",
-    image: "/hero-image.jpg",
-    heading: ["Precision motion", "with FLEXEM", "Servo technology"],
+    name: "HMI Capacitiva",
+    image: "/hmibg.png",
+    subtitle: "Estética industrial",
+    heading: ["HMI Capacitiva", "FLEXEM"],
     description:
-      "FLEXEM Servo drives provide high-accuracy motion control for demanding automation applications across multiple industries.",
-  },
-  {
-    name: "FlexSCADA",
-    image: "/hero-image.jpg",
-    heading: ["Real-time visibility", "with FlexSCADA", "monitoring platform"],
-    description:
-      "FlexSCADA gives operators full visibility of production lines with live dashboards, alerts, and remote control capabilities.",
+      "La HMI capacitiva FLEXEM presenta un diseño de estética industrial, una pantalla de alta definición y alto brillo, y amplios ángulos de visión. Su superficie resistente a rayones y duradera facilita una variedad de operaciones gestuales fluidas.",
   },
 ]
 
@@ -98,12 +94,11 @@ export const Hero = () => {
 
         <div className="flex flex-col gap-8 flex-1 justify-center">
 
-          {/* Heading — each line animates in independently */}
+          {/* Heading — subtitle + each line animates in independently */}
           <AnimatePresence mode="wait">
-            <motion.h1
+            <motion.div
               key={`heading-${active}`}
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight"
-              style={{ fontFamily: "var(--font-geist-sans)" }}
+              className="flex flex-col gap-2"
               initial="hidden"
               animate="visible"
               exit="exit"
@@ -113,19 +108,34 @@ export const Hero = () => {
                 exit: { opacity: 0, transition: { duration: 0.3 } },
               }}
             >
-              {slide.heading.map((line, i) => (
-                <motion.span
-                  key={i}
-                  className="block overflow-hidden"
-                  variants={{
-                    hidden: { y: "100%", opacity: 0 },
-                    visible: { y: 0, opacity: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
-                  }}
-                >
-                  {line}
-                </motion.span>
-              ))}
-            </motion.h1>
+              <motion.span
+                className="block text-sm sm:text-base font-medium text-white/70 tracking-wide"
+                style={{ fontFamily: "var(--font-geist-sans)" }}
+                variants={{
+                  hidden: { y: 10, opacity: 0 },
+                  visible: { y: 0, opacity: 1, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
+                }}
+              >
+                {slide.subtitle}
+              </motion.span>
+              <h1
+                className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight"
+                style={{ fontFamily: "var(--font-geist-sans)" }}
+              >
+                {slide.heading.map((line, i) => (
+                  <motion.span
+                    key={i}
+                    className="block overflow-hidden"
+                    variants={{
+                      hidden: { y: "100%", opacity: 0 },
+                      visible: { y: 0, opacity: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+                    }}
+                  >
+                    {line}
+                  </motion.span>
+                ))}
+              </h1>
+            </motion.div>
           </AnimatePresence>
 
           {/* Description */}
