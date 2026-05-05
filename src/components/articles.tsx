@@ -23,7 +23,7 @@ export default async function Articles() {
         className="text-white text-center text-3xl font-bold mb-12"
         style={{ fontFamily: "var(--font-geist-sans)" }}
       >
-        Discover the variety of automation solutions by ADIMEX
+        Artículos y recursos de automatización industrial
       </h2>
 
       <div className="max-w-6xl mx-auto border border-white/10 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">

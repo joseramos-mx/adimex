@@ -18,8 +18,40 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Adimex",
-  description: "Adimex",
+  metadataBase: new URL("https://adimex.io"),
+  title: {
+    default: "ADIMEX | Automatización Industrial México — PLCs, Servomotores, SCADA",
+    template: "%s | ADIMEX",
+  },
+  description:
+    "Distribuidor autorizado FLEXEM en México. PLCs FL7, servomotores FV5-E, HMI capacitiva, FlexSCADA e IoT para automatización industrial de precisión.",
+  openGraph: {
+    type: "website",
+    locale: "es_MX",
+    url: "https://adimex.io",
+    siteName: "ADIMEX",
+    title: "ADIMEX | Automatización Industrial México",
+    description:
+      "Distribuidor autorizado FLEXEM en México. PLCs, servomotores, HMI, SCADA e IoT para automatización industrial de precisión.",
+    images: [
+      {
+        url: "/og-banner.png",
+        width: 1200,
+        height: 630,
+        alt: "ADIMEX Automatización Industrial México",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ADIMEX | Automatización Industrial México",
+    description:
+      "PLCs FL7, servomotores FV5-E, HMI, SCADA e IoT. Distribuidor autorizado FLEXEM en México.",
+    images: ["/og-banner.png"],
+  },
+  alternates: {
+    canonical: "https://adimex.io",
+  },
   icons: {
     icon: [
       { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
@@ -27,9 +59,27 @@ export const metadata: Metadata = {
       { url: "/favicon/favicon.ico" },
     ],
     apple: "/favicon/apple-touch-icon.png",
-    other: [
-      { rel: "manifest", url: "/favicon/site.webmanifest" },
-    ],
+    other: [{ rel: "manifest", url: "/favicon/site.webmanifest" }],
+  },
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "ADIMEX",
+  url: "https://adimex.io",
+  logo: "https://adimex.io/logo.svg",
+  description:
+    "Distribuidor autorizado FLEXEM en México. PLCs FL7, servomotores FV5-E, HMI capacitiva, FlexSCADA e IoT para automatización industrial de precisión.",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Ciudad de México",
+    addressCountry: "MX",
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "sales",
+    availableLanguage: "Spanish",
   },
 };
 
@@ -39,7 +89,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="es-MX" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
         suppressHydrationWarning

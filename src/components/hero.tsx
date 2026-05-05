@@ -150,12 +150,17 @@ export const Hero = () => {
 
           {/* CTA buttons */}
           <div className="flex flex-wrap gap-3" style={{ fontFamily: "var(--font-geist-sans)" }}>
-            <Link href="#" className="bg-[#0d1a2d] text-white px-6 py-3 text-xs font-medium hover:bg-[#0d1a2d]/80 transition-colors">
+            <Link href="/productos" className="bg-[#0d1a2d] text-white px-6 py-3 text-xs font-medium hover:bg-[#0d1a2d]/80 transition-colors">
               Ver catálogo
             </Link>
-            <Link href="#" className="border border-white text-white px-6 py-3 text-xs font-medium hover:bg-white/10 transition-colors">
+            <a
+              href="https://wa.me/521XXXXXXXXXX?text=Hola%2C%20me%20gustar%C3%ADa%20agendar%20una%20demo%20de%20sus%20soluciones."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-white text-white px-6 py-3 text-xs font-medium hover:bg-white/10 transition-colors"
+            >
               Agendar demo
-            </Link>
+            </a>
           </div>
         </div>
 

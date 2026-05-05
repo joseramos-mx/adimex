@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.adimex.io" }],
+      "destination": "https://adimex.io/:path*",
+      "permanent": true
+    }
+  ]
+}
