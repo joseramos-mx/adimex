@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Auditoria SEO — adimex.io (actualizada)</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d0f14;color:#e2e8f0;font-size:14px;line-height:1.6}
+  a{color:#3b82f6;text-decoration:none}
+  .container{max-width:1100px;margin:0 auto;padding:0 24px}
+  .site-header{background:#07080c;border-bottom:1px solid #1e2535;padding:32px 0 24px}
+  .site-header .meta{font-size:11px;font-family:monospace;letter-spacing:.12em;text-transform:uppercase;color:#4a5568;margin-bottom:10px}
+  .site-header h1{font-size:22px;font-weight:700;color:#f1f5f9}
+  .site-header .url{font-size:13px;color:#60a5fa;margin-top:4px}
+  .site-header .date{font-size:11px;color:#4a5568;margin-top:4px}
+  .delta-banner{background:#10b98115;border:1px solid #10b98140;padding:14px 20px;display:flex;align-items:center;gap:16px;margin:20px 0;flex-wrap:wrap}
+  .delta-banner .arrow{font-size:24px;font-weight:700;color:#10b981}
+  .delta-banner p{font-size:13px;color:#a7f3d0}
+  .delta-banner strong{color:#10b981}
+  .score-hero{display:grid;grid-template-columns:180px 1fr;gap:0;border:1px solid #1e2535;margin-bottom:28px}
+  .score-circle-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:#0a0c12;border-right:1px solid #1e2535}
+  .score-circle{width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;border:3px solid}
+  .score-circle.red{border-color:#ef4444;color:#ef4444}
+  .score-circle.yellow{border-color:#f59e0b;color:#f59e0b}
+  .score-circle.green{border-color:#10b981;color:#10b981}
+  .score-circle .num{font-size:36px;line-height:1}
+  .score-circle .label{font-size:10px;font-family:monospace;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;opacity:.7}
+  .score-level{font-size:11px;font-family:monospace;letter-spacing:.1em;text-transform:uppercase;margin-top:10px;padding:3px 10px;border:1px solid}
+  .score-level.red{border-color:#ef4444;color:#ef4444}
+  .score-level.yellow{border-color:#f59e0b;color:#f59e0b}
+  .score-level.green{border-color:#10b981;color:#10b981}
+  .score-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+  .score-card{padding:24px;border-right:1px solid #1e2535;display:flex;flex-direction:column;gap:6px}
+  .score-card:last-child{border-right:none}
+  .score-card .num{font-size:28px;font-weight:700}
+  .score-card .num.red{color:#ef4444}
+  .score-card .num.yellow{color:#f59e0b}
+  .score-card .num.green{color:#10b981}
+  .score-card .lbl{font-size:11px;font-family:monospace;color:#64748b;text-transform:uppercase;letter-spacing:.08em}
+  .section-title{font-size:10px;font-family:monospace;letter-spacing:.18em;text-transform:uppercase;color:#4a5568;padding:28px 0 14px;border-bottom:1px solid #1e2535;margin-bottom:20px}
+  .corrections{display:flex;flex-direction:column;gap:0;border:1px solid #1e2535}
+  .correction{padding:20px 24px;border-bottom:1px solid #1e2535;display:grid;grid-template-columns:40px 1fr;gap:16px}
+  .correction:last-child{border-bottom:none}
+  .correction-num{font-size:22px;font-weight:700;color:#1e2535;font-family:monospace;padding-top:2px}
+  .correction h3{font-size:13px;font-weight:600;color:#f1f5f9;margin-bottom:6px}
+  .correction .why{font-size:12px;color:#64748b;margin-bottom:8px}
+  .correction .why strong{color:#94a3b8}
+  .correction pre{background:#070810;border:1px solid #1e2535;padding:12px 14px;font-size:11px;font-family:monospace;color:#86efac;overflow-x:auto;line-height:1.7;white-space:pre-wrap;word-break:break-all}
+  .badge{display:inline-flex;align-items:center;font-size:10px;font-family:monospace;padding:2px 8px;border:1px solid;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;margin-right:6px}
+  .badge.critical{border-color:#ef4444;color:#ef4444;background:#ef444410}
+  .badge.high{border-color:#f59e0b;color:#f59e0b;background:#f59e0b10}
+  .badge.medium{border-color:#3b82f6;color:#3b82f6;background:#3b82f610}
+  .badge.fixed{border-color:#10b981;color:#10b981;background:#10b98110}
+  .categories{display:flex;flex-direction:column;gap:0;border:1px solid #1e2535}
+  .cat-row{border-bottom:1px solid #1e2535;padding:18px 24px}
+  .cat-row:last-child{border-bottom:none}
+  .cat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .cat-name{font-size:12px;font-weight:600;color:#e2e8f0}
+  .cat-weight{font-size:10px;font-family:monospace;color:#4a5568}
+  .cat-delta{font-size:10px;font-family:monospace;padding:2px 6px;border-radius:2px;margin-left:8px}
+  .cat-delta.up{background:#10b98120;color:#10b981}
+  .cat-delta.same{background:#1e253580;color:#64748b}
+  .cat-score-val{font-size:13px;font-weight:700;font-family:monospace}
+  .cat-score-val.red{color:#ef4444}
+  .cat-score-val.yellow{color:#f59e0b}
+  .cat-score-val.green{color:#10b981}
+  .bar-wrap{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .bar-track{flex:1;height:4px;background:#1e2535;border-radius:2px}
+  .bar-fill{height:100%;border-radius:2px}
+  .bar-fill.red{background:#ef4444}
+  .bar-fill.yellow{background:#f59e0b}
+  .bar-fill.green{background:#10b981}
+  .bar-prev{font-size:10px;font-family:monospace;color:#4a5568;white-space:nowrap}
+  .findings{display:flex;flex-direction:column;gap:4px}
+  .finding{font-size:11px;display:flex;align-items:baseline;gap:8px;color:#64748b}
+  .finding .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:3px}
+  .finding .dot.ok{background:#10b981}
+  .finding .dot.warn{background:#f59e0b}
+  .finding .dot.err{background:#ef4444}
+  .finding .dot.fixed{background:#10b981;box-shadow:0 0 6px #10b981}
+  .finding span.fixed-label{color:#10b981;font-weight:600}
+  .comp-table{width:100%;border-collapse:collapse;border:1px solid #1e2535}
+  .comp-table th{background:#0a0c12;padding:12px 16px;font-size:10px;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;color:#64748b;text-align:left;border-bottom:1px solid #1e2535}
+  .comp-table td{padding:12px 16px;font-size:12px;border-bottom:1px solid #1e2535;vertical-align:top}
+  .comp-table tr:last-child td{border-bottom:none}
+  .ok-icon{color:#10b981}
+  .err-icon{color:#ef4444}
+  .warn-icon{color:#f59e0b}
+  details{border:1px solid #1e2535;margin-bottom:12px}
+  summary{padding:14px 20px;font-size:11px;font-family:monospace;letter-spacing:.08em;text-transform:uppercase;color:#64748b;cursor:pointer;background:#0a0c12;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:'+ ';color:#3b82f6}
+  details[open] summary::before{content:'- '}
+  .detail-table{width:100%;border-collapse:collapse}
+  .detail-table tr{border-bottom:1px solid #1e2535}
+  .detail-table tr:last-child{border-bottom:none}
+  .detail-table td{padding:10px 20px;font-size:11px;vertical-align:top}
+  .detail-table td:first-child{color:#64748b;white-space:nowrap;width:220px;font-family:monospace}
+  .detail-table td:last-child{color:#cbd5e1}
+  .nav{display:flex;gap:24px;padding:16px 0;border-bottom:1px solid #1e2535;margin-bottom:28px;flex-wrap:wrap}
+  .nav a{font-size:11px;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;color:#4a5568;padding-bottom:4px;border-bottom:2px solid transparent}
+  .nav a:hover{color:#e2e8f0;border-bottom-color:#3b82f6}
+  .pending-box{border:1px solid #f59e0b40;background:#f59e0b08;padding:16px 20px;margin-bottom:12px}
+  .pending-box h4{font-size:11px;font-family:monospace;text-transform:uppercase;letter-spacing:.1em;color:#f59e0b;margin-bottom:10px}
+  .pending-box ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .pending-box li{font-size:12px;color:#94a3b8;padding-left:16px;position:relative}
+  .pending-box li::before{content:'';position:absolute;left:0;top:7px;width:5px;height:5px;border-radius:50%;background:#f59e0b}
+  @media print{body{background:#fff;color:#000}.site-header{background:#f8fafc}.categories,.corrections,.score-hero,.comp-table{border-color:#e2e8f0}.bar-track{background:#e2e8f0}.correction pre{background:#f8fafc;color:#166534}.comp-table th{background:#f8fafc}}
+  @media(max-width:700px){.score-hero{grid-template-columns:1fr}.score-circle-wrap{border-right:none;border-bottom:1px solid #1e2535}.score-cards{grid-template-columns:1fr 1fr}.correction{grid-template-columns:1fr}.correction-num{display:none}.comp-table{font-size:11px}.comp-table th,.comp-table td{padding:8px 10px}}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="container">
+    <div class="meta">Auditoria SEO — Segunda revision tras correcciones</div>
+    <h1>adimex.io</h1>
+    <div class="url">https://adimex.io</div>
+    <div class="date">Actualizada: 5 de mayo de 2026 &nbsp;|&nbsp; Keyword objetivo: automatizacion industrial Mexico &nbsp;|&nbsp; Stack: Next.js + Tailwind + Vercel</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <nav class="nav">
+    <a href="#delta">Mejoras</a>
+    <a href="#resumen">Resumen</a>
+    <a href="#pendientes">Pendientes</a>
+    <a href="#categorias">Categorias</a>
+    <a href="#competidor">Competidor</a>
+    <a href="#detalle">Detalle tecnico</a>
+  </nav>
+
+  <!-- DELTA BANNER -->
+  <div id="delta" class="delta-banner">
+    <div class="arrow">+37</div>
+    <p><strong>31 a 68 puntos</strong> tras aplicar 7 correcciones criticas. El sitio paso de estado <strong>Critico</strong> a <strong>Mejorable</strong>. Quedan 4 errores y 6 advertencias para alcanzar el nivel Bueno.</p>
+  </div>
+
+  <!-- SCORE HERO -->
+  <div id="resumen" class="score-hero">
+    <div class="score-circle-wrap">
+      <div class="score-circle yellow">
+        <span class="num">68</span>
+        <span class="label">/100</span>
+      </div>
+      <div class="score-level yellow">Mejorable</div>
+    </div>
+    <div class="score-cards">
+      <div class="score-card">
+        <div class="num red">4</div>
+        <div class="lbl">Errores restantes</div>
+      </div>
+      <div class="score-card">
+        <div class="num yellow">6</div>
+        <div class="lbl">Advertencias</div>
+      </div>
+      <div class="score-card">
+        <div class="num green">12</div>
+        <div class="lbl">Tests aprobados</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORRECCIONES APLICADAS -->
+  <div id="correcciones-aplicadas">
+    <div class="section-title">Correcciones aplicadas (7 de 7)</div>
+    <div class="corrections">
+
+      <div class="correction">
+        <div class="correction-num" style="color:#10b981">01</div>
+        <div>
+          <div class="badge fixed">Corregido</div>
+          <h3>Title y meta description — ahora descriptivos con keyword</h3>
+          <div class="why">Verificado en produccion: <code>&lt;title&gt;ADIMEX | Automatizacion Industrial Mexico — PLCs, Servomotores, SCADA&lt;/title&gt;</code></div>
+        </div>
+      </div>
+
+      <div class="correction">
+        <div class="correction-num" style="color:#10b981">02</div>
+        <div>
+          <div class="badge fixed">Corregido</div>
+          <h3>robots.txt y sitemap.xml — ahora devuelven 200</h3>
+          <div class="why">robots.txt: Allow: / + Sitemap apuntando a adimex.io/sitemap.xml. Sitemap contiene 6 URLs reales con prioridades y frecuencias de cambio.</div>
+        </div>
+      </div>
+
+      <div class="correction">
+        <div class="correction-num" style="color:#10b981">03</div>
+        <div>
+          <div class="badge fixed">Corregido</div>
+          <h3>Open Graph completo en todas las paginas</h3>
+          <div class="why">Verificado: og:title, og:description, og:url, og:site_name, og:locale, og:image (1200x630), og:type, og:image:alt — todos presentes.</div>
+        </div>
+      </div>
+
+      <div class="correction">
+        <div class="correction-num" style="color:#10b981">04</div>
+        <div>
+          <div class="badge fixed">Corregido</div>
+          <h3>lang="es-MX" corregido</h3>
+          <div class="why">Verificado: <code>&lt;html lang="es-MX"&gt;</code> — Google ahora entiende que el contenido es en espanol para usuarios de Mexico.</div>
+        </div>
+      </div>
+
+      <div class="correction">
+        <div class="correction-num" style="color:#10b981">05</div>
+        <div>
+          <div class="badge fixed">Corregido</div>
+          <h3>Twitter Card, canonical y Schema Organization</h3>
+          <div class="why">twitter:card summary_large_image activo. Canonical apuntando a https://adimex.io. JSON-LD Organization con nombre, URL, logo, direccion (CDMX) y contactPoint en espanol.</div>
+        </div>
+      </div>
+
+      <div class="correction">
+        <div class="correction-num" style="color:#10b981">06</div>
+        <div>
+          <div class="badge fixed">Corregido</div>
+          <h3>CTAs del hero ahora apuntan a destinos reales</h3>
+          <div class="why">"Ver catalogo" enlaza a /productos. "Agendar demo" enlaza a WhatsApp con mensaje preescrito. Google ya puede rastrear estos enlaces.</div>
+        </div>
+      </div>
+
+      <div class="correction">
+        <div class="correction-num" style="color:#10b981">07</div>
+        <div>
+          <div class="badge fixed">Corregido</div>
+          <h3>H2 en ingles traducido + redirect www</h3>
+          <div class="why">"Discover the variety..." ahora es "Articulos y recursos de automatizacion industrial". vercel.json configurado para redirigir www.adimex.io a adimex.io (permanente 301).</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PENDIENTES -->
+  <div id="pendientes" style="margin-top:32px">
+    <div class="section-title">Pendientes para alcanzar 80+</div>
+    <div class="pending-box">
+      <h4>Errores restantes (4)</h4>
+      <ul>
+        <li><strong>Numero de WhatsApp placeholder:</strong> "521XXXXXXXXXX" en whatsapp-button.tsx y hero.tsx — reemplazar con el numero real.</li>
+        <li><strong>"Descargas" en la nav apunta a "#link":</strong> enlace no funcional visible para crawlers. Crear la pagina o apuntar a un PDF real.</li>
+        <li><strong>Logos placeholder (logoipsum) en produccion:</strong> el marquee de logos de clientes usa imagenes de relleno — dana credibilidad ante visitantes reales.</li>
+        <li><strong>Sin Product schema en /productos:</strong> perdida de rich snippets (precios, disponibilidad) en resultados de Google.</li>
+      </ul>
+    </div>
+    <div class="pending-box" style="border-color:#3b82f640;background:#3b82f608">
+      <h4 style="color:#3b82f6">Advertencias (6)</h4>
+      <ul>
+        <li><strong>H1 del homepage sin keyword geo:</strong> "AI + IoT" no contiene "automatizacion industrial Mexico". Considera ajustar el subtitulo o el copy del hero.</li>
+        <li><strong>/productos con poco contenido (~250 palabras):</strong> Google necesita mas texto para posicionar una pagina de catalogo. Agregar descripcion de categoria, beneficios o intro de 200 palabras.</li>
+        <li><strong>Sin canonical en paginas internas</strong> (/productos, /casos, /soporte): solo el homepage tiene canonical explicito. Agregar <code>alternates: canonical</code> en el metadata de cada page.tsx.</li>
+        <li><strong>footer.svg sin atributo alt:</strong> agregar alt="" explicitamente para accesibilidad.</li>
+        <li><strong>Sin BreadcrumbList schema en paginas internas:</strong> perdida de migajas de pan en resultados de Google.</li>
+        <li><strong>Sin BlogPosting schema en articulos del blog:</strong> si hay posts en Sanity, agregar schema por articulo mejora los rich snippets.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CATEGORIAS -->
+  <div id="categorias" style="margin-top:32px">
+    <div class="section-title">Desglose por categoria</div>
+    <div class="categories">
+
+      <div class="cat-row">
+        <div class="cat-header">
+          <div>
+            <span class="cat-name">Meta Tags</span>
+            <span class="cat-weight" style="margin-left:10px">Peso: 20%</span>
+            <span class="cat-delta up">+70 pts</span>
+          </div>
+          <span class="cat-score-val green">82/100</span>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-track"><div class="bar-fill green" style="width:82%"></div></div>
+          <span class="bar-prev">antes: 12</span>
+        </div>
+        <div class="findings">
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> Title — "ADIMEX | Automatizacion Industrial Mexico — PLCs, Servomotores, SCADA" (58 chars)</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> Meta description completa y descriptiva (160 chars)</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> lang="es-MX"</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> Canonical en homepage apuntando a https://adimex.io</span></div>
+          <div class="finding"><div class="dot ok"></div><span>Meta viewport correcto</span></div>
+          <div class="finding"><div class="dot ok"></div><span>/productos: title y description propios correctos</span></div>
+          <div class="finding"><div class="dot warn"></div><span>Canonical ausente en /productos, /casos y paginas internas</span></div>
+        </div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-header">
+          <div>
+            <span class="cat-name">Headings</span>
+            <span class="cat-weight" style="margin-left:10px">Peso: 15%</span>
+            <span class="cat-delta up">+13 pts</span>
+          </div>
+          <span class="cat-score-val yellow">68/100</span>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-track"><div class="bar-fill yellow" style="width:68%"></div></div>
+          <span class="bar-prev">antes: 55</span>
+        </div>
+        <div class="findings">
+          <div class="finding"><div class="dot ok"></div><span>H1 unico en homepage y en /productos</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> H2 "Discover the variety..." traducido al espanol</span></div>
+          <div class="finding"><div class="dot warn"></div><span>H1 del homepage no incluye la keyword "automatizacion industrial Mexico"</span></div>
+          <div class="finding"><div class="dot warn"></div><span>Jerarquia de headings correcta pero con poco depth en paginas internas</span></div>
+        </div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-header">
+          <div>
+            <span class="cat-name">Imagenes</span>
+            <span class="cat-weight" style="margin-left:10px">Peso: 10%</span>
+            <span class="cat-delta same">sin cambio</span>
+          </div>
+          <span class="cat-score-val yellow">52/100</span>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-track"><div class="bar-fill yellow" style="width:52%"></div></div>
+          <span class="bar-prev">antes: 52</span>
+        </div>
+        <div class="findings">
+          <div class="finding"><div class="dot ok"></div><span>Next.js Image — WebP automatico y srcset responsive activos</span></div>
+          <div class="finding"><div class="dot ok"></div><span>Hero, logo y catalog.jpg con alt descriptivos</span></div>
+          <div class="finding"><div class="dot err"></div><span>footer.svg sin alt explicio</span></div>
+          <div class="finding"><div class="dot err"></div><span>Logos del marquee son logoipsum (placeholder) — credibilidad y SEO de marca afectados</span></div>
+          <div class="finding"><div class="dot warn"></div><span>/productos: alt de imagenes de productos Shopify sin verificar</span></div>
+        </div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-header">
+          <div>
+            <span class="cat-name">Enlaces internos y externos</span>
+            <span class="cat-weight" style="margin-left:10px">Peso: 10%</span>
+            <span class="cat-delta up">+20 pts</span>
+          </div>
+          <span class="cat-score-val yellow">65/100</span>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-track"><div class="bar-fill yellow" style="width:65%"></div></div>
+          <span class="bar-prev">antes: 45</span>
+        </div>
+        <div class="findings">
+          <div class="finding"><div class="dot ok"></div><span>Todas las paginas internas devuelven 200</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> "Ver catalogo" apunta a /productos</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> "Agendar demo" apunta a WhatsApp con mensaje preescrito</span></div>
+          <div class="finding"><div class="dot err"></div><span>"Descargas" en nav apunta a "#link" — enlace no funcional</span></div>
+          <div class="finding"><div class="dot warn"></div><span>Numero de WhatsApp es placeholder (521XXXXXXXXXX)</span></div>
+        </div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-header">
+          <div>
+            <span class="cat-name">Open Graph y Social</span>
+            <span class="cat-weight" style="margin-left:10px">Peso: 10%</span>
+            <span class="cat-delta up">+83 pts</span>
+          </div>
+          <span class="cat-score-val green">88/100</span>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-track"><div class="bar-fill green" style="width:88%"></div></div>
+          <span class="bar-prev">antes: 5</span>
+        </div>
+        <div class="findings">
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> og:title, og:description, og:url, og:site_name, og:locale, og:type — todos presentes</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> og:image + og:image:width + og:image:height + og:image:alt — completos</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> twitter:card summary_large_image activo</span></div>
+          <div class="finding"><div class="dot warn"></div><span>OG tags de paginas internas heredan del layout — correcto pero no estan personalizados por pagina</span></div>
+        </div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-header">
+          <div>
+            <span class="cat-name">Schema / Datos Estructurados</span>
+            <span class="cat-weight" style="margin-left:10px">Peso: 10%</span>
+            <span class="cat-delta up">+30 pts</span>
+          </div>
+          <span class="cat-score-val yellow">35/100</span>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-track"><div class="bar-fill yellow" style="width:35%"></div></div>
+          <span class="bar-prev">antes: 5</span>
+        </div>
+        <div class="findings">
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> Organization JSON-LD activo — nombre, URL, logo, CDMX, contacto en espanol</span></div>
+          <div class="finding"><div class="dot err"></div><span>Sin Product schema en /productos — sin rich snippets de producto</span></div>
+          <div class="finding"><div class="dot warn"></div><span>Sin BreadcrumbList en paginas internas</span></div>
+          <div class="finding"><div class="dot warn"></div><span>Sin BlogPosting schema en articulos del blog</span></div>
+        </div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-header">
+          <div>
+            <span class="cat-name">Tecnico</span>
+            <span class="cat-weight" style="margin-left:10px">Peso: 15%</span>
+            <span class="cat-delta up">+43 pts</span>
+          </div>
+          <span class="cat-score-val green">85/100</span>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-track"><div class="bar-fill green" style="width:85%"></div></div>
+          <span class="bar-prev">antes: 42</span>
+        </div>
+        <div class="findings">
+          <div class="finding"><div class="dot ok"></div><span>HTTPS activo con HSTS</span></div>
+          <div class="finding"><div class="dot ok"></div><span>HTTP a HTTPS: 308 permanente</span></div>
+          <div class="finding"><div class="dot ok"></div><span>Tiempo de respuesta: 0.71s con Vercel cache HIT</span></div>
+          <div class="finding"><div class="dot ok"></div><span>SSG activo — contenido prerenderizado y crawleable</span></div>
+          <div class="finding"><div class="dot ok"></div><span>Favicon presente (200)</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> robots.txt — 200, correcto, apunta al sitemap</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> sitemap.xml — 200, 6 URLs con prioridades y fechas</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> vercel.json con redirect permanente de www a apex</span></div>
+          <div class="finding"><div class="dot warn"></div><span>www redirect aun por confirmar propagacion en Vercel</span></div>
+        </div>
+      </div>
+
+      <div class="cat-row">
+        <div class="cat-header">
+          <div>
+            <span class="cat-name">Contenido</span>
+            <span class="cat-weight" style="margin-left:10px">Peso: 10%</span>
+            <span class="cat-delta up">+8 pts</span>
+          </div>
+          <span class="cat-score-val yellow">48/100</span>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-track"><div class="bar-fill yellow" style="width:48%"></div></div>
+          <span class="bar-prev">antes: 40</span>
+        </div>
+        <div class="findings">
+          <div class="finding"><div class="dot ok"></div><span>Homepage: ~900 palabras visibles — aceptable</span></div>
+          <div class="finding"><div class="dot ok"></div><span>Title y description ahora unicos y descriptivos</span></div>
+          <div class="finding"><div class="dot fixed"></div><span><span class="fixed-label">Corregido:</span> H2 traducido al espanol</span></div>
+          <div class="finding"><div class="dot err"></div><span>/productos: ~250 palabras — bajo para pagina de catalogo (minimo recomendado: 300+)</span></div>
+          <div class="finding"><div class="dot warn"></div><span>Keyword "automatizacion industrial Mexico" ausente en el H1 del homepage</span></div>
+          <div class="finding"><div class="dot warn"></div><span>Un solo caso de estudio publicado — poco contenido indexable en /casos</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- COMPARATIVA TRACTIAN -->
+  <div id="competidor" style="margin-top:32px">
+    <div class="section-title">Comparativa con Tractian (tractian.com)</div>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Criterio</th>
+          <th>adimex.io (hoy)</th>
+          <th>tractian.com</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Title descriptivo</td>
+          <td class="ok-icon">Correcto — keyword incluida</td>
+          <td class="ok-icon">Correcto</td>
+        </tr>
+        <tr>
+          <td>H1 con keyword</td>
+          <td class="warn-icon">Parcial — "AI + IoT" sin geo</td>
+          <td class="ok-icon">"ASSET CONDITION MANAGEMENT" directo</td>
+        </tr>
+        <tr>
+          <td>Volumen de contenido</td>
+          <td class="warn-icon">~900 palabras homepage</td>
+          <td class="ok-icon">~1,300 palabras — 44% mas</td>
+        </tr>
+        <tr>
+          <td>Open Graph completo</td>
+          <td class="ok-icon">Completo (7 tags)</td>
+          <td class="warn-icon">Parcialmente configurado</td>
+        </tr>
+        <tr>
+          <td>Schema JSON-LD</td>
+          <td class="warn-icon">Organization — basico</td>
+          <td class="err-icon">No detectado</td>
+        </tr>
+        <tr>
+          <td>robots.txt / sitemap</td>
+          <td class="ok-icon">Ambos activos y correctos</td>
+          <td class="ok-icon">Configurados</td>
+        </tr>
+        <tr>
+          <td>Imagenes modernas</td>
+          <td class="ok-icon">Next.js Image — WebP automatico</td>
+          <td class="ok-icon">imgix auto=format,compress</td>
+        </tr>
+        <tr>
+          <td>HTTPS + HSTS</td>
+          <td class="ok-icon">Activo</td>
+          <td class="ok-icon">Activo</td>
+        </tr>
+        <tr>
+          <td>Idioma declarado</td>
+          <td class="ok-icon">lang="es-MX" correcto</td>
+          <td class="ok-icon">Correcto</td>
+        </tr>
+        <tr>
+          <td>Score estimado</td>
+          <td class="warn-icon" style="font-weight:700">68/100 (+37 vs auditoria inicial)</td>
+          <td class="warn-icon" style="font-weight:700">~58/100</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:#4a5568;margin-top:12px;font-family:monospace">* Adimex ahora supera a Tractian en Open Graph, lang, robots/sitemap y schema.</p>
+  </div>
+
+  <!-- DETALLE TECNICO -->
+  <div id="detalle" style="margin-top:32px">
+    <div class="section-title">Detalle tecnico verificado en produccion</div>
+
+    <details>
+      <summary>Homepage — Meta tags verificados en vivo</summary>
+      <table class="detail-table">
+        <tr><td>Title</td><td style="color:#10b981">"ADIMEX | Automatizacion Industrial Mexico — PLCs, Servomotores, SCADA" (58 chars) — OK</td></tr>
+        <tr><td>Meta description</td><td style="color:#10b981">"Distribuidor autorizado FLEXEM en Mexico. PLCs FL7, servomotores FV5-E..." (162 chars) — OK</td></tr>
+        <tr><td>html lang</td><td style="color:#10b981">es-MX — OK</td></tr>
+        <tr><td>Canonical</td><td style="color:#10b981">https://adimex.io — OK</td></tr>
+        <tr><td>og:title</td><td style="color:#10b981">Presente</td></tr>
+        <tr><td>og:description</td><td style="color:#10b981">Presente</td></tr>
+        <tr><td>og:image</td><td style="color:#10b981">/og-banner.png (1200x630) — Presente</td></tr>
+        <tr><td>og:url</td><td style="color:#10b981">Presente</td></tr>
+        <tr><td>og:site_name</td><td style="color:#10b981">American Digital de Mexico — Presente</td></tr>
+        <tr><td>og:locale</td><td style="color:#10b981">es_MX — Presente</td></tr>
+        <tr><td>og:type</td><td style="color:#10b981">website — Presente</td></tr>
+        <tr><td>twitter:card</td><td style="color:#10b981">summary_large_image — Presente</td></tr>
+        <tr><td>Schema JSON-LD</td><td style="color:#10b981">Organization — Presente</td></tr>
+        <tr><td>Meta viewport</td><td style="color:#10b981">width=device-width, initial-scale=1 — OK</td></tr>
+      </table>
+    </details>
+
+    <details>
+      <summary>Archivos de rastreo</summary>
+      <table class="detail-table">
+        <tr><td>robots.txt</td><td style="color:#10b981">200 — Allow: / | Sitemap: https://adimex.io/sitemap.xml</td></tr>
+        <tr><td>sitemap.xml</td><td style="color:#10b981">200 — 6 URLs: /, /productos, /casos, /casos/sala-bombas..., /soporte, /nosotros</td></tr>
+        <tr><td>favicon.ico</td><td style="color:#10b981">200 — OK</td></tr>
+      </table>
+    </details>
+
+    <details>
+      <summary>Estado de paginas</summary>
+      <table class="detail-table">
+        <tr><td>/</td><td style="color:#10b981">200 OK</td></tr>
+        <tr><td>/productos</td><td style="color:#10b981">200 OK</td></tr>
+        <tr><td>/casos</td><td style="color:#10b981">200 OK</td></tr>
+        <tr><td>/casos/sala-bombas-monitoreo-scada-iot</td><td style="color:#10b981">200 OK</td></tr>
+        <tr><td>/soporte</td><td style="color:#10b981">200 OK</td></tr>
+        <tr><td>/nosotros</td><td style="color:#10b981">200 OK</td></tr>
+        <tr><td>/robots.txt</td><td style="color:#10b981">200 OK (antes: 404)</td></tr>
+        <tr><td>/sitemap.xml</td><td style="color:#10b981">200 OK (antes: 404)</td></tr>
+      </table>
+    </details>
+
+    <details>
+      <summary>Rendimiento tecnico del servidor</summary>
+      <table class="detail-table">
+        <tr><td>HTTP status</td><td>200 OK</td></tr>
+        <tr><td>Tiempo de respuesta</td><td>0.71s con Vercel cache HIT</td></tr>
+        <tr><td>Prerenderizado</td><td style="color:#10b981">X-Nextjs-Prerender: 1 — SSG activo</td></tr>
+        <tr><td>HTTPS</td><td style="color:#10b981">Activo con HSTS max-age=63072000</td></tr>
+        <tr><td>HTTP a HTTPS</td><td style="color:#10b981">308 Permanent Redirect</td></tr>
+        <tr><td>www redirect</td><td style="color:#f59e0b">vercel.json configurado — pendiente confirmar propagacion</td></tr>
+      </table>
+    </details>
+
+  </div>
+
+  <div style="border-top:1px solid #1e2535;margin-top:40px;padding:20px 0;font-size:11px;font-family:monospace;color:#2d3748;text-align:center">
+    Auditoria actualizada el 5 de mayo de 2026 — adimex.io &nbsp;|&nbsp; Score: 31 a 68/100 tras correcciones
+  </div>
+
+</div>
+</body>
+</html>

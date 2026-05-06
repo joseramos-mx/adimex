@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_MX",
     url: "https://adimex.io",
-    siteName: "ADIMEX",
+    siteName: "American Digital de México",
     title: "ADIMEX | Automatización Industrial México",
     description:
       "Distribuidor autorizado FLEXEM en México. PLCs, servomotores, HMI, SCADA e IoT para automatización industrial de precisión.",
