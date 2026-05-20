@@ -3,6 +3,7 @@ import { Hero } from "@/components/hero";
 import LogoMarquee from "@/components/logo-marquee";
 import Articles from "@/components/articles";
 import Catalog from "@/components/catalog";
+import AvailableProducts from "@/components/available-products";
 import MexicoMap from "@/components/mexico-map";
 import Testimonial from "@/components/testimonial";
 import CTA from "@/components/cta";
@@ -18,6 +19,7 @@ export default function Home() {
       <LogoMarquee/>
       <Articles/>
       <Catalog/>
+      <AvailableProducts />
       <Testimonial />
       <MexicoMap />
       <CTA />

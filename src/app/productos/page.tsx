@@ -39,6 +39,11 @@ export default async function ProductosPage({ searchParams }: PageProps) {
 
   const pageTitle = category ? categoryMeta[category].label : "Todos los productos"
 
+  // Split into "available to buy" vs "reference catalog"
+  const hasFilter = Boolean(category || subcategory)
+  const availableProducts = filteredProducts.filter((p) => p.shopifyHandle)
+  const referenceProducts = filteredProducts.filter((p) => !p.shopifyHandle)
+
   return (
     <div className="flex flex-col min-h-screen bg-white" style={{ fontFamily: "var(--font-geist-sans)" }}>
       <Header />
@@ -78,15 +83,6 @@ export default async function ProductosPage({ searchParams }: PageProps) {
           {/* Product grid */}
           <div className="flex-1 min-w-0">
 
-            {/* Results bar */}
-            <div className="flex items-center justify-between mb-6 pb-3 border-b border-black/5">
-              <p className="text-xs text-gray-400 font-mono">
-                {filteredProducts.length} producto{filteredProducts.length !== 1 ? "s" : ""}
-                {category ? ` · ${categoryMeta[category].label}` : ""}
-                {subcategory ? ` · ${subcategory}` : ""}
-              </p>
-            </div>
-
             {filteredProducts.length === 0 ? (
               <div className="py-20 text-center">
                 <p className="text-sm text-gray-400">No se encontraron productos con estos filtros.</p>
@@ -95,44 +91,135 @@ export default async function ProductosPage({ searchParams }: PageProps) {
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                {filteredProducts.map((product) => (
-                  <Link
-                    key={product.slug}
-                    href={`/productos/${product.slug}`}
-                    className="group flex flex-col border border-black/8 hover:border-[#017bfd]/40 hover:shadow-sm transition-all duration-200 bg-white"
-                  >
-                    {/* Image */}
-                    <div className="relative aspect-video overflow-hidden bg-gray-100">
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                      />
-                      <div className="absolute inset-0 bg-linear-to-t from-black/15 to-transparent" />
-                      <span className="absolute top-2 left-2 text-[9px] tracking-widest uppercase text-[#017bfd] bg-white border border-[#017bfd]/20 px-2 py-0.5 font-mono">
-                        {product.subcategory}
-                      </span>
+              <>
+                {/* ── DISPONIBLES AHORA — featured ──────────────────────────── */}
+                {availableProducts.length > 0 && (
+                  <section className="mb-14">
+                    <div className="flex items-end justify-between mb-5 pb-3 border-b border-[#017bfd]/20">
+                      <div>
+                        <p className="text-[10px] tracking-widest text-[#017bfd] uppercase font-mono mb-1">
+                          Disponibles ahora
+                        </p>
+                        <h2 className="text-lg font-semibold text-[#07080c]">
+                          Listos para envío en México
+                        </h2>
+                      </div>
+                      <p className="text-[11px] text-gray-400 font-mono">
+                        {availableProducts.length} producto{availableProducts.length !== 1 ? "s" : ""}
+                      </p>
                     </div>
 
-                    {/* Content */}
-                    <div className="flex flex-col flex-1 p-4 gap-2">
-                      <h3 className="text-sm font-semibold text-[#07080c] group-hover:text-[#017bfd] transition-colors leading-snug">
-                        {product.name}
-                      </h3>
-                      <p className="text-[11px] text-gray-500 leading-relaxed line-clamp-2 flex-1">
-                        {product.tagline}
-                      </p>
-                      <div className="flex items-center gap-1 text-[11px] text-[#017bfd] font-mono mt-1">
-                        <span>Ver producto</span>
-                        <ArrowRight size={11} className="group-hover:translate-x-1 transition-transform" />
-                      </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                      {availableProducts.map((product) => (
+                        <Link
+                          key={product.slug}
+                          href={`/productos/${product.slug}`}
+                          className="group flex flex-col border-2 border-[#017bfd]/15 hover:border-[#017bfd] hover:shadow-md transition-all duration-200 bg-white"
+                        >
+                          <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              fill
+                              className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            />
+                            <span className="absolute top-3 left-3 text-[9px] tracking-widest uppercase text-[#017bfd] bg-white border border-[#017bfd]/30 px-2 py-0.5 font-mono">
+                              {product.subcategory}
+                            </span>
+                            <span className="absolute top-3 right-3 flex items-center gap-1 text-[9px] tracking-widest uppercase text-white bg-[#017bfd] px-2 py-0.5 font-mono">
+                              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                              Disponible
+                            </span>
+                          </div>
+
+                          <div className="flex flex-col flex-1 p-5 gap-2">
+                            <h3 className="text-base font-semibold text-[#07080c] group-hover:text-[#017bfd] transition-colors leading-snug">
+                              {product.name}
+                            </h3>
+                            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
+                              {product.tagline}
+                            </p>
+                            <div className="flex items-center justify-between mt-2 pt-3 border-t border-black/5">
+                              <span className="text-xs text-[#017bfd] font-medium">Comprar</span>
+                              <ArrowRight size={13} className="text-[#017bfd] group-hover:translate-x-1 transition-transform" />
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
-                  </Link>
-                ))}
-              </div>
+                  </section>
+                )}
+
+                {/* ── CATÁLOGO DE REFERENCIA — informational ──────────────────── */}
+                {referenceProducts.length > 0 && (
+                  <section>
+                    <div className="flex items-end justify-between mb-5 pb-3 border-b border-black/10">
+                      <div>
+                        <p className="text-[10px] tracking-widest text-gray-400 uppercase font-mono mb-1">
+                          {hasFilter ? "Catálogo" : "Catálogo de referencia"}
+                        </p>
+                        <h2 className="text-lg font-semibold text-[#07080c]/70">
+                          {hasFilter
+                            ? `${pageTitle}`
+                            : "Productos FLEXEM disponibles bajo pedido"}
+                        </h2>
+                        {!hasFilter && (
+                          <p className="mt-2 text-xs text-gray-500 max-w-md leading-relaxed">
+                            Documentación técnica completa. Para cotizar y solicitar disponibilidad,
+                            <Link href="/soporte" className="text-[#017bfd] hover:underline ml-1">contáctanos</Link>.
+                          </p>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-gray-400 font-mono shrink-0">
+                        {referenceProducts.length} producto{referenceProducts.length !== 1 ? "s" : ""}
+                        {category ? ` · ${categoryMeta[category].label}` : ""}
+                        {subcategory ? ` · ${subcategory}` : ""}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                      {referenceProducts.map((product) => (
+                        <Link
+                          key={product.slug}
+                          href={`/productos/${product.slug}`}
+                          className="group flex flex-col border border-black/8 hover:border-[#017bfd]/40 hover:shadow-sm transition-all duration-200 bg-white opacity-90 hover:opacity-100"
+                        >
+                          <div className="relative aspect-video overflow-hidden bg-gray-100">
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              fill
+                              className="object-cover object-center group-hover:scale-105 transition-transform duration-500 grayscale-[40%] group-hover:grayscale-0"
+                              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                            />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/15 to-transparent" />
+                            <span className="absolute top-2 left-2 text-[9px] tracking-widest uppercase text-gray-600 bg-white border border-black/10 px-2 py-0.5 font-mono">
+                              {product.subcategory}
+                            </span>
+                            <span className="absolute top-2 right-2 text-[9px] tracking-widest uppercase text-gray-500 bg-white/90 border border-black/10 px-2 py-0.5 font-mono">
+                              Bajo pedido
+                            </span>
+                          </div>
+
+                          <div className="flex flex-col flex-1 p-4 gap-2">
+                            <h3 className="text-sm font-semibold text-[#07080c] group-hover:text-[#017bfd] transition-colors leading-snug">
+                              {product.name}
+                            </h3>
+                            <p className="text-[11px] text-gray-500 leading-relaxed line-clamp-2 flex-1">
+                              {product.tagline}
+                            </p>
+                            <div className="flex items-center gap-1 text-[11px] text-gray-400 font-mono mt-1">
+                              <span>Ver ficha técnica</span>
+                              <ArrowRight size={11} className="group-hover:translate-x-1 transition-transform" />
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
+                )}
+              </>
             )}
           </div>
         </div>

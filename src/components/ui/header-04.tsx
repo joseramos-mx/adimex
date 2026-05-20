@@ -21,16 +21,13 @@ import { useAuth } from "@/context/auth-context"
 // ─── Dropdown data ─────────────────────────────────────────────────────────────
 
 const productosDropdown = {
-  label: "Todos los Productos",
-  tagline: "La solución completa para automatización industrial avanzada.",
-  viewAll: { label: "Ver todos los productos", href: "/productos" },
+  label: "Disponibles en tienda",
+  tagline: "Equipo listo para envío en México — los primeros tres productos de la tienda en línea.",
+  viewAll: { label: "Ver catálogo completo", href: "/productos" },
   items: [
-    { icon: Zap,       name: "Servomotores FV5-E",       desc: "Alta precisión y respuesta dinámica",  href: "/productos/servo-fv5-e" },
-    { icon: Settings2, name: "Servomotores FV5-U3",      desc: "Control de movimiento versátil",        href: "/productos/servo-fv5-u3" },
-    { icon: Cpu,       name: "PLCs FL8",                 desc: "EtherCAT, hasta 32 ejes",               href: "/productos/plc-fl8" },
-    { icon: Cpu,       name: "PLCs FL7",                 desc: "Control lógico programable avanzado",   href: "/productos/plc-fl7" },
-    { icon: Monitor,   name: "HMI FE6300",               desc: "Interfaces táctiles IoT robustas",      href: "/productos/hmi-fe6300" },
-    { icon: BarChart3, name: "FlexSCADA",                desc: "Visibilidad en tiempo real",             href: "/productos/scada-flexscada" },
+    { icon: Monitor, name: "HMI F007N",  desc: "Capacitiva 7\" HD multi-touch",            href: "/productos/hmi-f007n", badge: "Comprar" },
+    { icon: Monitor, name: "HMI F110",   desc: "Capacitiva 10.1\" con IoT y Bluetooth",   href: "/productos/hmi-f110",  badge: "Comprar" },
+    { icon: Cpu,     name: "PLC FL7",    desc: "CODESYS, hasta 32 ejes de movimiento",    href: "/productos/plc-fl7",   badge: "Comprar" },
   ],
 }
 
@@ -75,19 +72,24 @@ const menuItems = [
 function ProductosPanel() {
   return (
     <div className="flex flex-col" style={{ fontFamily: "var(--font-geist-sans)" }}>
-      <div className="grid grid-cols-[220px_1fr] divide-x divide-white/10">
+      <div className="grid grid-cols-[240px_1fr] divide-x divide-white/10">
         <div className="flex flex-col gap-3 p-8">
-          <p className="text-[10px] tracking-widest text-white/40 uppercase">{productosDropdown.label}</p>
-          <p className="text-sm font-medium text-white leading-snug max-w-[160px]">{productosDropdown.tagline}</p>
+          <p className="text-[10px] tracking-widest text-[#017bfd] uppercase font-mono">{productosDropdown.label}</p>
+          <p className="text-sm font-medium text-white leading-snug max-w-[180px]">{productosDropdown.tagline}</p>
         </div>
-        <div className="grid grid-cols-2 divide-x divide-white/10">
+        <div className="grid grid-cols-3 divide-x divide-white/10">
           {productosDropdown.items.map((item) => (
             <Link key={item.name} href={item.href}
-              className="flex items-start gap-3 p-5 border-b border-white/10 hover:bg-white/5 transition-colors group">
-              <item.icon size={16} className="text-[#017bfd] mt-0.5 shrink-0" />
+              className="flex flex-col gap-3 p-5 hover:bg-white/5 transition-colors group">
+              <div className="flex items-center justify-between">
+                <item.icon size={16} className="text-[#017bfd]" />
+                <span className="text-[9px] tracking-widest uppercase font-mono text-[#017bfd] border border-[#017bfd]/40 px-1.5 py-0.5">
+                  {item.badge}
+                </span>
+              </div>
               <div>
                 <p className="text-xs font-medium text-white group-hover:text-[#017bfd] transition-colors">{item.name}</p>
-                <p className="text-[11px] text-white/40 mt-0.5">{item.desc}</p>
+                <p className="text-[11px] text-white/40 mt-0.5 leading-relaxed">{item.desc}</p>
               </div>
             </Link>
           ))}

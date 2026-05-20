@@ -8,18 +8,18 @@ const SLIDE_DURATION = 5000
 
 const slides = [
   {
-    name: "AI + IoT",
-    image: "/iotaibg.png",
-    heading: ["Automatización industrial en México", "AI + IoT"],
-    description:
-      "Flexem AI+IoT logra una automatización totalmente integrada de software y hardware, rompe los silos de datos, optimiza los procesos de producción a través de algoritmos inteligentes, mejora significativamente la eficiencia y los beneficios, e impulsa actualizaciones inteligentes industriales.",
-  },
-  {
     name: "PLC FL7",
     image: "/bgfl7h.png",
     heading: ["Más preciso y más eficiente", "PLC de la", "serie FL7"],
     description:
       "El PLC de la serie FL7 está diseñado para aplicaciones complejas de automatización mecánica y control de movimiento multieje. Incorpora funciones integradas de entrada y salida de pulsos de alta velocidad, admite diversos algoritmos de interpolación y levas electrónicas, y puede controlar hasta 32 ejes simultáneamente.",
+  },
+  {
+    name: "AI + IoT",
+    image: "/iotaibg.png",
+    heading: ["Automatización industrial en México", "AI + IoT"],
+    description:
+      "Flexem AI+IoT logra una automatización totalmente integrada de software y hardware, rompe los silos de datos, optimiza los procesos de producción a través de algoritmos inteligentes, mejora significativamente la eficiencia y los beneficios, e impulsa actualizaciones inteligentes industriales.",
   },
   {
     name: "HMI Capacitiva",

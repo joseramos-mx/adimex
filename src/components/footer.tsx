@@ -2,42 +2,51 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
+import { useState } from "react"
+import { ArrowUpRight, Check } from "lucide-react"
 
 const nav = [
     {
-        heading: "PRODUCTOS",
+        heading: "Productos",
         links: [
-            { label: "Serie FV5-E", href: "#" },
-            { label: "Serie FS", href: "#" },
-            { label: "PLCs FL7", href: "#" },
-            { label: "Variadores de frecuencia", href: "#" },
-            { label: "HMI Industriales", href: "#" },
+            { label: "HMI F007N",              href: "/productos/hmi-f007n" },
+            { label: "HMI F110",               href: "/productos/hmi-f110" },
+            { label: "PLC FL7",                href: "/productos/plc-fl7" },
+            { label: "Ver catálogo completo",  href: "/productos" },
         ],
     },
     {
         heading: "Soluciones",
         links: [
-            { label: "FlexSCADA", href: "#" },
-            { label: "AI + IOT", href: "#" },
-            { label: "Sistemas de control", href: "#" },
-            { label: "Automatización de procesos", href: "#" },
+            { label: "FlexSCADA",        href: "/productos/scada-flexscada" },
+            { label: "Servomotores",     href: "/productos?category=servo" },
+            { label: "IoT Gateways",     href: "/productos?category=iot-gateway" },
+            { label: "Casos de estudio", href: "/casos" },
         ],
     },
     {
         heading: "Compañía",
         links: [
-            { label: "Sobre nosotros", href: "/nosotros" },
-            { label: "Contacto", href: "#" },
-            { label: "Documentación", href: "#" },
-            { label: "Política de privacidad", href: "#" },
+            { label: "Sobre nosotros",    href: "/nosotros" },
+            { label: "Soporte técnico",   href: "/soporte" },
+            { label: "Contactar ventas",  href: "/soporte" },
         ],
     },
 ]
 
 export default function Footer() {
+    const [email, setEmail] = useState("")
+    const [submitted, setSubmitted] = useState(false)
+
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault()
+        if (!email.includes("@")) return
+        setSubmitted(true)
+        setEmail("")
+    }
+
     return (
-        <footer className="w-full " style={{ fontFamily: "var(--font-geist-sans)" }}>
+        <footer className="w-full" style={{ fontFamily: "var(--font-geist-sans)" }}>
 
             {/* Top SVG divider */}
             <div className="w-full">
@@ -45,68 +54,74 @@ export default function Footer() {
             </div>
 
             {/* Main body */}
-            <div className=" bg-[#0066FF] w-full">
+            <div className="bg-[#0066FF] w-full">
 
                 <div className="bg-[#0066FF] max-w-6xl mx-auto px-6 pt-16 pb-14 flex flex-col lg:flex-row gap-16">
 
-                {/* Left — logo + tagline + newsletter */}
-                <div className="bg-[#0066FF] flex flex-col gap-8 lg:w-72 shrink-0">
-                    <div className="flex flex-col gap-5">
-                        <Image src="/logo.svg" alt="ADIMEX" width={110} height={25} className="h-6 w-auto self-start" />
-                        <p className="text-xl text-white/80 leading-relaxed max-w-xs">
-                            Soluciones de automatización industrial.
-                        </p>
-                    </div>
-
-                    {/* Newsletter */}
-                    <div className="flex flex-col gap-3">
-                        <p className="text-xs text-white/50 font-normal">Boletín de novedades</p>
-                        <form
-                            onSubmit={(e) => e.preventDefault()}
-                            className="flex border border-white"
-                        >
-                            <input
-                                type="email"
-                                placeholder="su@correo.com"
-                                className="flex-1 bg-transparent px-3 py-2.5 text-xs text-white placeholder-white/30 outline-none font-light"
-                            />
-                            <button
-                                type="submit"
-                                className="px-4 py-2.5 text-xs font-normal text-white border-l border-white hover:bg-white hover:text-[#0066FF] transition-colors"
-                            >
-                                Suscribir
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                {/* Right — bordered nav columns */}
-                <div className="bg-[#0066FF] flex-1 grid grid-cols-1 sm:grid-cols-3 border border-white/40 divide-y sm:divide-y-0 sm:divide-x divide-white/40">
-                    {nav.map((col) => (
-                        <div key={col.heading} className="p-8 flex flex-col gap-1">
-                            <p className="text-sm font-semibold text-white">
-                                {col.heading}
+                    {/* Left — logo + tagline + newsletter */}
+                    <div className="bg-[#0066FF] flex flex-col gap-8 lg:w-72 shrink-0">
+                        <div className="flex flex-col gap-5">
+                            <Link href="/" aria-label="ADIMEX — inicio">
+                                <Image src="/logo.svg" alt="ADIMEX" width={110} height={25} className="h-6 w-auto self-start" />
+                            </Link>
+                            <p className="text-xl text-white/80 leading-relaxed max-w-xs">
+                                Soluciones de automatización industrial.
                             </p>
-                            <ul className="flex flex-col gap-3.5 mt-4">
-                                {col.links.map((link) => (
-                                    <li key={link.label}>
-                                        <Link
-                                            href={link.href}
-                                            className="flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors font-light group"
-                                        >
-                                            <ArrowUpRight size={12} className="opacity-50 group-hover:opacity-100 transition-opacity" />
-                                            {link.label}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
                         </div>
-                    ))}
-                </div>
 
+                        {/* Newsletter */}
+                        <div className="flex flex-col gap-3">
+                            <p className="text-xs text-white/50 font-normal">Boletín de novedades</p>
+                            {submitted ? (
+                                <div className="flex items-center gap-2 border border-white px-3 py-2.5">
+                                    <Check size={14} className="text-white shrink-0" />
+                                    <p className="text-xs text-white">Gracias — te avisaremos pronto.</p>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="flex border border-white">
+                                    <input
+                                        type="email"
+                                        required
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="su@correo.com"
+                                        className="flex-1 bg-transparent px-3 py-2.5 text-xs text-white placeholder-white/30 outline-none font-light min-w-0"
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="px-4 py-2.5 text-xs font-normal text-white border-l border-white hover:bg-white hover:text-[#0066FF] transition-colors shrink-0"
+                                    >
+                                        Suscribir
+                                    </button>
+                                </form>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Right — bordered nav columns */}
+                    <div className="bg-[#0066FF] flex-1 grid grid-cols-1 sm:grid-cols-3 border border-white/40 divide-y sm:divide-y-0 sm:divide-x divide-white/40">
+                        {nav.map((col) => (
+                            <div key={col.heading} className="p-8 flex flex-col gap-1">
+                                <p className="text-sm font-semibold text-white">{col.heading}</p>
+                                <ul className="flex flex-col gap-3.5 mt-4">
+                                    {col.links.map((link) => (
+                                        <li key={link.label}>
+                                            <Link
+                                                href={link.href}
+                                                className="flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors font-light group"
+                                            >
+                                                <ArrowUpRight size={12} className="opacity-50 group-hover:opacity-100 transition-opacity" />
+                                                {link.label}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+
+                </div>
             </div>
-            </div>
-            
 
             {/* Bottom watermark + copyright */}
             <div className="bg-[#0066FF] relative">
