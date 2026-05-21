@@ -2,7 +2,7 @@
 
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { use, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import {
   ArrowLeft, Download, FileText, ChevronDown,
@@ -74,6 +74,19 @@ export default function SoporteProductPage({ params }: { params: Promise<{ slug:
   const related = soporteData.filter((s) => s.productSlug !== slug).slice(0, 3)
 
   const [activeTab, setActiveTab] = useState<"descargas" | "faqs" | "tutoriales">("descargas")
+
+  // Sync active tab with URL hash (#descargas, #faqs, #tutoriales)
+  useEffect(() => {
+    const sync = () => {
+      const hash = window.location.hash.slice(1)
+      if (hash === "descargas" || hash === "faqs" || hash === "tutoriales") {
+        setActiveTab(hash)
+      }
+    }
+    sync()
+    window.addEventListener("hashchange", sync)
+    return () => window.removeEventListener("hashchange", sync)
+  }, [])
 
   return (
     <div data-theme="light" className="flex flex-col min-h-screen bg-white" style={{ fontFamily: "var(--font-geist-sans)" }}>

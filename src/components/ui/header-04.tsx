@@ -7,7 +7,10 @@ import {
   Zap, Cpu, Activity, Monitor, BarChart3, Settings2,
   Car, Factory, Radio,
   ArrowUpRightIcon, PaletteIcon, ShoppingCart,
+  Download, HelpCircle, Package,
 } from "lucide-react"
+import { products } from "@/data/products"
+import { soporteData } from "@/data/soporte"
 import { cn } from "@/lib/utils"
 import { useScroll, motion, AnimatePresence } from "motion/react"
 import { Button } from "@/components/ui/button"
@@ -172,6 +175,43 @@ function CasosPanel() {
 
 // ─── Search command ────────────────────────────────────────────────────────────
 
+// Strip diacritics and lowercase: "Querétaro" → "queretaro"
+const norm = (s: string): string =>
+  s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+
+const STOP_WORDS = new Set([
+  "a", "al", "como", "con", "de", "del", "el", "en", "es", "la", "las", "le",
+  "les", "lo", "los", "me", "mi", "o", "para", "por", "que", "se", "su", "sus",
+  "te", "tu", "un", "una", "y",
+])
+
+const tokenize = (q: string): string[] =>
+  norm(q)
+    .split(/[\s,.()/-]+/)
+    .filter((t) => t.length >= 2 && !STOP_WORDS.has(t))
+
+// Token-AND filter: returns 1 if every meaningful token in `search` appears
+// somewhere in the item value (already normalized), else 0
+const tokenFilter = (value: string, search: string): number => {
+  const tokens = tokenize(search)
+  if (tokens.length === 0) return 1 // empty search: show everything
+  const haystack = norm(value)
+  return tokens.every((t) => haystack.includes(t)) ? 1 : 0
+}
+
+// Category icon for products
+const productIcon = (category: string) => {
+  switch (category) {
+    case "servo":       return Zap
+    case "plc":         return Cpu
+    case "hmi":         return Monitor
+    case "iot-gateway": return Radio
+    case "scada":       return BarChart3
+    case "cloud":       return Settings2
+    default:            return Package
+  }
+}
+
 function SearchCommand({ isDark, open, setOpen }: { isDark: boolean; open: boolean; setOpen: (v: boolean) => void }) {
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -180,6 +220,71 @@ function SearchCommand({ isDark, open, setOpen }: { isDark: boolean; open: boole
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
   }, [open, setOpen])
+
+  // Build all searchable items once
+  const productItems = React.useMemo(
+    () => products.map((p) => ({
+      slug:  p.slug,
+      label: p.name,
+      sub:   `${p.categoryLabel} · ${p.subcategory}`,
+      value: `${p.name} ${p.series} ${p.tagline} ${p.category} ${p.categoryLabel} ${p.subcategory} ${p.slug}`,
+      icon:  productIcon(p.category),
+      href:  `/productos/${p.slug}`,
+    })),
+    [],
+  )
+
+  type DownloadItem = {
+    key:   string
+    label: string
+    sub:   string
+    value: string
+    href:  string
+    external: boolean
+  }
+  const downloadItems: DownloadItem[] = React.useMemo(() => {
+    const out: DownloadItem[] = []
+    for (const item of soporteData) {
+      for (const d of item.downloads) {
+        const isReal = Boolean(d.href) && d.href !== "#"
+        out.push({
+          key:   `${item.productSlug}-${d.name}`,
+          label: d.name,
+          sub:   item.productName,
+          value: `${d.name} ${d.description} ${d.category} ${item.productName} ${item.category} ${item.productSlug}`,
+          href:  isReal ? d.href : `/soporte/${item.productSlug}#descargas`,
+          external: isReal,
+        })
+      }
+    }
+    return out
+  }, [])
+
+  const faqItems = React.useMemo(() => {
+    const out: { key: string; label: string; sub: string; value: string; href: string }[] = []
+    for (const item of soporteData) {
+      item.faqs.forEach((f, idx) => {
+        out.push({
+          key:   `${item.productSlug}-${idx}`,
+          label: f.question,
+          sub:   item.productName,
+          value: `${f.question} ${f.answer} ${item.productName} ${item.category}`,
+          href:  `/soporte/${item.productSlug}#faqs`,
+        })
+      })
+    }
+    return out
+  }, [])
+
+  const go = (href: string, external = false) => {
+    setOpen(false)
+    if (external) {
+      window.open(href, "_blank", "noopener,noreferrer")
+    } else {
+      window.location.href = href
+    }
+  }
+
   return (
     <>
       <button
@@ -196,21 +301,80 @@ function SearchCommand({ isDark, open, setOpen }: { isDark: boolean; open: boole
         <span>Buscar</span>
         <kbd className={cn("ml-1 text-[10px] px-1.5 py-0.5", isDark ? "bg-white/10" : "bg-black/8")}>Ctrl K</kbd>
       </button>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Buscar productos, soluciones..." />
+
+      <CommandDialog open={open} onOpenChange={setOpen} filter={tokenFilter}>
+        <CommandInput placeholder="Buscar productos, descargas, FAQs..." />
         <CommandList>
           <CommandEmpty>Sin resultados.</CommandEmpty>
+
           <CommandGroup heading="Productos">
-            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos/servo-fv5-e" }}><Zap size={14} className="opacity-60" /><span className="pl-2">Servomotores FV5-E</span></CommandItem>
-            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos/plc-fl7" }}><Cpu size={14} className="opacity-60" /><span className="pl-2">PLCs FL7</span></CommandItem>
-            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos/plc-fl8" }}><Cpu size={14} className="opacity-60" /><span className="pl-2">PLCs FL8</span></CommandItem>
-            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos/scada-flexscada" }}><BarChart3 size={14} className="opacity-60" /><span className="pl-2">FlexSCADA</span></CommandItem>
-            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos/iot-fbox" }}><Radio size={14} className="opacity-60" /><span className="pl-2">FBox IoT Gateway</span></CommandItem>
+            {productItems.map((p) => {
+              const Icon = p.icon
+              return (
+                <CommandItem
+                  key={p.slug}
+                  value={p.value}
+                  className="cursor-pointer"
+                  onSelect={() => go(p.href)}
+                >
+                  <Icon size={14} className="opacity-60" />
+                  <span className="pl-2">{p.label}</span>
+                  <span className="ml-auto text-[10px] opacity-40">{p.sub}</span>
+                </CommandItem>
+              )
+            })}
           </CommandGroup>
+
           <CommandSeparator />
+
+          <CommandGroup heading="Descargas y manuales">
+            {downloadItems.map((d) => (
+              <CommandItem
+                key={d.key}
+                value={d.value}
+                className="cursor-pointer"
+                onSelect={() => go(d.href, d.external)}
+              >
+                <Download size={14} className="opacity-60" />
+                <span className="pl-2">{d.label}</span>
+                <span className="ml-auto text-[10px] opacity-40">{d.sub}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+
+          <CommandSeparator />
+
+          <CommandGroup heading="Preguntas frecuentes">
+            {faqItems.map((f) => (
+              <CommandItem
+                key={f.key}
+                value={f.value}
+                className="cursor-pointer"
+                onSelect={() => go(f.href)}
+              >
+                <HelpCircle size={14} className="opacity-60" />
+                <span className="pl-2 truncate">{f.label}</span>
+                <span className="ml-auto text-[10px] opacity-40 shrink-0">{f.sub}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+
+          <CommandSeparator />
+
           <CommandGroup heading="Navegar">
-            <CommandItem className="cursor-pointer" onSelect={() => { window.location.href = "/productos" }}><ArrowUpRightIcon size={14} className="opacity-60" /><span className="pl-2">Ver catálogo</span><CommandShortcut>↗</CommandShortcut></CommandItem>
-            <CommandItem className="cursor-pointer"><PaletteIcon size={14} className="opacity-60" /><span className="pl-2">Agendar demo</span></CommandItem>
+            <CommandItem value="ver catalogo productos" className="cursor-pointer" onSelect={() => go("/productos")}>
+              <ArrowUpRightIcon size={14} className="opacity-60" />
+              <span className="pl-2">Ver catálogo</span>
+              <CommandShortcut>↗</CommandShortcut>
+            </CommandItem>
+            <CommandItem value="centro soporte descargas" className="cursor-pointer" onSelect={() => go("/soporte")}>
+              <Download size={14} className="opacity-60" />
+              <span className="pl-2">Centro de soporte</span>
+            </CommandItem>
+            <CommandItem value="agendar demo whatsapp" className="cursor-pointer" onSelect={() => go("https://wa.me/521XXXXXXXXXX", true)}>
+              <PaletteIcon size={14} className="opacity-60" />
+              <span className="pl-2">Agendar demo</span>
+            </CommandItem>
           </CommandGroup>
         </CommandList>
       </CommandDialog>
