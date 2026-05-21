@@ -1,81 +1,66 @@
 "use client"
 
-import { TimelineContent } from "@/components/ui/timeline-animation"
-import Image from "next/image"
+import Link from "next/link"
 import { useRef } from "react"
+import { ShoppingBag, MessageCircle, ArrowRight } from "lucide-react"
+import { TimelineContent } from "@/components/ui/timeline-animation"
 
 const testimonials = [
+    // ── 0 · Be Grand (large light, stats) ────────────────────────────────────
     {
-        quote: "ADIMEX transformó por completo nuestra línea de producción. Sus soluciones de servomotores FLEXEM redujeron nuestros tiempos de ciclo en un 35%.",
-        name: "Carlos Méndez",
-        role: "Director de Operaciones, Grupo TREMEC",
-        image: "/images/carlos-mendez.jpg",
-        variant: "light",
-        size: "large",
-        logo: "/logos/tremec.svg",
-        logoAlt: "Grupo TREMEC",
+        quote: "ADIMEX equipó nuestras torres con sistemas FLEXEM. La instalación fue limpia, los plazos se cumplieron y la operación de cada departamento entregado ha sido impecable desde el primer día.",
+        name: "Be Grand",
+        role: "Torres departamentales · CDMX",
+        logo: "/alliies/logos/begrand.png",
+        logoAlt: "Be Grand",
         stats: [
-            { value: "35%", label: "reducción en tiempos de ciclo" },
-            { value: "2.1×", label: "aumento en throughput de planta" },
+            { value: "Torres", label: "departamentales equipadas integralmente" },
+            { value: "Residencial", label: "caso flagship con ADIMEX" },
         ],
     },
+
+    // ── 1 · FEMSA (dark) ─────────────────────────────────────────────────────
     {
-        quote: "El soporte técnico de ADIMEX es excepcional. Siempre disponibles y con un profundo conocimiento de sus productos.",
-        name: "Sofía Guerrero",
-        role: "Gerente de Planta, Vitro Packaging",
-        image: "https://images.unsplash.com/photo-1512485694743-9c9538b4e6e0?q=80&w=687&auto=format&fit=crop",
-        variant: "blue",
-        size: "small",
+        quote: "Trabajar con ADIMEX nos ha permitido mantener la consistencia operativa de nuestras líneas de embotellado y distribución. Su capacidad técnica y respuesta logística están a la altura de la escala que manejamos.",
+        name: "FEMSA",
+        role: "Embotellado y logística · México",
+        logo: "/femsalogo.svg",
+        logoAlt: "FEMSA",
     },
+
+    // ── 2 · Atlas Copco (dark) ───────────────────────────────────────────────
     {
-        quote: "Implementamos los PLCs FL7 en toda nuestra planta y la estabilidad ha sido impecable. Sin interrupciones en más de 18 meses.",
-        name: "Rodrigo Alvarado",
-        role: "Jefe de Automatización, CEMEX",
-        image: "https://images.unsplash.com/photo-1566753323558-f4e0952af115?q=80&w=1021&auto=format&fit=crop",
-        variant: "dark",
-        size: "medium",
+        quote: "ADIMEX se ha consolidado como un aliado técnico confiable para integrar componentes de automatización en nuestros equipos industriales. La calidad y los tiempos de entrega cumplen con nuestros estándares globales.",
+        name: "Atlas Copco",
+        role: "Equipos industriales · Latinoamérica",
+        logo: "/alliies/logos/Atlas-Copco.png",
+        logoAlt: "Atlas Copco",
     },
+
+    // ── 3 · SACMEX (dark) ────────────────────────────────────────────────────
     {
-        quote: "La integración de FlexSCADA con nuestros sistemas existentes fue sorprendentemente fluida. El equipo de ADIMEX estuvo con nosotros en cada paso.",
-        name: "Ana Torres",
-        role: "CTO, Mabe México",
-        image: "https://images.unsplash.com/photo-1615109398623-88346a601842?q=80&w=687&auto=format&fit=crop",
-        variant: "dark",
-        size: "medium",
+        quote: "El sistema SCADA e IoT implementado por ADIMEX en nuestras salas de bombas nos dio visibilidad en tiempo real de cada estación. La detección temprana de fallas mejoró la continuidad del servicio para la ciudad.",
+        name: "SACMEX",
+        role: "Sistema de Aguas · Ciudad de México",
+        logo: "/alliies/logos/sacmex.png",
+        logoAlt: "SACMEX",
     },
+
+    // ── 4 · City Express (large light, stats) ────────────────────────────────
     {
-        quote: "Redujimos nuestro consumo energético en un 22% gracias a los variadores de frecuencia recomendados por ADIMEX.",
-        name: "Javier Reyes",
-        role: "Gerente de Ingeniería, RASSINI",
-        image: "https://images.unsplash.com/photo-1740102074295-c13fae3e4f8a?q=80&w=687&auto=format&fit=crop",
-        variant: "dark",
-        size: "medium",
-    },
-    {
-        quote: "ADIMEX ha sido un socio estratégico clave en nuestra expansión. Su portafolio cubre todas nuestras necesidades de automatización.",
-        name: "Valeria Montoya",
-        role: "Directora de Manufactura, Nemak",
-        image: "https://images.unsplash.com/photo-1563237023-b1e970526dcb?q=80&w=765&auto=format&fit=crop",
-        variant: "blue",
-        size: "small",
-    },
-    {
-        quote: "Llevamos 6 años trabajando con ADIMEX y su nivel de compromiso con la calidad y el servicio postventa no tiene comparación en el mercado industrial mexicano.",
-        name: "Miguel Ángel Flores",
-        role: "VP de Operaciones, Vitro",
-        image: "https://images.unsplash.com/photo-1590086782957-93c06ef21604?q=80&w=687&auto=format&fit=crop",
-        variant: "light",
-        size: "large",
-        logo: "/logos/vitro.svg",
-        logoAlt: "Vitro",
+        quote: "ADIMEX estandarizó el equipamiento técnico en nuestros hoteles directos y nos apoya como proveedor en proyectos indirectos. Calidad y servicio consistentes sin importar la ubicación.",
+        name: "City Express",
+        role: "Operaciones hoteleras · México",
+        logo: "/alliies/logos/cityexpress.svg",
+        logoAlt: "City Express",
         stats: [
-            { value: "6 años", label: "como socio estratégico ADIMEX" },
-            { value: "99.4%", label: "uptime en líneas automatizadas" },
+            { value: "30", label: "hoteles indirectos" },
+            { value: "7", label: "hoteles directos" },
         ],
     },
 ]
 
-const cardStyles: Record<string, string> = {
+const cardStyles = {
     light: "bg-white border border-gray-200 text-[#07080c]",
     blue: "bg-[#017bfd] text-white border border-[#017bfd]",
     dark: "bg-[#07080c] text-white border border-white/10",
@@ -98,9 +83,9 @@ export default function Testimonial() {
         },
     }
 
-    const col1 = testimonials.slice(0, 2)   // light large + blue small
-    const col2 = testimonials.slice(2, 5)   // 3 dark
-    const col3 = testimonials.slice(5, 7)   // blue small + light large
+    const beGrand   = testimonials[0]
+    const dark      = testimonials.slice(1, 4)   // FEMSA, Atlas Copco, SACMEX
+    const cityExp   = testimonials[4]
 
     return (
         <section
@@ -128,14 +113,14 @@ export default function Testimonial() {
                     timelineRef={testimonialRef as React.RefObject<HTMLElement>}
                     style={{ fontFamily: "var(--font-geist-sans)" }}
                 >
-                    Empresas líderes en manufactura e industria confían en ADIMEX para sus proyectos de automatización.
+                    Empresas líderes en manufactura, infraestructura y servicios confían en ADIMEX para sus proyectos de automatización.
                 </TimelineContent>
             </div>
 
             {/* Grid */}
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-3">
 
-                {/* Column 1 */}
+                {/* ── Column 1 — Be Grand + CTA tienda ── */}
                 <div className="flex flex-col gap-3">
                     <TimelineContent
                         animationNum={0}
@@ -143,11 +128,10 @@ export default function Testimonial() {
                         timelineRef={testimonialRef as React.RefObject<HTMLElement>}
                         className={`flex-[7] flex flex-col justify-between p-6 ${cardStyles.light}`}
                     >
-                        {/* Logo + stats */}
                         <div className="space-y-5 mb-6">
-                            <img src={col1[0].logo} alt={col1[0].logoAlt} className="h-8 w-auto object-contain" />
+                            <img src={beGrand.logo} alt={beGrand.logoAlt} className="h-8 w-auto object-contain" />
                             <div className="grid grid-cols-2 divide-x divide-gray-200">
-                                {col1[0].stats!.map((s) => (
+                                {beGrand.stats!.map((s) => (
                                     <div key={s.label} className="pr-4 first:pr-4 last:pl-4 last:pr-0 space-y-1">
                                         <p className="text-2xl font-bold text-[#07080c] tracking-tight flex items-start gap-1" style={{ fontFamily: "var(--font-geist-sans)" }}>
                                             <span className="text-[#017bfd] text-lg mt-0.5">↗</span>{s.value}
@@ -159,41 +143,47 @@ export default function Testimonial() {
                         </div>
                         <article className="mt-auto space-y-5">
                             <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-geist-sans)" }}>
-                                "{col1[0].quote}"
+                                &ldquo;{beGrand.quote}&rdquo;
                             </p>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="font-semibold text-sm" style={{ fontFamily: "var(--font-geist-sans)" }}>{col1[0].name}</p>
-                                    <p className="text-xs text-gray-500" style={{ fontFamily: "var(--font-geist-sans)" }}>{col1[0].role}</p>
-                                </div>
-                                <Image src={col1[0].image} alt={col1[0].name} width={200} height={200} className="w-12 h-12 object-cover" />
+                            <div>
+                                <p className="font-semibold text-sm" style={{ fontFamily: "var(--font-geist-sans)" }}>{beGrand.name}</p>
+                                <p className="text-xs text-gray-500" style={{ fontFamily: "var(--font-geist-sans)" }}>{beGrand.role}</p>
                             </div>
                         </article>
                     </TimelineContent>
+
+                    {/* CTA — tienda en línea */}
                     <TimelineContent
                         animationNum={1}
                         customVariants={revealVariants}
                         timelineRef={testimonialRef as React.RefObject<HTMLElement>}
-                        className={`flex-[3] flex flex-col justify-between p-6 ${cardStyles.blue}`}
+                        className={`flex-[3] ${cardStyles.blue}`}
                     >
-                        <article className="mt-auto space-y-5">
-                            <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-geist-sans)" }}>
-                                "{col1[1].quote}"
-                            </p>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="font-semibold text-sm" style={{ fontFamily: "var(--font-geist-sans)" }}>{col1[1].name}</p>
-                                    <p className="text-xs text-white/70" style={{ fontFamily: "var(--font-geist-sans)" }}>{col1[1].role}</p>
-                                </div>
-                                <Image src={col1[1].image} alt={col1[1].name} width={200} height={200} className="w-12 h-12 object-cover" />
+                        <Link
+                            href="/productos"
+                            className="group h-full flex flex-col justify-between p-6 gap-4"
+                            style={{ fontFamily: "var(--font-geist-sans)" }}
+                        >
+                            <ShoppingBag size={20} className="text-white/80" />
+                            <div className="flex flex-col gap-2">
+                                <p className="text-base font-semibold leading-snug">
+                                    Cómprales en línea hoy
+                                </p>
+                                <p className="text-xs text-white/80 leading-relaxed">
+                                    F007N, F110 y FL7 disponibles con envío directo en México.
+                                </p>
                             </div>
-                        </article>
+                            <div className="flex items-center gap-1.5 text-xs font-medium pt-2 border-t border-white/20">
+                                <span>Ver tienda</span>
+                                <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+                            </div>
+                        </Link>
                     </TimelineContent>
                 </div>
 
-                {/* Column 2 */}
+                {/* ── Column 2 — FEMSA, Atlas Copco, SACMEX ── */}
                 <div className="flex flex-col gap-3">
-                    {col2.map((t, i) => (
+                    {dark.map((t, i) => (
                         <TimelineContent
                             key={t.name}
                             animationNum={i + 2}
@@ -201,54 +191,68 @@ export default function Testimonial() {
                             timelineRef={testimonialRef as React.RefObject<HTMLElement>}
                             className={`flex flex-col justify-between p-6 ${cardStyles.dark}`}
                         >
-                            <article className="space-y-5">
+                            <article className="flex flex-col gap-5">
+                                {t.logo && (
+                                    <img
+                                        src={t.logo}
+                                        alt={t.logoAlt}
+                                        className="h-5 w-auto object-contain opacity-70 brightness-0 invert self-start"
+                                    />
+                                )}
                                 <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-geist-sans)" }}>
-                                    "{t.quote}"
+                                    &ldquo;{t.quote}&rdquo;
                                 </p>
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="font-semibold text-sm" style={{ fontFamily: "var(--font-geist-sans)" }}>{t.name}</p>
-                                        <p className="text-xs text-white/50" style={{ fontFamily: "var(--font-geist-sans)" }}>{t.role}</p>
-                                    </div>
-                                    <Image src={t.image} alt={t.name} width={200} height={200} className="w-12 h-12 object-cover" />
+                                <div>
+                                    <p className="font-semibold text-sm" style={{ fontFamily: "var(--font-geist-sans)" }}>{t.name}</p>
+                                    <p className="text-xs text-white/50" style={{ fontFamily: "var(--font-geist-sans)" }}>{t.role}</p>
                                 </div>
                             </article>
                         </TimelineContent>
                     ))}
                 </div>
 
-                {/* Column 3 */}
+                {/* ── Column 3 — CTA demo + City Express ── */}
                 <div className="flex flex-col gap-3">
+                    {/* CTA — agendar demo */}
                     <TimelineContent
                         animationNum={5}
                         customVariants={revealVariants}
                         timelineRef={testimonialRef as React.RefObject<HTMLElement>}
-                        className={`flex-[3] flex flex-col justify-between p-6 ${cardStyles.blue}`}
+                        className={`flex-[3] ${cardStyles.blue}`}
                     >
-                        <article className="mt-auto space-y-5">
-                            <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-geist-sans)" }}>
-                                "{col3[0].quote}"
-                            </p>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="font-semibold text-sm" style={{ fontFamily: "var(--font-geist-sans)" }}>{col3[0].name}</p>
-                                    <p className="text-xs text-white/70" style={{ fontFamily: "var(--font-geist-sans)" }}>{col3[0].role}</p>
-                                </div>
-                                <Image src={col3[0].image} alt={col3[0].name} width={200} height={200} className="w-12 h-12 object-cover" />
+                        <a
+                            href="https://wa.me/521XXXXXXXXXX?text=Hola%2C%20me%20gustar%C3%ADa%20agendar%20una%20demo%20de%20sus%20soluciones."
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group h-full flex flex-col justify-between p-6 gap-4"
+                            style={{ fontFamily: "var(--font-geist-sans)" }}
+                        >
+                            <MessageCircle size={20} className="text-white/80" />
+                            <div className="flex flex-col gap-2">
+                                <p className="text-base font-semibold leading-snug">
+                                    Agenda una demo
+                                </p>
+                                <p className="text-xs text-white/80 leading-relaxed">
+                                    Un ingeniero ADIMEX te muestra cómo funciona en tu proceso.
+                                </p>
                             </div>
-                        </article>
+                            <div className="flex items-center gap-1.5 text-xs font-medium pt-2 border-t border-white/20">
+                                <span>Hablar por WhatsApp</span>
+                                <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+                            </div>
+                        </a>
                     </TimelineContent>
+
                     <TimelineContent
                         animationNum={6}
                         customVariants={revealVariants}
                         timelineRef={testimonialRef as React.RefObject<HTMLElement>}
                         className={`flex-[7] flex flex-col justify-between p-6 ${cardStyles.light}`}
                     >
-                        {/* Logo + stats */}
                         <div className="space-y-5 mb-6">
-                            <img src={col3[1].logo} alt={col3[1].logoAlt} className="h-8 w-auto object-contain" />
+                            <img src={cityExp.logo} alt={cityExp.logoAlt} className="h-8 w-auto object-contain" />
                             <div className="grid grid-cols-2 divide-x divide-gray-200">
-                                {col3[1].stats!.map((s) => (
+                                {cityExp.stats!.map((s) => (
                                     <div key={s.label} className="pr-4 first:pr-4 last:pl-4 last:pr-0 space-y-1">
                                         <p className="text-2xl font-bold text-[#07080c] tracking-tight flex items-start gap-1" style={{ fontFamily: "var(--font-geist-sans)" }}>
                                             <span className="text-[#017bfd] text-lg mt-0.5">↗</span>{s.value}
@@ -260,14 +264,11 @@ export default function Testimonial() {
                         </div>
                         <article className="mt-auto space-y-5">
                             <p className="text-sm leading-relaxed" style={{ fontFamily: "var(--font-geist-sans)" }}>
-                                "{col3[1].quote}"
+                                &ldquo;{cityExp.quote}&rdquo;
                             </p>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="font-semibold text-sm" style={{ fontFamily: "var(--font-geist-sans)" }}>{col3[1].name}</p>
-                                    <p className="text-xs text-gray-500" style={{ fontFamily: "var(--font-geist-sans)" }}>{col3[1].role}</p>
-                                </div>
-                                <Image src={col3[1].image} alt={col3[1].name} width={200} height={200} className="w-12 h-12 object-cover" />
+                            <div>
+                                <p className="font-semibold text-sm" style={{ fontFamily: "var(--font-geist-sans)" }}>{cityExp.name}</p>
+                                <p className="text-xs text-gray-500" style={{ fontFamily: "var(--font-geist-sans)" }}>{cityExp.role}</p>
                             </div>
                         </article>
                     </TimelineContent>

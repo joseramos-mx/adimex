@@ -145,6 +145,20 @@ export default function SoporteProductPage({ params }: { params: Promise<{ slug:
               transition={{ duration: 0.25 }}
               className="flex flex-col gap-10"
             >
+              {data.downloads.length === 0 && (
+                <div className="border border-black/8 bg-[#f7f8f9] px-6 py-10 flex items-start gap-4">
+                  <FileText size={18} className="text-[#07080c]/20 mt-0.5 shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-[#07080c]/70">Aún no hay archivos publicados para este producto.</p>
+                    <p className="text-[12px] text-[#07080c]/40 mt-1 leading-relaxed">
+                      Estamos cargando manuales, fichas técnicas y planos. Mientras tanto, contáctanos para solicitar la documentación directamente.
+                    </p>
+                    <Link href="#contacto" className="mt-3 inline-flex items-center gap-1.5 text-xs text-[#017bfd] hover:underline underline-offset-4">
+                      Solicitar documentación <ArrowRight size={11} />
+                    </Link>
+                  </div>
+                </div>
+              )}
               {cats.map((cat) => (
                 <div key={cat}>
                   <p className="text-[10px] font-mono tracking-[0.2em] text-[#07080c]/30 uppercase mb-4">
@@ -175,6 +189,9 @@ export default function SoporteProductPage({ params }: { params: Promise<{ slug:
                         </div>
                         <a
                           href={file.href}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="flex items-center gap-1.5 text-xs text-[#017bfd] hover:text-white border border-[#017bfd]/30 hover:border-[#017bfd] hover:bg-[#017bfd] px-3 py-1.5 transition-colors shrink-0"
                         >
                           <Download size={11} />
