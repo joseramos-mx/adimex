@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useRef } from "react"
 import { ShoppingBag, MessageCircle, ArrowRight } from "lucide-react"
 import { TimelineContent } from "@/components/ui/timeline-animation"
+import { WA_DEMO } from "@/lib/contact"
 
 const testimonials = [
     // ── 0 · Be Grand (large light, stats) ────────────────────────────────────
@@ -221,7 +222,7 @@ export default function Testimonial() {
                         className={`flex-[3] ${cardStyles.blue}`}
                     >
                         <a
-                            href="https://wa.me/521XXXXXXXXXX?text=Hola%2C%20me%20gustar%C3%ADa%20agendar%20una%20demo%20de%20sus%20soluciones."
+                            href={WA_DEMO}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="group h-full flex flex-col justify-between p-6 gap-4"

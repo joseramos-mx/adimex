@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { products } from "@/data/products"
 import { soporteData } from "@/data/soporte"
+import { WA_DEMO } from "@/lib/contact"
 import { cn } from "@/lib/utils"
 import { useScroll, motion, AnimatePresence } from "motion/react"
 import { Button } from "@/components/ui/button"
@@ -371,7 +372,7 @@ function SearchCommand({ isDark, open, setOpen }: { isDark: boolean; open: boole
               <Download size={14} className="opacity-60" />
               <span className="pl-2">Centro de soporte</span>
             </CommandItem>
-            <CommandItem value="agendar demo whatsapp" className="cursor-pointer" onSelect={() => go("https://wa.me/521XXXXXXXXXX", true)}>
+            <CommandItem value="agendar demo whatsapp" className="cursor-pointer" onSelect={() => go(WA_DEMO, true)}>
               <PaletteIcon size={14} className="opacity-60" />
               <span className="pl-2">Agendar demo</span>
             </CommandItem>
@@ -594,7 +595,7 @@ export const Header = () => {
               </Button>
             )}
             <Button asChild size="sm" className="text-xs h-8 bg-[#017bfd] hover:bg-[#0066d6] text-white border-0">
-              <Link href="#">Agendar demo</Link>
+              <a href={WA_DEMO} target="_blank" rel="noopener noreferrer">Agendar demo</a>
             </Button>
           </div>
 

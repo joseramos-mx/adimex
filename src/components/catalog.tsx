@@ -7,29 +7,32 @@ import { Download, ArrowUpRight } from "lucide-react"
 const directory = [
     {
         title: "Centro de descargas",
-        description: "¿Busca fichas técnicas, manuales o certificados? Nuestro centro de descargas lo tiene todo.",
-        link: "#",
+        description: "Brochures, manuales, fichas técnicas y archivos CAD de toda la línea ADIMEX.",
+        link: "/soporte",
         label: "Visitar centro de descargas",
     },
     {
         title: "Casos de éxito",
         description: "Hemos resuelto los desafíos de automatización de nuestros clientes durante años. Descubra cómo.",
-        link: "#",
+        link: "/casos",
         label: "Ver casos de éxito",
     },
     {
-        title: "Servicios",
-        description: "¿Necesita soporte técnico o capacitación? Póngase en contacto con nuestro equipo especializado.",
-        link: "#",
-        label: "Conocer nuestros servicios",
+        title: "Sobre nosotros",
+        description: "Conoce al equipo, nuestra trayectoria y los principios que guían cada proyecto.",
+        link: "/nosotros",
+        label: "Conocer a ADIMEX",
     },
     {
         title: "Contacto",
         description: "¿Tiene preguntas sobre nuestros productos o soluciones? Estamos listos para ayudarle.",
-        link: "#",
+        link: "/soporte#contacto",
         label: "Contactar a ADIMEX",
     },
 ]
+
+// FL7 brochure on the CDN — used as the launching product catalog reference
+const CATALOG_PDF = "https://cdn.adimex.io/pdf/FL7/FL7%20Serires%20PLC%20Product%20Brochure%20-20251021.pdf"
 
 export default function Catalog() {
     return (
@@ -70,12 +73,11 @@ export default function Catalog() {
                         Amplia cartera de productos ADIMEX en automatización industrial.
                     </p>
                     <p className="text-sm text-[#494F5F] leading-relaxed" style={{fontFamily:"var(--font-geist-sans)"}}>
-                        KUKA ofrece soluciones de automatización personalizadas para cada sector.
-                        Obtenga más información sobre nuestras soluciones industriales, casos de éxitos ya realizados y empresas colaboradoras internacionales.
+                        Descubre nuestra cartera completa de soluciones FLEXEM: PLCs, servomotores, HMI, gateways IoT y plataforma SCADA, con casos de éxito ya entregados en plantas mexicanas.
                     </p>
 
                     <a
-                        href="/catalog.pdf"
+                        href={CATALOG_PDF}
                         download
                         className="flex items-center gap-3 bg-[#017bfd] px-6 py-4 text-white text-sm hover:bg-[#0066d6] transition-colors"
                         style={{ fontFamily: "var(--font-geist-sans)" }}
@@ -85,7 +87,7 @@ export default function Catalog() {
                     </a>
 
                     <a
-                        href="/catalog.pdf"
+                        href={CATALOG_PDF}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-xs text-[#a7a9ac] hover:text-[#0066FF] transition-colors underline underline-offset-4"

@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
+import { WA_DEMO } from "@/lib/contact"
 
 const SLIDE_DURATION = 5000
 
@@ -154,7 +155,7 @@ export const Hero = () => {
               Ver catálogo
             </Link>
             <a
-              href="https://wa.me/521XXXXXXXXXX?text=Hola%2C%20me%20gustar%C3%ADa%20agendar%20una%20demo%20de%20sus%20soluciones."
+              href={WA_DEMO}
               target="_blank"
               rel="noopener noreferrer"
               className="border border-white text-white px-6 py-3 text-xs font-medium hover:bg-white/10 transition-colors"
