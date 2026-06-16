@@ -15,10 +15,12 @@ import { Button } from '@/components/ui/button'
 
 const WHATSAPP = '521XXXXXXXXXX' // TODO: replace with real number
 
+const PRICE_USD = '435.99'
+
 const stats = [
   { value: '10.1"', unit: '',       label: 'Pantalla IPS'           },
   { value: '400',   unit: 'cd/m²',  label: 'Brillo'                 },
-  { value: '170°',  unit: '',       label: 'Ángulo de visión'        },
+  { value: '3',     unit: 'COM',    label: 'Puertos serie'          },
   { value: '1GHz',  unit: '',       label: 'Dual-core Cortex-A7'    },
 ]
 
@@ -56,7 +58,8 @@ const features = [
 ]
 
 const specs = [
-  { label: 'Tamaño de pantalla',      value: '10.1 pulgadas' },
+  { label: 'Modelo',                  value: 'FS110C' },
+  { label: 'Tamaño de pantalla',      value: '10.1 pulgadas (16:9)' },
   { label: 'Resolución',              value: '800 × 1280 px' },
   { label: 'Tipo de panel',           value: 'LCD IPS TrueColor' },
   { label: 'Brillo',                  value: '400 cd/m²' },
@@ -67,15 +70,17 @@ const specs = [
   { label: 'Almacenamiento',          value: '4 GB eMMC' },
   { label: 'Puntos de monitoreo',     value: '300 puntos · 100 alarmas · 30 edge' },
   { label: 'Ethernet',                value: '1 × RJ45 10/100 Mbps' },
-  { label: 'Puertos serie',           value: 'RS232 / RS485 / RS422' },
+  { label: 'Puertos serie',           value: '3 × COM (RS232/RS485/RS422)' },
   { label: 'USB',                     value: 'Type-C 2.0 + Type-A 2.0' },
-  { label: 'Alimentación',            value: 'DC 9–28 V' },
+  { label: 'Alimentación',            value: 'DC 24 V' },
   { label: 'Consumo',                 value: '< 10 W' },
   { label: 'Temperatura operación',   value: '-10 a 60 °C' },
   { label: 'Temperatura almacenaje',  value: '-20 a 70 °C' },
+  { label: 'Carcasa',                 value: 'Marco de aluminio' },
   { label: 'Protección',              value: 'IP65 frontal · IP20 trasero' },
   { label: 'Certificaciones',         value: 'CE · RoHS' },
   { label: 'Dimensiones',             value: '158 × 249 × 30 mm' },
+  { label: 'Precio de lista',         value: `$${PRICE_USD} USD + IVA` },
 ]
 
 const applications = [
@@ -349,8 +354,8 @@ export default function F110LandingPage() {
       <section className="relative min-h-screen bg-[#07080c] flex items-center overflow-hidden pt-14">
         <div className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: 'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
-        <div className="absolute top-1/3 right-1/3 w-[600px] h-[600px] bg-[#017bfd]/12 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-1/4 left-1/5 w-[250px] h-[250px] bg-[#017bfd]/10 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute top-1/3 right-1/3 w-150 h-150 bg-[#017bfd]/12 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-1/4 left-1/5 w-62.5 h-62.5 bg-[#017bfd]/10 rounded-full blur-[80px] pointer-events-none" />
 
         <div className="relative max-w-6xl mx-auto px-6 py-20 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left — copy */}
@@ -371,7 +376,7 @@ export default function F110LandingPage() {
 
             <div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white leading-[1.05] tracking-tight">
-                HMI F110
+                HMI FS110C
               </h1>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.05] tracking-tight mt-1" style={{ color: '#017bfd' }}>
                 10.1" Capacitiva
@@ -382,7 +387,7 @@ export default function F110LandingPage() {
             </div>
 
             <p className="text-base text-white/50 leading-relaxed max-w-md">
-              Pantalla industrial de 10.1" con procesador dual-core 1 GHz, 4 GB de almacenamiento eMMC y módulo 4G para supervisión remota en tiempo real.
+              HMI FS110C con procesador dual-core 1 GHz, marco de aluminio, 3 puertos serie, 4 GB eMMC y módulo 4G para supervisión remota en tiempo real.
             </p>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
@@ -516,7 +521,7 @@ export default function F110LandingPage() {
               className="h-9 text-xs bg-white text-[#017bfd] hover:bg-white/90 border-0 font-semibold"
               onClick={() => document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              Cotizar F110
+              Cotizar FS110C — $435.99 USD
             </Button>
           </div>
         </div>
@@ -551,11 +556,11 @@ export default function F110LandingPage() {
             <div className="flex flex-col gap-6">
               {/* Product visual */}
               <div className="relative aspect-video bg-white border border-black/5 overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#017bfd]/5 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-br from-[#017bfd]/5 to-transparent" />
                 <div className="flex flex-col items-center gap-4 z-10">
                   <Monitor size={100} className="text-[#07080c]/10" />
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-[#07080c] font-mono">F110</p>
+                    <p className="text-2xl font-bold text-[#07080c] font-mono">FS110C</p>
                     <p className="text-xs text-gray-400 font-mono mt-1">10.1" Capacitive HMI</p>
                   </div>
                 </div>

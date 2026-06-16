@@ -56,17 +56,19 @@ const features = [
   },
 ]
 
+const PRICE_USD = '165.00'
+
 const specs = [
-  { label: 'Modelos base',                value: 'FL721-0808N-D · FL721-0808P-D · FL721-0806R-D' },
-  { label: 'Alimentación',               value: '24 V DC' },
-  { label: 'Entradas digitales',         value: '8 puntos (transistor bidireccional)' },
-  { label: 'Contador alta velocidad',    value: '8 puntos · 4 canales AB @ 200 kHz' },
-  { label: 'Salidas digitales',          value: '8 NPN / 8 PNP / 6 Relé' },
+  { label: 'Modelo',                      value: 'FL721-0806R-D' },
+  { label: 'Alimentación',               value: 'DC 24 V' },
+  { label: 'Entradas digitales',         value: '8 puntos · 200 kHz alta velocidad' },
+  { label: 'Salidas digitales',          value: '6 puntos Relé' },
+  { label: 'Puertos serie',              value: '2 × RS485 integrados' },
   { label: 'Salida de pulso (PTO)',       value: '8 puntos · 4 ejes @ 200 kHz' },
   { label: 'Ejes máximos simultáneos',   value: '32 ejes' },
-  { label: 'Comunicación',               value: '2 × RS485 · 1 × Ethernet' },
   { label: 'Protocolo',                  value: 'Modbus RTU/ASCII/TCP · PROFINET' },
   { label: 'Norma de programación',      value: 'IEC 61131-3 (CODESYS)' },
+  { label: 'Precio de lista',            value: `$${PRICE_USD} USD + IVA` },
 ]
 
 const applications = [
@@ -516,7 +518,7 @@ export default function FL7LandingPage() {
               className="h-9 text-xs bg-white text-[#017bfd] hover:bg-white/90 border-0 font-semibold"
               onClick={() => document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              Cotizar FL7
+              Cotizar FL7 — $165 USD
             </Button>
           </div>
         </div>

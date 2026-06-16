@@ -15,11 +15,13 @@ import { Button } from '@/components/ui/button'
 
 const WHATSAPP = '521XXXXXXXXXX' // TODO: replace with real number
 
+const PRICE_USD = '350.00'
+
 const stats = [
-  { value: '7"',    unit: '',    label: 'Pantalla IPS TFT'      },
-  { value: '1024',  unit: '×600', label: 'Resolución HD'        },
-  { value: 'IP65',  unit: '',    label: 'Protección frontal'    },
-  { value: '5pt',   unit: '',    label: 'Multi-touch capacitivo'},
+  { value: '7"',   unit: '',     label: 'Pantalla TFT IPS'      },
+  { value: '1024', unit: '×600', label: 'Resolución HD'         },
+  { value: '4',    unit: 'COM',  label: 'Puertos serie'         },
+  { value: 'IP65', unit: '',     label: 'Protección frontal'    },
 ]
 
 const features = [
@@ -56,6 +58,7 @@ const features = [
 ]
 
 const specs = [
+  { label: 'Modelo',                  value: 'F007NB' },
   { label: 'Tamaño de pantalla',      value: '7 pulgadas (16:9)' },
   { label: 'Resolución',              value: '1024 × 600 px' },
   { label: 'Tipo de panel',           value: 'LCD TFT IPS TrueColor' },
@@ -65,13 +68,15 @@ const specs = [
   { label: 'Procesador',              value: 'ARM Cortex-A8 600 MHz' },
   { label: 'Memoria',                 value: '256 MB DDR3 + 256 MB Flash' },
   { label: 'Ethernet',                value: '1 × RJ45 10/100 Mbps' },
-  { label: 'Puertos serie',           value: 'COM (RS232/RS485/RS422)' },
+  { label: 'Puertos serie',           value: '4 × COM (RS232/RS485/RS422)' },
   { label: 'USB',                     value: 'Type-C 2.0 + Type-A 2.0' },
-  { label: 'Alimentación',            value: 'DC 24 V (rango 9–28 V)' },
+  { label: 'Alimentación',            value: 'DC 24 V' },
   { label: 'Consumo',                 value: '≤ 6 W' },
+  { label: 'Carcasa',                 value: 'Plástico (plastic housing)' },
   { label: 'Temperatura operación',   value: '-10 a 60 °C' },
   { label: 'Protección',              value: 'IP65 frontal · IP20 trasero' },
   { label: 'Dimensiones',             value: '185.1 × 130.9 × 32.6 mm' },
+  { label: 'Precio de lista',         value: `$${PRICE_USD} USD + IVA` },
 ]
 
 const applications = [
@@ -345,8 +350,8 @@ export default function F007NLandingPage() {
       <section className="relative min-h-screen bg-[#07080c] flex items-center overflow-hidden pt-14">
         <div className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: 'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
-        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-[#017bfd]/15 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-1/4 left-1/4 w-[300px] h-[300px] bg-[#017bfd]/10 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute top-1/4 right-1/4 w-125 h-125 bg-[#017bfd]/15 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-1/4 left-1/4 w-75 h-75 bg-[#017bfd]/10 rounded-full blur-[80px] pointer-events-none" />
 
         <div className="relative max-w-6xl mx-auto px-6 py-20 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left — copy */}
@@ -367,18 +372,18 @@ export default function F007NLandingPage() {
 
             <div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white leading-[1.05] tracking-tight">
-                HMI F007N
+                HMI F007NB
               </h1>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.05] tracking-tight mt-1" style={{ color: '#017bfd' }}>
                 7" Capacitiva
               </h2>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white/20 leading-[1.05] tracking-tight mt-1">
-                IPS · IP65 · 4G.
+                TFT · IP65 · 4 COM.
               </h2>
             </div>
 
             <p className="text-base text-white/50 leading-relaxed max-w-md">
-              Pantalla táctil industrial de alta definición con tecnología capacitiva multi-touch, acceso remoto VNC y módulo 4G para automatización conectada.
+              HMI F007NB con 4 puertos serie, touch capacitivo multi-punto, protección IP65 y acceso remoto VNC para automatización industrial conectada.
             </p>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
@@ -512,7 +517,7 @@ export default function F007NLandingPage() {
               className="h-9 text-xs bg-white text-[#017bfd] hover:bg-white/90 border-0 font-semibold"
               onClick={() => document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              Cotizar F007N
+              Cotizar F007NB — $350 USD
             </Button>
           </div>
         </div>
@@ -547,11 +552,11 @@ export default function F007NLandingPage() {
             <div className="flex flex-col gap-6">
               {/* Product visual */}
               <div className="relative aspect-square bg-white border border-black/5 overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#017bfd]/5 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-br from-[#017bfd]/5 to-transparent" />
                 <div className="flex flex-col items-center gap-4 z-10">
                   <Monitor size={80} className="text-[#07080c]/10" />
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-[#07080c] font-mono">F007N</p>
+                    <p className="text-2xl font-bold text-[#07080c] font-mono">F007NB</p>
                     <p className="text-xs text-gray-400 font-mono mt-1">7" Capacitive HMI</p>
                   </div>
                 </div>
