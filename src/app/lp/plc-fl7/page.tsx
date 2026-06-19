@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button'
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 
-const WHATSAPP = '521XXXXXXXXXX' // TODO: replace with real number
+const WHATSAPP = '5215635698469' // TODO: replace with real number
 
 const stats = [
   { value: '32', unit: 'ejes', label: 'Control simultáneo' },
@@ -350,7 +350,7 @@ export default function FL7LandingPage() {
         <div className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: 'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
         {/* Blue glow */}
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#017bfd]/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/4 left-1/4 w-125 h-125 bg-[#017bfd]/20 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="relative max-w-6xl mx-auto px-6 py-20 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left — copy */}

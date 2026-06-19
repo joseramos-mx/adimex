@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react"
 import { useState } from "react"
 import { X } from "lucide-react"
 
-const PHONE = "521XXXXXXXXXX" // reemplaza con el número real (código de país sin +)
+const PHONE = "5215635698469"
 const MESSAGE = encodeURIComponent("Hola, me gustaría obtener información sobre sus soluciones de automatización.")
 
 export default function WhatsAppButton() {

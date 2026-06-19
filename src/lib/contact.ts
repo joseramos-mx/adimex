@@ -1,7 +1,7 @@
 // Single source of truth for contact channels.
 // Replace WHATSAPP_NUMBER with the real number when available.
 // Format: country code + number, digits only (e.g. "521555XXXXXXX")
-export const WHATSAPP_NUMBER = "521XXXXXXXXXX"
+export const WHATSAPP_NUMBER = "5215635698469"
 
 const waBase = `https://wa.me/${WHATSAPP_NUMBER}`
 

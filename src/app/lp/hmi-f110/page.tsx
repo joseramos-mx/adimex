@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 
-const WHATSAPP = '521XXXXXXXXXX' // TODO: replace with real number
+const WHATSAPP = '5215635698469' // TODO: replace with real number
 
 const PRICE_USD = '435.99'
 
