@@ -6,6 +6,7 @@ import { X, ShoppingCart, Minus, Plus, Trash2, ArrowRight, Package } from 'lucid
 import { motion, AnimatePresence } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
+import { sileo } from 'sileo'
 
 function formatPrice(amount: string, currencyCode: string) {
   return new Intl.NumberFormat('es-MX', {
@@ -152,7 +153,10 @@ export default function CartDrawer() {
                           </button>
 
                           <button
-                            onClick={() => removeItem(item.id)}
+                            onClick={async () => {
+                              await removeItem(item.id)
+                              sileo.info({ title: `${item.productName} eliminado del carrito` })
+                            }}
                             disabled={loading}
                             className="ml-auto p-1 text-gray-300 hover:text-red-400 transition-colors disabled:opacity-40"
                             aria-label="Eliminar"

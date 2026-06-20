@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ShoppingCart, Zap, Minus, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
+import { sileo } from 'sileo'
 
 interface Props {
   variantId: string
@@ -47,8 +48,11 @@ export default function AddToCart({
     setLocalLoading(true)
     try {
       for (let i = 0; i < qty; i++) await addItem(variantId)
+      sileo.success({
+        title: qty > 1 ? `${qty}× ${productName} agregados` : `${productName} agregado al carrito`,
+      })
     } catch {
-      alert('No se pudo agregar al carrito. Intenta de nuevo.')
+      sileo.error({ title: 'No se pudo agregar al carrito' })
     } finally {
       setLocalLoading(false)
     }
@@ -58,9 +62,10 @@ export default function AddToCart({
     setLocalLoading(true)
     try {
       for (let i = 0; i < qty; i++) await addItem(variantId)
+      sileo.success({ title: 'Redirigiendo al checkout...' })
       goToCheckout()
     } catch {
-      alert('No se pudo procesar. Intenta de nuevo.')
+      sileo.error({ title: 'No se pudo procesar, intenta de nuevo' })
     } finally {
       setLocalLoading(false)
     }

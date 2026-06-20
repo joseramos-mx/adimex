@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/auth-context";
 import CartDrawer from "@/components/cart-drawer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
+import { Toaster } from "sileo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -111,6 +112,7 @@ export default function RootLayout({
             </CartProvider>
           </AuthProvider>
         </ThemeProvider>
+        <Toaster position="bottom-left" />
         <SpeedInsights />
         <Analytics />
       </body>
