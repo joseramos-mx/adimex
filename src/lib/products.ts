@@ -112,7 +112,10 @@ function mapShopifyProduct(node: ShopifyNode): Product {
     staticProducts.find((p) => p.shopifyHandle === node.handle) ??
     staticProducts.find((p) => p.slug === node.handle)
 
-  if (staticMatch) return staticMatch
+  if (staticMatch) {
+    const shopifyImage = node.images.edges[0]?.node.url
+    return shopifyImage ? { ...staticMatch, image: shopifyImage } : staticMatch
+  }
 
   // Parse metafields into a map
   const meta: Record<string, string> = {}
