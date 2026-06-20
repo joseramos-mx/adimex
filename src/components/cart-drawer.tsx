@@ -155,7 +155,12 @@ export default function CartDrawer() {
                           <button
                             onClick={async () => {
                               await removeItem(item.id)
-                              sileo.info({ title: `${item.productName} eliminado del carrito` })
+                              sileo.info({
+                                title: 'Producto eliminado',
+                                description: `${item.productName} fue removido de tu carrito.`,
+                                fill: '#111111',
+                                roundness: 14,
+                              })
                             }}
                             disabled={loading}
                             className="ml-auto p-1 text-gray-300 hover:text-red-400 transition-colors disabled:opacity-40"
