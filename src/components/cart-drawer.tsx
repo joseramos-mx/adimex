@@ -8,6 +8,12 @@ import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { sileo } from 'sileo'
 
+const toastBase = {
+  fill: '#111111',
+  roundness: 14,
+  styles: { title: 'text-white', description: 'text-white/60' },
+} as const
+
 function formatPrice(amount: string, currencyCode: string) {
   return new Intl.NumberFormat('es-MX', {
     style: 'currency',
@@ -70,7 +76,7 @@ export default function CartDrawer() {
                   Carrito
                 </span>
                 {itemCount > 0 && (
-                  <span className="text-[11px] font-mono bg-[#017bfd] text-white px-1.5 py-0.5 min-w-[20px] text-center">
+                  <span className="text-[11px] font-mono bg-[#017bfd] text-white px-1.5 py-0.5 min-w-5 text-center">
                     {itemCount}
                   </span>
                 )}
@@ -158,8 +164,7 @@ export default function CartDrawer() {
                               sileo.info({
                                 title: 'Producto eliminado',
                                 description: `${item.productName} fue removido de tu carrito.`,
-                                fill: '#111111',
-                                roundness: 14,
+                                ...toastBase,
                               })
                             }}
                             disabled={loading}

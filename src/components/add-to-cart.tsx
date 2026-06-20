@@ -6,6 +6,12 @@ import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { sileo } from 'sileo'
 
+const toastBase = {
+  fill: '#111111',
+  roundness: 14,
+  styles: { title: 'text-white', description: 'text-white/60' },
+} as const
+
 interface Props {
   variantId: string
   price: string
@@ -51,15 +57,13 @@ export default function AddToCart({
       sileo.success({
         title: qty > 1 ? `${qty}× artículos agregados` : 'Agregado al carrito',
         description: `${productName} está listo en tu pedido.`,
-        fill: '#111111',
-        roundness: 14,
+        ...toastBase,
       })
     } catch {
       sileo.error({
         title: 'No se pudo agregar',
         description: 'Intenta de nuevo o contáctanos por WhatsApp.',
-        fill: '#111111',
-        roundness: 14,
+        ...toastBase,
       })
     } finally {
       setLocalLoading(false)
@@ -73,16 +77,14 @@ export default function AddToCart({
       sileo.success({
         title: 'Redirigiendo al checkout',
         description: 'Serás llevado al pago seguro de Shopify.',
-        fill: '#111111',
-        roundness: 14,
+        ...toastBase,
       })
       goToCheckout()
     } catch {
       sileo.error({
         title: 'Error al procesar',
         description: 'No se pudo iniciar el checkout. Intenta de nuevo.',
-        fill: '#111111',
-        roundness: 14,
+        ...toastBase,
       })
     } finally {
       setLocalLoading(false)
