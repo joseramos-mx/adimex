@@ -180,6 +180,8 @@ function mapShopifyProduct(node: ShopifyNode): Product {
 // `cache()` memoizes across the React render tree for a single request,
 // so multiple page/component calls hit Shopify only once per request.
 const fetchAllShopifyProducts = cache(async (): Promise<Product[]> => {
+  if (!shopifyClient) return staticProducts
+
   try {
     const allNodes: ShopifyNode[] = []
     let hasNextPage = true

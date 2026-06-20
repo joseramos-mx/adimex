@@ -94,8 +94,11 @@ function normalizeCart(cart: any) {
 
 // ─── Handlers ────────────────────────────────────────────────────────────────
 
+const noClient = () => NextResponse.json({ error: 'Shopify no configurado' }, { status: 503 })
+
 /** GET /api/cart?id=gid://shopify/Cart/xxx */
 export async function GET(req: Request) {
+  if (!shopifyClient) return noClient()
   const { searchParams } = new URL(req.url)
   const cartId = searchParams.get('id')
   if (!cartId) return NextResponse.json({ error: 'cartId required' }, { status: 400 })
@@ -109,6 +112,7 @@ export async function GET(req: Request) {
 /** POST /api/cart  — body: { variantId, cartId?, quantity? }
  *  Creates a new cart if no cartId, otherwise adds a line to the existing one. */
 export async function POST(req: Request) {
+  if (!shopifyClient) return noClient()
   const { variantId, cartId, quantity = 1 } = await req.json()
   if (!variantId) return NextResponse.json({ error: 'variantId required' }, { status: 400 })
 
@@ -131,6 +135,7 @@ export async function POST(req: Request) {
 
 /** PATCH /api/cart  — body: { cartId, lineId, quantity } */
 export async function PATCH(req: Request) {
+  if (!shopifyClient) return noClient()
   const { cartId, lineId, quantity } = await req.json()
   if (!cartId || !lineId) return NextResponse.json({ error: 'cartId and lineId required' }, { status: 400 })
 
@@ -144,6 +149,7 @@ export async function PATCH(req: Request) {
 
 /** DELETE /api/cart  — body: { cartId, lineId } */
 export async function DELETE(req: Request) {
+  if (!shopifyClient) return noClient()
   const { cartId, lineId } = await req.json()
   if (!cartId || !lineId) return NextResponse.json({ error: 'cartId and lineId required' }, { status: 400 })
 
