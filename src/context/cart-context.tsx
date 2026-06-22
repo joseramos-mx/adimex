@@ -60,12 +60,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     fetch(`/api/cart?id=${encodeURIComponent(cartId)}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        if (data && data.id) {
-          setCart(data)
-        } else {
-          // Cart expired or not found — clear storage
+        if (!data || !data.id) {
           localStorage.removeItem(CART_ID_KEY)
+          return
         }
+        // Discard carts that were created before the MX context was enforced —
+        // they'd otherwise checkout in USD with the wrong exchange rate.
+        if (data.totalCurrencyCode && data.totalCurrencyCode !== 'MXN') {
+          localStorage.removeItem(CART_ID_KEY)
+          return
+        }
+        setCart(data)
       })
       .catch(() => localStorage.removeItem(CART_ID_KEY))
   }, [])

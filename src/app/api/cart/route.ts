@@ -27,10 +27,13 @@ const CART_FIELDS = `
 `
 
 // ─── Mutations ────────────────────────────────────────────────────────────────
+// All cart operations run under @inContext(country: MX) so Shopify Markets
+// resolves prices in MXN and the checkout opens with the Mexican tax rules
+// configured in the admin (16% IVA over the MXN base price).
 
 const CART_CREATE = `
-  mutation cartCreate($lines: [CartLineInput!]!) {
-    cartCreate(input: { lines: $lines }) {
+  mutation cartCreate($lines: [CartLineInput!]!) @inContext(country: MX, language: ES) {
+    cartCreate(input: { lines: $lines, buyerIdentity: { countryCode: MX } }) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
     }
@@ -38,7 +41,7 @@ const CART_CREATE = `
 `
 
 const CART_LINES_ADD = `
-  mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+  mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) @inContext(country: MX, language: ES) {
     cartLinesAdd(cartId: $cartId, lines: $lines) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
@@ -47,7 +50,7 @@ const CART_LINES_ADD = `
 `
 
 const CART_LINES_UPDATE = `
-  mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+  mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) @inContext(country: MX, language: ES) {
     cartLinesUpdate(cartId: $cartId, lines: $lines) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
@@ -56,7 +59,7 @@ const CART_LINES_UPDATE = `
 `
 
 const CART_LINES_REMOVE = `
-  mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+  mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) @inContext(country: MX, language: ES) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
@@ -65,7 +68,7 @@ const CART_LINES_REMOVE = `
 `
 
 const CART_QUERY = `
-  query getCart($cartId: ID!) {
+  query getCart($cartId: ID!) @inContext(country: MX, language: ES) {
     cart(id: $cartId) { ${CART_FIELDS} }
   }
 `
