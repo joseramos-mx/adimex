@@ -57,40 +57,42 @@ export const Hero = () => {
   const slide = slides[active]
 
   return (
-    <section className="relative h-screen pt-14 overflow-hidden">
+    <section className="relative lg:h-screen pt-14 overflow-hidden flex flex-col lg:block bg-[#017bfd]">
 
-      {/* z-0 — background images cross-fade */}
-      <AnimatePresence>
-        <motion.div
-          key={active}
-          className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1, ease: "easeInOut" }}
-        >
-          <Image
-            src={slide.image}
-            alt={slide.name}
-            fill
-            className="object-cover"
-            priority
-          />
-        </motion.div>
-      </AnimatePresence>
+      {/* Mobile: image on top with its own height; Desktop: full-bleed background */}
+      <div className="relative h-[42vh] sm:h-[48vh] lg:absolute lg:inset-0 lg:h-auto">
+        <AnimatePresence>
+          <motion.div
+            key={active}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+          >
+            <Image
+              src={slide.image}
+              alt={slide.name}
+              fill
+              className="object-cover object-center"
+              priority
+            />
+          </motion.div>
+        </AnimatePresence>
 
-      {/* z-5 — hero-mask */}
-      <img
-        src="/hero-mask.svg"
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none select-none absolute inset-0 z-5 h-full w-full object-cover"
-      />
+        {/* hero-mask only on desktop — on mobile the image sits cleanly above the content */}
+        <img
+          src="/hero-mask.svg"
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none select-none absolute inset-0 z-5 h-full w-full object-cover hidden lg:block"
+        />
+      </div>
 
-      {/* z-10 — content */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-between py-12 px-6 lg:px-16 text-white w-full lg:w-[55%]">
+      {/* Content: stacked below the image on mobile, overlay-left on desktop */}
+      <div className="relative z-10 flex flex-col justify-between gap-8 py-8 px-6 lg:absolute lg:inset-0 lg:py-12 lg:px-16 text-white w-full lg:w-[55%]">
 
-        <div className="flex flex-col gap-8 flex-1 justify-center">
+        <div className="flex flex-col gap-6 lg:gap-8 flex-1 lg:justify-center">
 
           {/* Heading — first line is subtitle (small), rest are large */}
           <AnimatePresence mode="wait">
@@ -113,7 +115,7 @@ export const Hero = () => {
                   className={`block overflow-hidden ${
                     i === 0
                       ? "text-sm sm:text-base font-medium text-white/70 tracking-wide"
-                      : "text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight"
+                      : "text-3xl sm:text-4xl lg:text-6xl font-bold leading-tight tracking-tight"
                   }`}
                   variants={{
                     hidden: { y: "100%", opacity: 0 },

@@ -10,7 +10,7 @@ const nav = [
         heading: "Productos",
         links: [
             { label: "HMI F007N",              href: "/productos/hmi-f007n" },
-            { label: "HMI F110",               href: "/productos/hmi-f110" },
+            { label: "HMI F110",               href: "/productos/productos-hmi-f110" },
             { label: "PLC FL7",                href: "/productos/plc-fl7" },
             { label: "Ver catálogo completo",  href: "/productos" },
         ],

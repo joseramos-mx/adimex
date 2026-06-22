@@ -92,7 +92,7 @@ export const soporteData: ProductSupport[] = [
 
   // ── HMI F110 (en venta) ────────────────────────────────────────────────────
   {
-    productSlug: "hmi-f110",
+    productSlug: "productos-hmi-f110",
     productName: "HMI F110",
     category: "HMI",
     downloads: [],

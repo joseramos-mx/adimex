@@ -5,6 +5,7 @@ import { ShoppingCart, Zap, Minus, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { sileo } from 'sileo'
+import { useRegion, formatPriceForRegion } from '@/context/region-context'
 
 const toastBase = {
   fill: '#111111',
@@ -21,8 +22,6 @@ interface Props {
   productName: string
 }
 
-const MXN_PER_USD = 18
-
 export default function AddToCart({
   variantId,
   price,
@@ -32,23 +31,13 @@ export default function AddToCart({
   productName,
 }: Props) {
   const { addItem, goToCheckout, loading: cartLoading } = useCart()
+  const { region } = useRegion()
   const [localLoading, setLocalLoading] = useState(false)
   const [qty, setQty] = useState(1)
 
   const loading = cartLoading || localLoading
 
-  const priceNum = parseFloat(price)
-  const isMXN = currencyCode === 'MXN'
-
-  const mxnPrice = isMXN ? priceNum : priceNum * MXN_PER_USD
-  const usdPrice = isMXN ? priceNum / MXN_PER_USD : priceNum
-
-  const formatMXN = (n: number) =>
-    new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2 }).format(n)
-  const formatUSD = (n: number) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(n)
-
-  const ivaAmount = mxnPrice * 0.16
+  const priceDisplay = formatPriceForRegion(price, currencyCode, region)
 
   async function handleAddToCart() {
     setLocalLoading(true)
@@ -97,16 +86,16 @@ export default function AddToCart({
       <div className="flex flex-col gap-1">
         <div className="flex items-end gap-3">
           <span className="text-4xl font-bold text-[#07080c] tracking-tight">
-            {formatMXN(mxnPrice)}
+            {priceDisplay.formatted}
           </span>
-          <span className="text-sm text-gray-400 pb-1 font-mono">MXN</span>
+          <span className="text-sm text-gray-400 pb-1 font-mono">{priceDisplay.currency}</span>
         </div>
-        <div className="flex items-center gap-3 text-xs text-gray-400 font-mono">
-          <span>≈ {formatUSD(usdPrice)} USD</span>
-          <span>·</span>
-          <span>+IVA {formatMXN(ivaAmount)}</span>
-        </div>
-        <p className="text-[11px] text-gray-400 mt-0.5">Precio de lista sin IVA · Tipo de cambio referencial</p>
+        {priceDisplay.ivaIncluded && (
+          <p className="text-[11px] text-gray-400 mt-0.5">
+            IVA incluido
+            {priceDisplay.currency === 'USD' && ' · El checkout procesa en MXN'}
+          </p>
+        )}
       </div>
 
       {/* Stock */}

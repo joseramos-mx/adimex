@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/command"
 import { useCart } from "@/context/cart-context"
 import { useAuth } from "@/context/auth-context"
+import { useRegion, REGION_LIST } from "@/context/region-context"
 
 // ─── Dropdown data ─────────────────────────────────────────────────────────────
 
@@ -30,7 +31,7 @@ const productosDropdown = {
   viewAll: { label: "Ver catálogo completo", href: "/productos" },
   items: [
     { icon: Monitor, name: "HMI F007N",  desc: "Capacitiva 7\" HD multi-touch",            href: "/productos/hmi-f007n", badge: "Comprar" },
-    { icon: Monitor, name: "HMI F110",   desc: "Capacitiva 10.1\" con IoT y Bluetooth",   href: "/productos/hmi-f110",  badge: "Comprar" },
+    { icon: Monitor, name: "HMI F110",   desc: "Capacitiva 10.1\" con IoT y Bluetooth",   href: "/productos/productos-hmi-f110",  badge: "Comprar" },
     { icon: Cpu,     name: "PLC FL7",    desc: "CODESYS, hasta 32 ejes de movimiento",    href: "/productos/plc-fl7",   badge: "Comprar" },
   ],
 }
@@ -57,12 +58,6 @@ const casosDropdown = {
     ],
   },
 }
-
-const regions = [
-  { flag: "🇲🇽", label: "México",        code: "MX" },
-  { flag: "🇺🇸", label: "United States", code: "US" },
-  { flag: "🇨🇦", label: "Canada",        code: "CA" },
-]
 
 const menuItems = [
   { name: "Productos",        href: "#",     dropdown: "productos" },
@@ -390,7 +385,7 @@ export const Header = () => {
   const [scrolled, setScrolled] = React.useState(false)
   const [isLight, setIsLight] = React.useState(false)
   const [activeDropdown, setActiveDropdown] = React.useState<string | null>(null)
-  const [region, setRegion] = React.useState(regions[0])
+  const { region, setRegion } = useRegion()
   const [regionOpen, setRegionOpen] = React.useState(false)
   const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   const [searchOpen, setSearchOpen] = React.useState(false)
@@ -502,11 +497,11 @@ export const Header = () => {
                     className="absolute right-0 top-10 w-40 bg-[#07080c] border border-white/10 z-40 py-1"
                     style={{ fontFamily: "var(--font-geist-sans)" }}
                   >
-                    {regions.map((r) => (
-                      <button key={r.code} onClick={() => { setRegion(r); setRegionOpen(false) }}
-                        className={cn("w-full flex items-center gap-2.5 px-4 py-2.5 text-xs hover:bg-white/5 transition-colors", r.code === region.code ? "text-white" : "text-white/50")}>
-                        <span>{r.flag}</span>
-                        <span>{r.label}</span>
+                    {REGION_LIST.map((r) => (
+                      <button key={r.code} onClick={() => { setRegion(r.code); setRegionOpen(false) }}
+                        className={cn("w-full flex items-center justify-between gap-2.5 px-4 py-2.5 text-xs hover:bg-white/5 transition-colors", r.code === region.code ? "text-white" : "text-white/50")}>
+                        <span className="flex items-center gap-2.5"><span>{r.flag}</span><span>{r.label}</span></span>
+                        <span className="text-[10px] font-mono opacity-60">{r.displayCurrency}</span>
                       </button>
                     ))}
                   </motion.div>
@@ -632,8 +627,8 @@ export const Header = () => {
 
       {/* Mobile menu */}
       <div className={cn(
-        "fixed inset-x-0 top-14 z-20 bg-[#07080c] border-b border-white/10 lg:hidden overflow-hidden transition-all duration-300",
-        menuState ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+        "fixed inset-x-0 top-14 z-20 bg-[#07080c] border-b border-white/10 lg:hidden overflow-y-auto transition-all duration-300",
+        menuState ? "max-h-[calc(100vh-3.5rem)] opacity-100" : "max-h-0 opacity-0"
       )} style={{ fontFamily: "var(--font-geist-sans)" }}>
         {/* Search */}
         <div className="px-6 pt-4">
@@ -647,34 +642,114 @@ export const Header = () => {
           </button>
         </div>
 
-        <ul className="flex flex-col px-6 pt-5 pb-2 gap-5">
-          {menuItems.map((item) => (
-            <li key={item.name}>
-              <Link href={item.href} className="text-sm text-white/70 hover:text-white transition-colors" onClick={() => setMenuState(false)}>
-                {item.name}
-              </Link>
-            </li>
-          ))}
+        <ul className="flex flex-col px-6 pt-5 pb-2 gap-1">
+          {menuItems.map((item) => {
+            const isExpandable = item.dropdown === "productos" || item.dropdown === "casos"
+            if (!isExpandable) {
+              return (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className="block py-2 text-sm text-white/70 hover:text-white transition-colors"
+                    onClick={() => setMenuState(false)}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              )
+            }
+            const expanded = activeDropdown === item.dropdown
+            return (
+              <li key={item.name}>
+                <button
+                  onClick={() => setActiveDropdown(expanded ? null : item.dropdown!)}
+                  className="w-full flex items-center justify-between py-2 text-sm text-white/70 hover:text-white transition-colors"
+                >
+                  <span>{item.name}</span>
+                  <ChevronDown size={14} className={cn("transition-transform duration-200", expanded && "rotate-180")} />
+                </button>
+                {expanded && (
+                  <div className="pl-2 pb-2 flex flex-col gap-2 border-l border-white/10 ml-1">
+                    {item.dropdown === "productos" && (
+                      <>
+                        {productosDropdown.items.map((p) => (
+                          <Link
+                            key={p.name}
+                            href={p.href}
+                            onClick={() => { setMenuState(false); setActiveDropdown(null) }}
+                            className="flex items-start gap-2.5 pl-4 py-1.5 text-xs text-white/60 hover:text-white transition-colors"
+                          >
+                            <p.icon size={13} className="text-[#017bfd] mt-0.5 shrink-0" />
+                            <span className="flex flex-col gap-0.5">
+                              <span>{p.name}</span>
+                              <span className="text-[10px] text-white/35 leading-tight">{p.desc}</span>
+                            </span>
+                          </Link>
+                        ))}
+                        <Link
+                          href={productosDropdown.viewAll.href}
+                          onClick={() => { setMenuState(false); setActiveDropdown(null) }}
+                          className="flex items-center justify-between pl-4 py-1.5 text-xs text-white/50 hover:text-white transition-colors"
+                        >
+                          <span>{productosDropdown.viewAll.label}</span>
+                          <ArrowRight size={12} />
+                        </Link>
+                      </>
+                    )}
+                    {item.dropdown === "casos" && (
+                      <>
+                        {[...casosDropdown.byIndustry.items, ...casosDropdown.bySolution.items]
+                          .filter((c) => !c.placeholder)
+                          .filter((c, i, arr) => arr.findIndex((x) => x.href === c.href) === i)
+                          .map((c) => (
+                            <Link
+                              key={c.name}
+                              href={c.href}
+                              onClick={() => { setMenuState(false); setActiveDropdown(null) }}
+                              className="flex items-center gap-2.5 pl-4 py-1.5 text-xs text-white/60 hover:text-white transition-colors"
+                            >
+                              <c.icon size={13} className="text-white/40 shrink-0" />
+                              <span>{c.name}</span>
+                            </Link>
+                          ))}
+                        <Link
+                          href="/casos"
+                          onClick={() => { setMenuState(false); setActiveDropdown(null) }}
+                          className="flex items-center justify-between pl-4 py-1.5 text-xs text-white/50 hover:text-white transition-colors"
+                        >
+                          <span>Ver todos los casos</span>
+                          <ArrowRight size={12} />
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                )}
+              </li>
+            )
+          })}
         </ul>
 
         <div className="px-6 pb-6 flex flex-col gap-3">
           {/* Region picker */}
           <div className="flex flex-col gap-1.5">
             <p className="text-[10px] font-mono text-white/30 tracking-widest uppercase px-1">Región</p>
-            <div className="grid grid-cols-3 gap-1.5">
-              {regions.map((r) => (
+            <div className="grid grid-cols-2 gap-1.5">
+              {REGION_LIST.map((r) => (
                 <button
                   key={r.code}
-                  onClick={() => setRegion(r)}
+                  onClick={() => setRegion(r.code)}
                   className={cn(
-                    "flex items-center justify-center gap-1.5 h-8 border text-xs transition-colors",
+                    "flex flex-col items-center justify-center gap-0.5 h-10 border text-xs transition-colors",
                     r.code === region.code
                       ? "border-[#017bfd]/50 bg-[#017bfd]/10 text-white"
                       : "border-white/10 text-white/40 hover:border-white/25 hover:text-white/70"
                   )}
                 >
-                  <span>{r.flag}</span>
-                  <span className="font-mono text-[11px]">{r.code}</span>
+                  <span className="flex items-center gap-1.5">
+                    <span>{r.flag}</span>
+                    <span className="font-mono text-[11px]">{r.code}</span>
+                  </span>
+                  <span className="text-[9px] font-mono opacity-60">{r.displayCurrency}</span>
                 </button>
               ))}
             </div>
@@ -708,7 +783,9 @@ export const Header = () => {
             </Button>
           )}
           <Button asChild className="w-full text-xs bg-[#017bfd] hover:bg-[#0066d6] text-white border-0">
-            <Link href="#">Agendar demo</Link>
+            <a href={WA_DEMO} target="_blank" rel="noopener noreferrer" onClick={() => setMenuState(false)}>
+              Agendar demo
+            </a>
           </Button>
         </div>
       </div>

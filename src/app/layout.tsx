@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import WhatsAppButton from "@/components/whatsapp-button";
 import { CartProvider } from "@/context/cart-context";
 import { AuthProvider } from "@/context/auth-context";
+import { RegionProvider } from "@/context/region-context";
 import CartDrawer from "@/components/cart-drawer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
@@ -104,13 +105,15 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ThemeProvider attribute="class" forcedTheme="light">
-          <AuthProvider>
-            <CartProvider>
-              {children}
-              <CartDrawer />
-              <WhatsAppButton />
-            </CartProvider>
-          </AuthProvider>
+          <RegionProvider>
+            <AuthProvider>
+              <CartProvider>
+                {children}
+                <CartDrawer />
+                <WhatsAppButton />
+              </CartProvider>
+            </AuthProvider>
+          </RegionProvider>
         </ThemeProvider>
         <Toaster position="bottom-left" />
         <SpeedInsights />

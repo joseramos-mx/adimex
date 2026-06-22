@@ -760,7 +760,7 @@ const hmiProducts: Product[] = [
     shopifyHandle: "f007n",
   },
   {
-    slug: "hmi-f110",
+    slug: "productos-hmi-f110",
     name: "F110",
     series: "F0/1",
     category: "hmi",

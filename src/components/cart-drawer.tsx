@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { sileo } from 'sileo'
+import { useRegion, formatPriceForRegion } from '@/context/region-context'
 
 const toastBase = {
   fill: '#111111',
@@ -14,18 +15,14 @@ const toastBase = {
   styles: { title: 'text-white', description: 'text-white/60' },
 } as const
 
-function formatPrice(amount: string, currencyCode: string) {
-  return new Intl.NumberFormat('es-MX', {
-    style: 'currency',
-    currency: currencyCode,
-    minimumFractionDigits: 2,
-  }).format(parseFloat(amount))
-}
-
 export default function CartDrawer() {
   const { cart, itemCount, isOpen, loading, closeCart, removeItem, updateQuantity, goToCheckout } =
     useCart()
+  const { region } = useRegion()
   const overlayRef = useRef<HTMLDivElement>(null)
+
+  const fmt = (amount: string, currency: string) =>
+    formatPriceForRegion(amount, currency, region)
 
   // Close on Escape
   useEffect(() => {
@@ -137,7 +134,7 @@ export default function CartDrawer() {
                           {item.productName}
                         </p>
                         <p className="text-xs text-[#017bfd] font-mono mt-1">
-                          {formatPrice(item.price, item.currencyCode)}
+                          {fmt(item.price, item.currencyCode).formatted}
                         </p>
 
                         {/* Qty controls */}
@@ -184,15 +181,23 @@ export default function CartDrawer() {
             {/* Footer */}
             {cart && cart.items.length > 0 && (
               <div className="px-5 py-4 border-t border-black/8 space-y-3 bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">Subtotal</span>
-                  <span className="text-sm font-semibold text-[#07080c] font-mono">
-                    {formatPrice(cart.totalAmount, cart.totalCurrencyCode)}
-                  </span>
-                </div>
-                <p className="text-[10px] text-gray-400 font-mono">
-                  Envío e impuestos calculados en checkout
-                </p>
+                {(() => {
+                  const total = fmt(cart.totalAmount, cart.totalCurrencyCode)
+                  return (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500">Subtotal</span>
+                        <span className="text-sm font-semibold text-[#07080c] font-mono">
+                          {total.formatted}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-gray-400 font-mono">
+                        {total.ivaIncluded ? 'IVA incluido' : 'Envío e impuestos calculados en checkout'}
+                        {total.currency === 'USD' && ' · El checkout procesa en MXN'}
+                      </p>
+                    </>
+                  )
+                })()}
                 <Button
                   onClick={goToCheckout}
                   disabled={loading}
