@@ -114,7 +114,17 @@ function mapShopifyProduct(node: ShopifyNode): Product {
 
   if (staticMatch) {
     const shopifyImage = node.images.edges[0]?.node.url
-    return shopifyImage ? { ...staticMatch, image: shopifyImage } : staticMatch
+    const variant = node.variants?.edges[0]?.node
+    return {
+      ...staticMatch,
+      ...(shopifyImage ? { image: shopifyImage } : {}),
+      shopifyHandle: node.handle,
+      variantId: variant?.id,
+      price: variant?.price.amount,
+      currencyCode: variant?.price.currencyCode,
+      availableForSale: variant?.availableForSale,
+      quantityAvailable: variant?.quantityAvailable,
+    }
   }
 
   // Parse metafields into a map
