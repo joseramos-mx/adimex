@@ -4,11 +4,16 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion } from "motion/react"
 import { ShoppingCart, ArrowUpRight } from "lucide-react"
-import { products } from "@/data/products"
+import type { Product } from "@/data/products"
+import PriceTag from "@/components/price-tag"
 
-const availableProducts = products.filter((p) => p.shopifyHandle)
+interface Props {
+  products: Product[]
+}
 
-export default function AvailableProducts() {
+export default function AvailableProducts({ products }: Props) {
+  if (products.length === 0) return null
+
   return (
     <section
       data-theme="light"
@@ -53,7 +58,7 @@ export default function AvailableProducts() {
 
         {/* ── Product cards ───────────────────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {availableProducts.map((product, i) => (
+          {products.map((product, i) => (
             <motion.div
               key={product.slug}
               initial={{ opacity: 0, y: 16 }}
@@ -62,7 +67,7 @@ export default function AvailableProducts() {
               viewport={{ once: true }}
             >
               <Link
-                href={`/productos/${product.slug}`}
+                href={`/productos/${product.slug}#comprar`}
                 className="group flex flex-col bg-white border border-black/8 hover:border-[#017bfd]/40 hover:shadow-md transition-all duration-200 h-full"
               >
                 {/* Image */}
@@ -84,12 +89,21 @@ export default function AvailableProducts() {
 
                 {/* Content */}
                 <div className="flex flex-col flex-1 p-5 gap-2">
-                  <h3 className="text-base font-bold text-[#07080c] group-hover:text-[#017bfd] transition-colors leading-snug">
+                  <h3 className="text-sm font-bold text-[#07080c] group-hover:text-[#017bfd] transition-colors leading-snug line-clamp-3">
                     {product.name}
                   </h3>
                   <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
                     {product.tagline}
                   </p>
+
+                  {product.price && (
+                    <PriceTag
+                      price={product.price}
+                      currencyCode={product.currencyCode ?? "MXN"}
+                      size="md"
+                      className="mt-2"
+                    />
+                  )}
 
                   <div className="mt-3 pt-3 border-t border-black/5 flex items-center justify-between">
                     <span className="flex items-center gap-1.5 text-xs font-medium text-[#017bfd]">

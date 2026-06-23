@@ -8,9 +8,13 @@ import MexicoMap from "@/components/mexico-map";
 import Testimonial from "@/components/testimonial";
 import CTA from "@/components/cta";
 import Footer from "@/components/footer";
+import { getProducts } from "@/lib/products";
 
 
-export default function Home() {
+export default async function Home() {
+  const all = await getProducts({})
+  const availableProducts = all.filter((p) => p.shopifyHandle && p.variantId)
+
   return (
     <div className="flex flex-col min-h-screen w-full">
       <main className="flex-1">
@@ -19,7 +23,7 @@ export default function Home() {
       <LogoMarquee/>
       <Articles/>
       <Catalog/>
-      <AvailableProducts />
+      <AvailableProducts products={availableProducts} />
       <Testimonial />
       <MexicoMap />
       <CTA />

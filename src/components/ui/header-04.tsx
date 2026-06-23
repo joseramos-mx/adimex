@@ -30,9 +30,9 @@ const productosDropdown = {
   tagline: "Equipo listo para envío en México — los primeros tres productos de la tienda en línea.",
   viewAll: { label: "Ver catálogo completo", href: "/productos" },
   items: [
-    { icon: Monitor, name: "HMI F007N",  desc: "Capacitiva 7\" HD multi-touch",            href: "/productos/hmi-f007n", badge: "Comprar" },
-    { icon: Monitor, name: "HMI F110",   desc: "Capacitiva 10.1\" con IoT y Bluetooth",   href: "/productos/productos-hmi-f110",  badge: "Comprar" },
-    { icon: Cpu,     name: "PLC FL7",    desc: "CODESYS, hasta 32 ejes de movimiento",    href: "/productos/plc-fl7",   badge: "Comprar" },
+    { icon: Monitor, name: "HMI F007N",  desc: "Capacitiva 7\" HD multi-touch",            href: "/productos/hmi-f007n#comprar", badge: "Comprar" },
+    { icon: Monitor, name: "HMI F110",   desc: "Capacitiva 10.1\" con IoT y Bluetooth",   href: "/productos/productos-hmi-f110#comprar",  badge: "Comprar" },
+    { icon: Cpu,     name: "PLC FL7",    desc: "CODESYS, hasta 32 ejes de movimiento",    href: "/productos/plc-fl7#comprar",   badge: "Comprar" },
   ],
 }
 

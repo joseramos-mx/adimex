@@ -115,8 +115,15 @@ function mapShopifyProduct(node: ShopifyNode): Product {
   if (staticMatch) {
     const shopifyImage = node.images.edges[0]?.node.url
     const variant = node.variants?.edges[0]?.node
+    // Shopify is the source of truth for title/description/tagline once a
+    // product is published — only fall back to static copy when Shopify
+    // leaves the field empty.
+    const shopifyTagline = node.description?.split('.')[0]?.trim()
     return {
       ...staticMatch,
+      name: node.title || staticMatch.name,
+      tagline: shopifyTagline || staticMatch.tagline,
+      description: node.description || staticMatch.description,
       ...(shopifyImage ? { image: shopifyImage } : {}),
       shopifyHandle: node.handle,
       variantId: variant?.id,

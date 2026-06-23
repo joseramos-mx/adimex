@@ -90,7 +90,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             </div>
 
             {/* Right — purchase panel (sticky on lg) */}
-            <div className="lg:sticky lg:top-24 flex flex-col gap-5">
+            <div id="comprar" className="lg:sticky lg:top-24 flex flex-col gap-5 scroll-mt-24">
 
               {/* Badges row */}
               <div className="flex items-center flex-wrap gap-2">

@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react"
 import { Header } from "@/components/ui/header-04"
 import Footer from "@/components/footer"
 import ProductsFilter from "@/components/products-filter"
+import PriceTag from "@/components/price-tag"
 import {
   getProducts,
   getProductCounts,
@@ -134,12 +135,20 @@ export default async function ProductosPage({ searchParams }: PageProps) {
                           </div>
 
                           <div className="flex flex-col flex-1 p-5 gap-2">
-                            <h3 className="text-base font-semibold text-[#07080c] group-hover:text-[#017bfd] transition-colors leading-snug">
+                            <h3 className="text-sm font-semibold text-[#07080c] group-hover:text-[#017bfd] transition-colors leading-snug line-clamp-3">
                               {product.name}
                             </h3>
                             <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
                               {product.tagline}
                             </p>
+                            {product.price && (
+                              <PriceTag
+                                price={product.price}
+                                currencyCode={product.currencyCode ?? "MXN"}
+                                size="md"
+                                className="mt-2"
+                              />
+                            )}
                             <div className="flex items-center justify-between mt-2 pt-3 border-t border-black/5">
                               <span className="text-xs text-[#017bfd] font-medium">Comprar</span>
                               <ArrowRight size={13} className="text-[#017bfd] group-hover:translate-x-1 transition-transform" />

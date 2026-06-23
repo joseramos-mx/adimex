@@ -447,7 +447,7 @@ const plcProducts: Product[] = [
       "Fabricación de baterías de litio",
     ],
     externalUrl: "https://es.flexem.com/products_detail/Serie_FL7.html",
-    shopifyHandle: "fl7",
+    shopifyHandle: "plc-fl721-0808p-d",
   },
   {
     slug: "plc-fl6",
@@ -757,7 +757,7 @@ const hmiProducts: Product[] = [
       "Modernización de paneles de control",
     ],
     externalUrl: "https://es.flexem.com/products_list/F0/1_Series.html",
-    shopifyHandle: "f007n",
+    shopifyHandle: "hmi-flexem-f007n",
   },
   {
     slug: "productos-hmi-f110",
@@ -796,7 +796,7 @@ const hmiProducts: Product[] = [
       "Sistemas SCADA distribuidos",
     ],
     externalUrl: "https://es.flexem.com/products_list/F0/1_Series.html",
-    shopifyHandle: "f110",
+    shopifyHandle: "productos-hmi-f110",
   },
   {
     slug: "hmi-fpad",
