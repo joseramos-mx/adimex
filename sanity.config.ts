@@ -7,8 +7,10 @@ export default defineConfig({
   name: "adimex",
   title: "ADIMEX CMS",
 
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+  // Fallback vacío para que el sitio arranque sin credenciales.
+  // /studio sólo funcionará cuando estas variables estén definidas.
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? "",
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "",
 
   plugins: [
     structureTool({

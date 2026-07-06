@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button"
 import AddToCart from "@/components/add-to-cart"
 import ProductTabs from "@/components/product-tabs"
 import { WHATSAPP_NUMBER } from "@/lib/contact"
+import { BreadcrumbSchema } from "@/components/blog/breadcrumb"
 
 const TRUST = [
   { Icon: Truck,       title: "Envío nacional",   sub: "3-5 días hábiles" },
@@ -35,9 +36,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const product = await getProductBySlug(slug)
   if (!product) return {}
+  const url = `https://adimex.io/productos/${slug}`
   return {
     title: `${product.name} | ADIMEX`,
     description: product.tagline,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${product.name} — ${product.categoryLabel} FLEXEM en México`,
+      description: product.tagline,
+      url,
+      type: "website",
+      images: [{ url: product.image, alt: product.name }],
+    },
   }
 }
 
@@ -57,8 +67,62 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     `Hola, quiero agendar una demo del ${product.name}.`
   )}`
 
+  const canonical = `https://adimex.io/productos/${product.slug}`
+  const breadcrumbs = [
+    { name: "Inicio", href: "/" },
+    { name: "Productos", href: "/productos" },
+    { name: product.name, href: `/productos/${product.slug}` },
+  ]
+
+  // Product JSON-LD — recuperado como rich result en Google Search
+  const priceMXN =
+    product.price && product.currencyCode
+      ? product.currencyCode === "MXN"
+        ? parseFloat(product.price)
+        : parseFloat(product.price) * 18
+      : undefined
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description || product.tagline,
+    image: [product.image],
+    brand: { "@type": "Brand", name: "FLEXEM" },
+    category: product.categoryLabel,
+    sku: product.slug,
+    ...(product.series ? { model: product.series } : {}),
+    ...(priceMXN
+      ? {
+          offers: {
+            "@type": "Offer",
+            url: canonical,
+            priceCurrency: "MXN",
+            price: priceMXN.toFixed(2),
+            availability: product.availableForSale
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+            itemCondition: "https://schema.org/NewCondition",
+            seller: { "@type": "Organization", name: "ADIMEX" },
+          },
+        }
+      : {
+          offers: {
+            "@type": "Offer",
+            url: canonical,
+            priceCurrency: "MXN",
+            availability: "https://schema.org/PreOrder",
+            seller: { "@type": "Organization", name: "ADIMEX" },
+          },
+        }),
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-white" style={{ fontFamily: "var(--font-geist-sans)" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <BreadcrumbSchema items={breadcrumbs} />
       <Header />
 
       {/* Breadcrumb */}

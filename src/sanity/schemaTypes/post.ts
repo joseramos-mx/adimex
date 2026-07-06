@@ -40,8 +40,26 @@ export const postType = defineType({
       ],
     }),
     defineField({
+      name: "cluster",
+      title: "Cluster SEO",
+      description:
+        "Cluster de la estrategia de contenido. Determina interlinking y CTA.",
+      type: "string",
+      options: {
+        list: [
+          { title: "A · Transaccional / Marca FLEXEM", value: "transaccional" },
+          { title: "B · Comparativas", value: "comparativas" },
+          { title: "C · Soluciones por máquina", value: "maquina" },
+          { title: "D · Soporte técnico y tutoriales", value: "soporte" },
+          { title: "E · Educacional (TOFU)", value: "educacional" },
+        ],
+      },
+    }),
+    defineField({
       name: "category",
-      title: "Categoría",
+      title: "Categoría visible",
+      description:
+        "Etiqueta que se muestra en la tarjeta del artículo (ej. \"HMI\", \"Tutoriales\").",
       type: "string",
       options: {
         list: [
@@ -49,10 +67,53 @@ export const postType = defineType({
           { title: "Servomotores", value: "servomotores" },
           { title: "SCADA", value: "scada" },
           { title: "PLCs", value: "plcs" },
+          { title: "HMI", value: "hmi" },
           { title: "Industria 4.0", value: "industria40" },
+          { title: "Tutoriales", value: "tutoriales" },
+          { title: "Distribución oficial", value: "distribucion" },
+          { title: "Costos y presupuestos", value: "costos" },
           { title: "Casos de éxito", value: "casos" },
         ],
       },
+    }),
+    defineField({
+      name: "focusKeyword",
+      title: "Palabra clave objetivo",
+      description:
+        "Keyword principal para SEO. Se usa como referencia — no se renderiza al usuario.",
+      type: "string",
+    }),
+    defineField({
+      name: "relatedProductSlugs",
+      title: "Productos relacionados (slugs)",
+      description:
+        "Slugs de productos que se enlazan desde el artículo (ej. plc-fl7, hmi-f007n).",
+      type: "array",
+      of: [{ type: "string" }],
+    }),
+    defineField({
+      name: "whatsappContext",
+      title: "Texto precargado para WhatsApp",
+      description:
+        "Frase contextual al artículo que se precarga en el CTA de WhatsApp. Ejemplo: \"quiero cotizar equipo FLEXEM\".",
+      type: "text",
+      rows: 2,
+    }),
+    defineField({
+      name: "faq",
+      title: "Preguntas frecuentes",
+      description:
+        "Genera schema.org/FAQPage y se muestra al pie del artículo.",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            defineField({ name: "q", title: "Pregunta", type: "string" }),
+            defineField({ name: "a", title: "Respuesta", type: "text", rows: 3 }),
+          ],
+        },
+      ],
     }),
     defineField({
       name: "author",

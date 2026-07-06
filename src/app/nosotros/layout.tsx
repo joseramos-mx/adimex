@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { BreadcrumbSchema } from "@/components/blog/breadcrumb"
 
 export const metadata: Metadata = {
   title: "Nosotros",
@@ -8,5 +9,15 @@ export const metadata: Metadata = {
 }
 
 export default function NosotrosLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      <BreadcrumbSchema
+        items={[
+          { name: "Inicio", href: "/" },
+          { name: "Nosotros", href: "/nosotros" },
+        ]}
+      />
+      {children}
+    </>
+  )
 }

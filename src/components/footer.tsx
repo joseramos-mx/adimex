@@ -28,6 +28,7 @@ const nav = [
         heading: "Compañía",
         links: [
             { label: "Sobre nosotros",    href: "/nosotros" },
+            { label: "Blog",              href: "/blog" },
             { label: "Soporte técnico",   href: "/soporte" },
             { label: "Contactar ventas",  href: "/soporte" },
         ],

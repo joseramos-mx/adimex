@@ -7,6 +7,7 @@ export const postsQuery = groq`
     slug,
     excerpt,
     category,
+    cluster,
     publishedAt,
     author,
     mainImage {
@@ -39,6 +40,12 @@ export const postBySlugQuery = groq`
     slug,
     excerpt,
     category,
+    cluster,
+    focusKeyword,
+    relatedProductSlugs,
+    whatsappContext,
+    faq,
+    author,
     publishedAt,
     mainImage {
       asset->{ _id, url },

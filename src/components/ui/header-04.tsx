@@ -62,6 +62,7 @@ const casosDropdown = {
 const menuItems = [
   { name: "Productos",        href: "#",     dropdown: "productos" },
   { name: "Casos de estudio", href: "/casos", dropdown: "casos"    },
+  { name: "Blog",             href: "/blog", dropdown: null     },
   { name: "Soporte",           href: "/soporte", dropdown: null     },
   { name: "Nosotros",         href: "/nosotros", dropdown: null     },
 ]

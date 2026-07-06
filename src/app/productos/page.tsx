@@ -14,6 +14,7 @@ import {
   type ProductCategory,
   type SortOption,
 } from "@/lib/products"
+import { BreadcrumbSchema } from "@/components/blog/breadcrumb"
 
 interface PageProps {
   searchParams: Promise<{ category?: string; subcategory?: string; sort?: string }>
@@ -47,6 +48,12 @@ export default async function ProductosPage({ searchParams }: PageProps) {
 
   return (
     <div className="flex flex-col min-h-screen bg-white" style={{ fontFamily: "var(--font-geist-sans)" }}>
+      <BreadcrumbSchema
+        items={[
+          { name: "Inicio", href: "/" },
+          { name: "Productos", href: "/productos" },
+        ]}
+      />
       <Header />
 
       {/* Hero */}
