@@ -1,21 +1,11 @@
 import { ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-import { client } from "@/sanity/client"
-import { latestPostsQuery } from "@/sanity/queries"
-
-type Post = {
-  _id: string
-  title: string
-  slug: { current: string }
-  excerpt: string
-  category?: string
-  publishedAt?: string
-  mainImage?: { asset: { _id: string; url: string }; alt?: string }
-}
+import { getAllPosts } from "@/lib/blog"
 
 export default async function Articles() {
-  const posts: Post[] = await client.fetch(latestPostsQuery, {}, { next: { revalidate: 60 } })
+  const all = await getAllPosts()
+  const posts = all.slice(0, 3)
 
   return (
     <section className="w-full bg-[#07080c] py-20 px-6">
@@ -28,12 +18,12 @@ export default async function Articles() {
 
       <div className="max-w-6xl mx-auto border border-white/10 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
         {posts.length > 0 ? posts.map((post) => (
-          <div key={post._id} className="flex flex-col p-0">
+          <div key={post.slug} className="flex flex-col p-0">
             <div className="w-full aspect-4/3 bg-[#111214] flex items-center justify-center overflow-hidden">
-              {post.mainImage?.asset?.url ? (
+              {post.cover?.src ? (
                 <Image
-                  src={post.mainImage.asset.url}
-                  alt={post.mainImage.alt ?? post.title}
+                  src={post.cover.src}
+                  alt={post.cover.alt}
                   width={600}
                   height={450}
                   className="w-full h-full object-cover"
@@ -53,20 +43,20 @@ export default async function Articles() {
                 </p>
               )}
               <h3
-                className="text-[#a7a9ac] font-bold text-lg"
+                className="text-[#a7a9ac] font-bold text-lg leading-snug"
                 style={{ fontFamily: "var(--font-geist-sans)" }}
               >
                 {post.title}
               </h3>
               <p
-                className="text-sm leading-relaxed text-[#a7a9ac]"
+                className="text-sm leading-relaxed text-[#a7a9ac] line-clamp-3"
                 style={{ fontFamily: "var(--font-geist-sans)" }}
               >
                 {post.excerpt}
               </p>
 
               <div className="flex items-center mt-auto pt-4">
-                <Link href={`/blog/${post.slug.current}`} className="flex items-center gap-0 group">
+                <Link href={`/blog/${post.slug}`} className="flex items-center gap-0 group">
                   <span className="bg-[#017bfd] p-2 flex items-center justify-center">
                     <ArrowUpRight size={16} className="text-white" />
                   </span>
