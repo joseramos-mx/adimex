@@ -124,15 +124,44 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Bottom watermark + copyright */}
+            {/* Legal strip — visible en desktop y mobile */}
+            <div className="bg-[#0066FF] border-t border-white/20">
+                <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <p className="text-[11px] text-white/60 font-light">
+                        © 2026 American Digital de México, S.A. de C.V. · Distribuidor autorizado FLEXEM
+                    </p>
+                    <nav className="flex items-center gap-5 flex-wrap">
+                        <Link
+                            href="/legal/aviso-de-privacidad"
+                            className="text-[11px] text-white/60 hover:text-white transition-colors"
+                        >
+                            Aviso de Privacidad
+                        </Link>
+                        <Link
+                            href="/legal/terminos-y-condiciones"
+                            className="text-[11px] text-white/60 hover:text-white transition-colors"
+                        >
+                            Términos y Condiciones
+                        </Link>
+                        <Link
+                            href="/legal/politica-de-cookies"
+                            className="text-[11px] text-white/60 hover:text-white transition-colors"
+                        >
+                            Política de Cookies
+                        </Link>
+                    </nav>
+                </div>
+            </div>
+
+            {/* Bottom watermark */}
             <div className="bg-[#0066FF] relative">
 
-                {/* Vertical copyright — desktop */}
+                {/* Vertical microcopy — desktop */}
                 <p
                     className="hidden lg:block absolute left-4 bottom-0 top-0 my-auto h-fit text-[10px] text-white/45 font-light tracking-widest"
                     style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
                 >
-                    © 2026 ADIMEX · Todos los derechos reservados · México
+                    ADIMEX · Automatización Industrial · México
                 </p>
 
                 {/* Watermark logo — flush to bottom */}
@@ -144,13 +173,6 @@ export default function Footer() {
                         height={315}
                         className="opacity-[0.9] w-full block"
                     />
-                </div>
-
-                {/* Copyright — mobile only */}
-                <div className="lg:hidden px-6 pb-5 pt-1">
-                    <p className="text-[11px] text-white/45 font-light">
-                        © 2026 ADIMEX. Todos los derechos reservados.
-                    </p>
                 </div>
 
             </div>

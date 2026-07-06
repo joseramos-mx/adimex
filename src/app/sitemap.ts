@@ -104,5 +104,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "yearly",
       priority: 0.5,
     },
+    // ── Legal ───────────────────────────────────────────────────────────────
+    {
+      url: "https://adimex.io/legal",
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: "https://adimex.io/legal/aviso-de-privacidad",
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: "https://adimex.io/legal/terminos-y-condiciones",
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: "https://adimex.io/legal/politica-de-cookies",
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
   ]
 }
