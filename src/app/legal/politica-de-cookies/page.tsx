@@ -23,7 +23,7 @@ export default function PoliticaCookiesPage() {
       <BreadcrumbSchema items={breadcrumbs} />
 
       <h1>Política de Cookies</h1>
-      <p className="!text-white/40 !text-xs font-mono">
+      <p className="text-gray-500! text-xs! font-mono">
         Última actualización: 6 de julio de 2026 · Versión 1.0
       </p>
 
@@ -180,7 +180,7 @@ export default function PoliticaCookiesPage() {
 
       <hr />
 
-      <p className="!text-xs !text-white/40">
+      <p className="text-xs! text-gray-400!">
         Esta política se debe revisar cada vez que se agregue una nueva
         integración de terceros o herramienta de analítica.
       </p>

@@ -5,9 +5,10 @@ import WhatsAppButton from "@/components/whatsapp-button";
 import { CartProvider } from "@/context/cart-context";
 import { AuthProvider } from "@/context/auth-context";
 import { RegionProvider } from "@/context/region-context";
+import { CookieConsentProvider } from "@/context/cookie-consent-context";
 import CartDrawer from "@/components/cart-drawer";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Analytics } from "@vercel/analytics/next";
+import CookieConsentBanner from "@/components/cookie-consent-banner";
+import GatedAnalytics from "@/components/gated-analytics";
 import { Toaster } from "sileo";
 import "./globals.css";
 
@@ -108,16 +109,18 @@ export default function RootLayout({
           <RegionProvider>
             <AuthProvider>
               <CartProvider>
-                {children}
-                <CartDrawer />
-                <WhatsAppButton />
+                <CookieConsentProvider>
+                  {children}
+                  <CartDrawer />
+                  <WhatsAppButton />
+                  <CookieConsentBanner />
+                  <GatedAnalytics />
+                </CookieConsentProvider>
               </CartProvider>
             </AuthProvider>
           </RegionProvider>
         </ThemeProvider>
         <Toaster position="bottom-left" />
-        <SpeedInsights />
-        <Analytics />
       </body>
     </html>
   );

@@ -23,7 +23,7 @@ export default function AvisoPrivacidadPage() {
       <BreadcrumbSchema items={breadcrumbs} />
 
       <h1>Aviso de Privacidad Integral</h1>
-      <p className="!text-white/40 !text-xs font-mono">
+      <p className="text-gray-500! text-xs! font-mono">
         Última actualización: 6 de julio de 2026 · Versión 1.0
       </p>
 
@@ -259,7 +259,7 @@ export default function AvisoPrivacidadPage() {
 
       <hr />
 
-      <p className="!text-xs !text-white/40">
+      <p className="text-xs! text-gray-400!">
         Este Aviso de Privacidad debe ser revisado por asesoría legal antes
         de ser considerado versión definitiva y firmada por el responsable.
         Los datos de identificación de ADIMEX (RFC, domicilio fiscal

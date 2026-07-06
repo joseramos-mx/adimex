@@ -23,7 +23,7 @@ export default function TerminosCondicionesPage() {
       <BreadcrumbSchema items={breadcrumbs} />
 
       <h1>Términos y Condiciones</h1>
-      <p className="!text-white/40 !text-xs font-mono">
+      <p className="text-gray-500! text-xs! font-mono">
         Última actualización: 6 de julio de 2026 · Versión 1.0
       </p>
 
@@ -298,7 +298,7 @@ export default function TerminosCondicionesPage() {
 
       <hr />
 
-      <p className="!text-xs !text-white/40">
+      <p className="text-xs! text-gray-400!">
         Estos Términos deben ser revisados por asesoría legal antes de
         considerarse versión definitiva. Se recomienda registrar los
         precios y catálogo publicados en el Portal Único del Consumidor

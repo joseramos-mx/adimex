@@ -50,12 +50,12 @@ export default function LegalIndexPage() {
         comercial o integración de terceros.
       </p>
 
-      <div className="not-prose mt-8 grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10">
+      <div className="not-prose mt-8 grid grid-cols-1 md:grid-cols-3 gap-px bg-black/8 border border-black/8">
         {docs.map((doc) => (
           <Link
             key={doc.href}
             href={doc.href}
-            className="group flex flex-col gap-3 bg-[#07080c] hover:bg-white/[0.02] transition-colors p-6"
+            className="group flex flex-col gap-3 bg-white hover:bg-gray-50 transition-colors p-6"
           >
             <p
               className="text-[10px] tracking-widest text-[#017bfd] uppercase"
@@ -63,13 +63,13 @@ export default function LegalIndexPage() {
             >
               Documento
             </p>
-            <h3 className="text-base font-semibold text-white leading-snug">
+            <h3 className="text-base font-semibold text-[#07080c] leading-snug">
               {doc.title}
             </h3>
-            <p className="text-xs text-white/50 leading-relaxed">
+            <p className="text-xs text-gray-500 leading-relaxed">
               {doc.description}
             </p>
-            <span className="mt-auto inline-flex items-center gap-1 text-xs text-white/60 group-hover:text-white transition-colors pt-3">
+            <span className="mt-auto inline-flex items-center gap-1 text-xs text-gray-600 group-hover:text-[#017bfd] transition-colors pt-3">
               Leer documento
               <ArrowRight size={12} />
             </span>
