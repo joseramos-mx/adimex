@@ -3,7 +3,9 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { ArrowUpRight, Check } from "lucide-react"
+import { ArrowUpRight, Check, Linkedin } from "lucide-react"
+
+const LINKEDIN_URL = "https://www.linkedin.com/company/americandimex/"
 
 const nav = [
     {
@@ -70,20 +72,20 @@ export default function Footer() {
                             </p>
                         </div>
 
-                        {/* Newsletter — lead magnet */}
+                        {/* Newsletter — boletín técnico */}
                         <div className="flex flex-col gap-3">
                             <div>
                                 <p className="text-sm text-white font-semibold leading-tight">
-                                    Guía de selección de PLC
+                                    Boletín técnico ADIMEX
                                 </p>
                                 <p className="text-[11px] text-white/70 mt-1 leading-relaxed">
-                                    Checklist de 6 páginas para elegir el PLC correcto según tu máquina · PDF gratis
+                                    Nuevos artículos, guías FLEXEM y avisos de stock en tu correo.
                                 </p>
                             </div>
                             {submitted ? (
                                 <div className="flex items-center gap-2 border border-white px-3 py-2.5">
                                     <Check size={14} className="text-white shrink-0" />
-                                    <p className="text-xs text-white">Gracias — te la enviamos al correo.</p>
+                                    <p className="text-xs text-white">Gracias — recibirás el próximo boletín.</p>
                                 </div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="flex border border-white">
@@ -99,10 +101,28 @@ export default function Footer() {
                                         type="submit"
                                         className="px-4 py-2.5 text-xs font-normal text-white border-l border-white hover:bg-white hover:text-[#0066FF] transition-colors shrink-0"
                                     >
-                                        Descargar
+                                        Suscribir
                                     </button>
                                 </form>
                             )}
+                        </div>
+
+                        {/* Social */}
+                        <div className="flex flex-col gap-2">
+                            <p className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+                                Síguenos
+                            </p>
+                            <div className="flex items-center gap-2">
+                                <a
+                                    href={LINKEDIN_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="ADIMEX en LinkedIn"
+                                    className="w-9 h-9 border border-white/40 flex items-center justify-center text-white/80 hover:bg-white hover:text-[#0066FF] transition-colors"
+                                >
+                                    <Linkedin size={15} />
+                                </a>
+                            </div>
                         </div>
                     </div>
 

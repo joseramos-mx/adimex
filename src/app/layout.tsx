@@ -72,6 +72,8 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "ADIMEX",
+  legalName: "American Digital de México, S.A. de C.V.",
+  alternateName: "American Digital de México",
   url: "https://adimex.io",
   logo: "https://adimex.io/logo.svg",
   description:
@@ -86,6 +88,9 @@ const organizationSchema = {
     contactType: "sales",
     availableLanguage: "Spanish",
   },
+  sameAs: [
+    "https://www.linkedin.com/company/americandimex/",
+  ],
 };
 
 export default function RootLayout({
