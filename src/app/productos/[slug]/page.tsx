@@ -195,7 +195,14 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 />
               ) : (
                 <div className="flex flex-col gap-3">
-                  <p className="text-xs text-gray-400">Precio a consultar · Contacta a un asesor ADIMEX</p>
+                  <div className="border border-black/8 bg-[#fafafa] px-4 py-3">
+                    <p className="text-xs font-semibold text-[#07080c] mb-2">Producto bajo pedido</p>
+                    <ul className="flex flex-col gap-1 text-[11px] text-[#494F5F] font-mono leading-snug">
+                      <li>· Cotización con precio y disponibilidad en 24-48 h hábiles</li>
+                      <li>· Entrega típica 4-6 semanas desde fábrica</li>
+                      <li>· Pago 50% anticipo, 50% contra entrega</li>
+                    </ul>
+                  </div>
                   <a
                     href={waQuote}
                     target="_blank"

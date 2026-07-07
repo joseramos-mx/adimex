@@ -9,25 +9,29 @@ const SLIDE_DURATION = 5000
 
 const slides = [
   {
-    name: "PLC FL7",
+    name: "ADIMEX",
     image: "/bgfl7h.png",
-    heading: ["Más preciso y más eficiente", "PLC de la", "serie FL7"],
+    heading: [
+      "Distribuidor autorizado FLEXEM",
+      "Automatización industrial",
+      "en México",
+    ],
     description:
-      "El PLC de la serie FL7 está diseñado para aplicaciones complejas de automatización mecánica y control de movimiento multieje. Incorpora funciones integradas de entrada y salida de pulsos de alta velocidad, admite diversos algoritmos de interpolación y levas electrónicas, y puede controlar hasta 32 ejes simultáneamente.",
+      "PLC, HMI, servos y SCADA de FLEXEM — comprables en línea o bajo pedido. Precios en pesos con IVA, envío nacional en 3-5 días hábiles y soporte de ingeniería en español con garantía del fabricante.",
   },
   {
-    name: "AI + IoT",
-    image: "/iotaibg.png",
-    heading: ["Automatización industrial en México", "AI + IoT"],
+    name: "PLC FL7",
+    image: "/bgfl7h.png",
+    heading: ["Comprable en línea", "PLC FL7", "$3,445 MXN con IVA"],
     description:
-      "Flexem AI+IoT logra una automatización totalmente integrada de software y hardware, rompe los silos de datos, optimiza los procesos de producción a través de algoritmos inteligentes, mejora significativamente la eficiencia y los beneficios, e impulsa actualizaciones inteligentes industriales.",
+      "El PLC CODESYS más pedido de nuestro catálogo: control de movimiento multi-eje hasta 32 ejes, leva electrónica integrada y comunicación Modbus TCP/RTU. En stock con envío 3-5 días.",
   },
   {
     name: "HMI Capacitiva",
     image: "/hmibg.png",
-    heading: ["Estética industrial", "HMI Capacitiva", "FLEXEM"],
+    heading: ["Precios visibles", "HMI Capacitiva", "F007N y F110"],
     description:
-      "La HMI capacitiva FLEXEM presenta un diseño de estética industrial, una pantalla de alta definición y alto brillo, y amplios ángulos de visión. Su superficie resistente a rayones y duradera facilita una variedad de operaciones gestuales fluidas.",
+      "Las HMI capacitivas más solicitadas por integradores mexicanos. F007N de 7 pulgadas a $7,308 y F110 de 10.1 pulgadas con IoT a $9,103 — ambas con envío en 3-5 días desde nuestro almacén.",
   },
 ]
 
@@ -165,6 +169,29 @@ export const Hero = () => {
               Agendar demo
             </a>
           </div>
+
+          {/* Trust strip — persistente en todos los slides */}
+          <ul
+            className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-mono uppercase tracking-widest text-white/70"
+            style={{ fontFamily: "var(--font-geist-mono)" }}
+          >
+            <li className="flex items-center gap-1.5">
+              <span className="w-1 h-1 bg-white/70 rounded-full" />
+              Distribuidor autorizado FLEXEM
+            </li>
+            <li className="flex items-center gap-1.5">
+              <span className="w-1 h-1 bg-white/70 rounded-full" />
+              Precios en MXN + IVA
+            </li>
+            <li className="flex items-center gap-1.5">
+              <span className="w-1 h-1 bg-white/70 rounded-full" />
+              Envío 3-5 días
+            </li>
+            <li className="flex items-center gap-1.5">
+              <span className="w-1 h-1 bg-white/70 rounded-full" />
+              Garantía del fabricante
+            </li>
+          </ul>
         </div>
 
         {/* Category tabs with progress bars */}

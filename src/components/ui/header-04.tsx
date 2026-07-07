@@ -5,7 +5,7 @@ import Link from "next/link"
 import {
   Menu, X, ChevronDown, ArrowRight, Search,
   Zap, Cpu, Activity, Monitor, BarChart3, Settings2,
-  Car, Factory, Radio,
+  Radio,
   ArrowUpRightIcon, PaletteIcon, ShoppingCart,
   Download, HelpCircle, Package,
 } from "lucide-react"
@@ -43,18 +43,13 @@ const casosDropdown = {
     heading: "Por industria",
     items: [
       { icon: Activity, name: "Infraestructura", href: "/casos/sala-bombas-monitoreo-scada-iot", placeholder: false },
-      { icon: Factory,  name: "Manufactura",     href: "",                                        placeholder: true  },
-      { icon: Car,      name: "Automotriz",      href: "",                                        placeholder: true  },
-      { icon: Zap,      name: "Energía",         href: "",                                        placeholder: true  },
     ],
   },
   bySolution: {
     heading: "Por solución",
     items: [
-      { icon: BarChart3, name: "SCADA",               href: "/casos/sala-bombas-monitoreo-scada-iot", placeholder: false },
-      { icon: Radio,     name: "IoT Industrial",      href: "/casos/sala-bombas-monitoreo-scada-iot", placeholder: false },
-      { icon: Cpu,       name: "Control de procesos", href: "",                                        placeholder: true  },
-      { icon: Settings2, name: "Eficiencia energética", href: "",                                     placeholder: true  },
+      { icon: BarChart3, name: "SCADA",          href: "/casos/sala-bombas-monitoreo-scada-iot", placeholder: false },
+      { icon: Radio,     name: "IoT Industrial", href: "/casos/sala-bombas-monitoreo-scada-iot", placeholder: false },
     ],
   },
 }

@@ -66,17 +66,24 @@ export default function Footer() {
                                 <Image src="/logo.svg" alt="ADIMEX" width={110} height={25} className="h-6 w-auto self-start" />
                             </Link>
                             <p className="text-xl text-white/80 leading-relaxed max-w-xs">
-                                Soluciones de automatización industrial.
+                                Distribuidor autorizado FLEXEM · Automatización industrial en México.
                             </p>
                         </div>
 
-                        {/* Newsletter */}
+                        {/* Newsletter — lead magnet */}
                         <div className="flex flex-col gap-3">
-                            <p className="text-xs text-white/50 font-normal">Boletín de novedades</p>
+                            <div>
+                                <p className="text-sm text-white font-semibold leading-tight">
+                                    Guía de selección de PLC
+                                </p>
+                                <p className="text-[11px] text-white/70 mt-1 leading-relaxed">
+                                    Checklist de 6 páginas para elegir el PLC correcto según tu máquina · PDF gratis
+                                </p>
+                            </div>
                             {submitted ? (
                                 <div className="flex items-center gap-2 border border-white px-3 py-2.5">
                                     <Check size={14} className="text-white shrink-0" />
-                                    <p className="text-xs text-white">Gracias — te avisaremos pronto.</p>
+                                    <p className="text-xs text-white">Gracias — te la enviamos al correo.</p>
                                 </div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="flex border border-white">
@@ -85,14 +92,14 @@ export default function Footer() {
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="su@correo.com"
+                                        placeholder="tu@correo.com"
                                         className="flex-1 bg-transparent px-3 py-2.5 text-xs text-white placeholder-white/30 outline-none font-light min-w-0"
                                     />
                                     <button
                                         type="submit"
                                         className="px-4 py-2.5 text-xs font-normal text-white border-l border-white hover:bg-white hover:text-[#0066FF] transition-colors shrink-0"
                                     >
-                                        Suscribir
+                                        Descargar
                                     </button>
                                 </form>
                             )}
