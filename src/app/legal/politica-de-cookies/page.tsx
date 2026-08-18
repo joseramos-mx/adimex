@@ -82,6 +82,13 @@ export default function PoliticaCookiesPage() {
           <strong>Vercel Speed Insights</strong> — mide Core Web Vitals
           reales de usuarios para optimizar la velocidad del sitio.
         </li>
+        <li>
+          <strong>Google Tag Manager</strong> — administra las etiquetas de
+          medición del sitio. Sólo se carga si aceptas esta categoría; las
+          herramientas que gestiona (por ejemplo Google Analytics) pueden
+          establecer cookies propias como <code>_ga</code> y{" "}
+          <code>_ga_*</code>.
+        </li>
       </ul>
 
       <h3>2.3 Cookies de terceros</h3>

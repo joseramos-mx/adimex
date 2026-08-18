@@ -9,6 +9,8 @@ import { CookieConsentProvider } from "@/context/cookie-consent-context";
 import CartDrawer from "@/components/cart-drawer";
 import CookieConsentBanner from "@/components/cookie-consent-banner";
 import GatedAnalytics from "@/components/gated-analytics";
+import GoogleTagManager from "@/components/google-tag-manager";
+import { GTM_ID } from "@/lib/gtm";
 import { Toaster } from "sileo";
 import "./globals.css";
 
@@ -110,6 +112,18 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
         suppressHydrationWarning
       >
+        {/* Google Tag Manager (noscript) — debe ir justo después de <body> */}
+        {GTM_ID ? (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+              title="Google Tag Manager"
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
+          </noscript>
+        ) : null}
         <ThemeProvider attribute="class" forcedTheme="light">
           <RegionProvider>
             <AuthProvider>
@@ -120,6 +134,7 @@ export default function RootLayout({
                   <WhatsAppButton />
                   <CookieConsentBanner />
                   <GatedAnalytics />
+                  <GoogleTagManager />
                 </CookieConsentProvider>
               </CartProvider>
             </AuthProvider>
