@@ -92,6 +92,13 @@ export default function PoliticaCookiesPage() {
           <strong>Google Tag Manager</strong> — administra las etiquetas de
           medición del sitio. Sólo se carga si aceptas esta categoría.
         </li>
+        <li>
+          <strong>Microsoft Clarity</strong> — genera mapas de calor y
+          repeticiones anónimas de sesión (clics, desplazamiento y
+          movimiento del cursor) para detectar fricción en el sitio.
+          Establece las cookies <code>_clck</code> y <code>_clsk</code>.
+          Microsoft enmascara el texto que escribes en los formularios.
+        </li>
       </ul>
 
       <h3>2.3 Cookies de terceros</h3>

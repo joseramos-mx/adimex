@@ -2,7 +2,7 @@
 
 import Script from "next/script"
 import { useCookieConsent } from "@/context/cookie-consent-context"
-import { GTM_ID } from "@/lib/gtm"
+import { GTM_ID } from "@/lib/analytics-ids"
 
 /**
  * Carga el contenedor de Google Tag Manager sólo cuando el usuario consintió

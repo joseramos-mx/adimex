@@ -11,7 +11,8 @@ import CookieConsentBanner from "@/components/cookie-consent-banner";
 import GatedAnalytics from "@/components/gated-analytics";
 import GoogleTagManager from "@/components/google-tag-manager";
 import GoogleAnalytics from "@/components/google-analytics";
-import { GTM_ID } from "@/lib/gtm";
+import MicrosoftClarity from "@/components/microsoft-clarity";
+import { GTM_ID } from "@/lib/analytics-ids";
 import { Toaster } from "sileo";
 import "./globals.css";
 
@@ -137,6 +138,7 @@ export default function RootLayout({
                   <GatedAnalytics />
                   <GoogleTagManager />
                   <GoogleAnalytics />
+                  <MicrosoftClarity />
                 </CookieConsentProvider>
               </CartProvider>
             </AuthProvider>

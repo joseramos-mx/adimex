@@ -14,3 +14,10 @@ export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "GTM-MSLKT9D9"
  */
 export const GA_MEASUREMENT_ID =
   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-8XQTCY1DRC"
+
+/**
+ * Project ID de Microsoft Clarity (mapas de calor y repetición de sesión).
+ * Vacío desactiva la carga.
+ */
+export const CLARITY_PROJECT_ID =
+  process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID ?? "y4jamhfiul"

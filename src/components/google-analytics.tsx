@@ -2,7 +2,7 @@
 
 import Script from "next/script"
 import { useCookieConsent } from "@/context/cookie-consent-context"
-import { GA_MEASUREMENT_ID } from "@/lib/gtm"
+import { GA_MEASUREMENT_ID } from "@/lib/analytics-ids"
 
 /**
  * Etiqueta de Google (gtag.js) para GA4. Igual que `GoogleTagManager` y
