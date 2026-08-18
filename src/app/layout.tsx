@@ -10,6 +10,7 @@ import CartDrawer from "@/components/cart-drawer";
 import CookieConsentBanner from "@/components/cookie-consent-banner";
 import GatedAnalytics from "@/components/gated-analytics";
 import GoogleTagManager from "@/components/google-tag-manager";
+import GoogleAnalytics from "@/components/google-analytics";
 import { GTM_ID } from "@/lib/gtm";
 import { Toaster } from "sileo";
 import "./globals.css";
@@ -135,6 +136,7 @@ export default function RootLayout({
                   <CookieConsentBanner />
                   <GatedAnalytics />
                   <GoogleTagManager />
+                  <GoogleAnalytics />
                 </CookieConsentProvider>
               </CartProvider>
             </AuthProvider>

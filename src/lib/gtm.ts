@@ -6,3 +6,11 @@
  * la carga de GTM y del `<noscript>` en el layout.
  */
 export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "GTM-MSLKT9D9"
+
+/**
+ * Measurement ID de Google Analytics 4 (gtag.js, cargado directo — no vía
+ * GTM). Si algún día mueves GA4 dentro del contenedor de GTM, vacía esta
+ * constante para no duplicar el conteo de páginas.
+ */
+export const GA_MEASUREMENT_ID =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-8XQTCY1DRC"

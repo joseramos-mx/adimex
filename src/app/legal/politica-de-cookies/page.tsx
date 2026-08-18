@@ -83,11 +83,14 @@ export default function PoliticaCookiesPage() {
           reales de usuarios para optimizar la velocidad del sitio.
         </li>
         <li>
+          <strong>Google Analytics 4</strong> — mide páginas vistas, origen
+          del tráfico e interacciones. Establece las cookies{" "}
+          <code>_ga</code> y <code>_ga_*</code>, con una vigencia de hasta
+          dos años.
+        </li>
+        <li>
           <strong>Google Tag Manager</strong> — administra las etiquetas de
-          medición del sitio. Sólo se carga si aceptas esta categoría; las
-          herramientas que gestiona (por ejemplo Google Analytics) pueden
-          establecer cookies propias como <code>_ga</code> y{" "}
-          <code>_ga_*</code>.
+          medición del sitio. Sólo se carga si aceptas esta categoría.
         </li>
       </ul>
 
