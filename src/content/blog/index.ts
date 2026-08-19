@@ -6,6 +6,10 @@ import { post as costoAutomatizacion } from "./cuanto-cuesta-automatizar-maquina
 import { post as plcChinoEuropeo } from "./plc-chino-vs-plc-europeo"
 import { post as studioP1 } from "./primer-proyecto-flexem-studio-parte-1"
 import { post as modbusHmi } from "./hmi-flexem-modbus-plc-otra-marca"
+import { post as empacadora } from "./automatizar-maquina-empacadora"
+import { post as retrofit } from "./retrofit-plc-obsoleto-maquina-industrial"
+import { post as servoVsPasos } from "./servomotor-vs-motor-a-pasos"
+import { post as modbusRtuTcp } from "./modbus-rtu-vs-modbus-tcp"
 
 /**
  * Registro central de artículos estáticos del blog.
@@ -25,6 +29,10 @@ export const staticPosts: BlogPost[] = [
   plcChinoEuropeo,
   studioP1,
   modbusHmi,
+  empacadora,
+  retrofit,
+  servoVsPasos,
+  modbusRtuTcp,
 ]
 
 export function getStaticPost(slug: string): BlogPost | undefined {
