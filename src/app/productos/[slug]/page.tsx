@@ -19,6 +19,7 @@ import AddToCart from "@/components/add-to-cart"
 import ProductTabs from "@/components/product-tabs"
 import { WHATSAPP_NUMBER } from "@/lib/contact"
 import { BreadcrumbSchema } from "@/components/blog/breadcrumb"
+import ViewContentTracker from "@/components/meta-events/view-content"
 
 const TRUST = [
   { Icon: Truck,       title: "Envío nacional",   sub: "3-5 días hábiles" },
@@ -123,6 +124,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
       <BreadcrumbSchema items={breadcrumbs} />
+      <ViewContentTracker
+        contentId={product.slug}
+        contentName={product.name}
+        value={priceMXN}
+        currency="MXN"
+      />
       <Header />
 
       {/* Breadcrumb */}
@@ -192,6 +199,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   availableForSale={product.availableForSale ?? false}
                   quantityAvailable={product.quantityAvailable ?? 0}
                   productName={product.name}
+                  sku={product.slug}
                 />
               ) : (
                 <div className="flex flex-col gap-3">

@@ -1,8 +1,9 @@
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, ShoppingCart, MessageCircle } from "lucide-react"
+import { ArrowRight, ShoppingCart } from "lucide-react"
 import { getProductBySlug } from "@/lib/products"
 import { WHATSAPP_NUMBER } from "@/lib/contact"
+import WaQuoteButton from "./wa-quote-button"
 
 /**
  * Tarjeta de producto embebida dentro de un artículo del blog.
@@ -93,15 +94,7 @@ export default async function BlogProductCard({
               Comprar en línea
             </Link>
           ) : (
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 h-10 px-4 bg-[#017bfd] hover:bg-[#0066d6] text-white text-xs font-semibold transition-colors"
-            >
-              <MessageCircle size={14} />
-              Cotizar por WhatsApp
-            </a>
+            <WaQuoteButton href={waHref} productSku={product.slug} />
           )}
           <Link
             href={productHref}

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { sileo } from 'sileo'
 import { useRegion, formatPriceForRegion } from '@/context/region-context'
+import { trackMetaEvent } from '@/lib/meta-pixel'
 
 const toastBase = {
   fill: '#111111',
@@ -20,6 +21,8 @@ interface Props {
   availableForSale: boolean
   quantityAvailable: number
   productName: string
+  /** SKU / handle usado como content_id en Meta Pixel. */
+  sku?: string
 }
 
 export default function AddToCart({
@@ -29,6 +32,7 @@ export default function AddToCart({
   availableForSale,
   quantityAvailable,
   productName,
+  sku,
 }: Props) {
   const { addItem, goToCheckout, loading: cartLoading } = useCart()
   const { region } = useRegion()
@@ -39,10 +43,21 @@ export default function AddToCart({
 
   const priceDisplay = formatPriceForRegion(price, currencyCode, region)
 
+  const contentId = sku ?? variantId
+  const numericPrice = parseFloat(price)
+
   async function handleAddToCart() {
     setLocalLoading(true)
     try {
       for (let i = 0; i < qty; i++) await addItem(variantId)
+      trackMetaEvent('AddToCart', {
+        content_ids: [contentId],
+        content_type: 'product',
+        content_name: productName,
+        value: numericPrice * qty,
+        currency: currencyCode,
+        contents: [{ id: contentId, quantity: qty, item_price: numericPrice }],
+      })
       sileo.success({
         title: qty > 1 ? `${qty}× artículos agregados` : 'Agregado al carrito',
         description: `${productName} está listo en tu pedido.`,
@@ -63,6 +78,14 @@ export default function AddToCart({
     setLocalLoading(true)
     try {
       for (let i = 0; i < qty; i++) await addItem(variantId)
+      trackMetaEvent('InitiateCheckout', {
+        content_ids: [contentId],
+        content_type: 'product',
+        num_items: qty,
+        value: numericPrice * qty,
+        currency: currencyCode,
+        contents: [{ id: contentId, quantity: qty, item_price: numericPrice }],
+      })
       sileo.success({
         title: 'Redirigiendo al checkout',
         description: 'Serás llevado al pago seguro de Shopify.',

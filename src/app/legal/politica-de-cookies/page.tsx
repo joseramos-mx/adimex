@@ -24,7 +24,7 @@ export default function PoliticaCookiesPage() {
 
       <h1>Política de Cookies</h1>
       <p className="text-gray-500! text-xs! font-mono">
-        Última actualización: 6 de julio de 2026 · Versión 1.0
+        Última actualización: 7 de julio de 2026 · Versión 1.1 (añadida categoría de marketing)
       </p>
 
       <p>
@@ -104,7 +104,23 @@ export default function PoliticaCookiesPage() {
         </li>
       </ul>
 
-      <h3>2.3 Cookies de terceros</h3>
+      <h3>2.3 Cookies de marketing y publicidad</h3>
+      <p>
+        Miden campañas publicitarias y permiten retargeting. Se activan
+        sólo cuando aceptas esta categoría en el banner de consentimiento.
+      </p>
+      <ul>
+        <li>
+          <strong>Meta Pixel</strong> (<code>_fbp</code>, <code>_fbc</code>)
+          — mide páginas vistas, ficha de producto, carrito, checkout,
+          contacto por WhatsApp y compra atribuida a campañas de Facebook
+          e Instagram Ads. Enviamos los eventos también vía la Conversions
+          API con el mismo <em>event_id</em> para deduplicar y no contar la
+          misma acción dos veces.
+        </li>
+      </ul>
+
+      <h3>2.4 Cookies de terceros</h3>
       <p>
         Establecidas por servicios externos que integramos al sitio:
       </p>
@@ -176,10 +192,18 @@ export default function PoliticaCookiesPage() {
 
       <h2>4. Cookies de publicidad</h2>
       <p>
-        Al día de hoy <strong>adimex.io no ejecuta píxeles de publicidad</strong>{" "}
-        (Meta Pixel, Google Ads, LinkedIn Insight, TikTok Pixel u otros).
-        Si en el futuro habilitamos alguno, actualizaremos esta política y
-        te lo notificaremos mediante un banner de consentimiento previo.
+        Actualmente ejecutamos <strong>Meta Pixel</strong> para medir el
+        rendimiento de campañas en Facebook e Instagram. El pixel se carga
+        únicamente cuando aceptas la categoría de marketing en el banner
+        de consentimiento. Puedes cambiar tu preferencia en cualquier
+        momento borrando las cookies de este sitio o desactivando marketing
+        en el próximo banner que aparezca.
+      </p>
+      <p>
+        Cuando habilitemos otros píxeles (LinkedIn Insight, Google Ads,
+        TikTok Pixel), actualizaremos esta política y bumpearemos la
+        versión del consentimiento — el banner reaparecerá para pedir tu
+        decisión de nuevo.
       </p>
 
       <h2>5. Cambios a esta política</h2>

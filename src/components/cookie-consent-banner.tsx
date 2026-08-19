@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "motion/react"
 import { Cookie, ChevronDown, ChevronUp, Check } from "lucide-react"
@@ -18,9 +18,18 @@ export default function CookieConsentBanner() {
     useCookieConsent()
   const [expanded, setExpanded] = useState(false)
   const [analytics, setAnalytics] = useState<boolean>(consent?.analytics ?? true)
+  const [marketing, setMarketing] = useState<boolean>(consent?.marketing ?? false)
+
+  // Sincroniza el estado local si el consent cambia (ej. reopen desde política)
+  useEffect(() => {
+    if (consent) {
+      setAnalytics(consent.analytics)
+      setMarketing(consent.marketing)
+    }
+  }, [consent])
 
   const savePreferences = () => {
-    save({ analytics })
+    save({ analytics, marketing })
   }
 
   return (
@@ -47,9 +56,9 @@ export default function CookieConsentBanner() {
                 Este sitio usa cookies
               </p>
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                Las estrictamente necesarias son indispensables para operar el
-                carrito y la sesión. Las analíticas nos ayudan a mejorar el
-                sitio con datos agregados. Consulta la{" "}
+                Las necesarias operan carrito y sesión. Las analíticas nos ayudan
+                a mejorar. Las de marketing miden campañas publicitarias.
+                Consulta la{" "}
                 <Link
                   href="/legal/politica-de-cookies"
                   className="text-[#017bfd] hover:underline"
@@ -82,9 +91,15 @@ export default function CookieConsentBanner() {
                   />
                   <CategoryRow
                     title="Analíticas"
-                    description="Vercel Analytics y Speed Insights. Datos agregados, sin identificarte."
+                    description="Vercel Analytics, GA4, GTM y Contentsquare. Datos agregados, sin identificarte."
                     checked={analytics}
                     onChange={setAnalytics}
+                  />
+                  <CategoryRow
+                    title="Marketing"
+                    description="Meta Pixel, LinkedIn Insight y Google Ads. Miden campañas publicitarias y permiten retargeting."
+                    checked={marketing}
+                    onChange={setMarketing}
                   />
                 </div>
               </motion.div>

@@ -1,5 +1,8 @@
+"use client"
+
 import { MessageCircle } from "lucide-react"
 import { WHATSAPP_NUMBER } from "@/lib/contact"
+import { trackMetaEvent } from "@/lib/meta-pixel"
 
 /**
  * CTA de WhatsApp con texto precargado contextual al artículo.
@@ -42,6 +45,7 @@ export default function BlogWhatsAppCTA({
         target="_blank"
         rel="noopener noreferrer"
         data-analytics="blog-whatsapp"
+        onClick={() => trackMetaEvent("Contact", { channel: "whatsapp", surface: "blog-cta" })}
         className="inline-flex items-center justify-center gap-2 h-11 px-5 bg-[#017bfd] hover:bg-[#0066d6] text-white text-sm font-semibold transition-colors shrink-0"
       >
         <MessageCircle size={15} />

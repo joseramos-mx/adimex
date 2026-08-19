@@ -13,6 +13,7 @@ import { products } from "@/data/products"
 import { soporteData } from "@/data/soporte"
 import { WA_DEMO } from "@/lib/contact"
 import { cn } from "@/lib/utils"
+import { trackMetaEvent } from "@/lib/meta-pixel"
 import { useScroll, motion, AnimatePresence } from "motion/react"
 import { Button } from "@/components/ui/button"
 import {
@@ -205,6 +206,8 @@ const productIcon = (category: string) => {
 }
 
 function SearchCommand({ isDark, open, setOpen }: { isDark: boolean; open: boolean; setOpen: (v: boolean) => void }) {
+  const [searchTerm, setSearchTerm] = React.useState("")
+
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); setOpen(!open) }
@@ -212,6 +215,16 @@ function SearchCommand({ isDark, open, setOpen }: { isDark: boolean; open: boole
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
   }, [open, setOpen])
+
+  // Dispara Search después de 800ms sin escribir (evita 1 evento por tecla)
+  React.useEffect(() => {
+    const term = searchTerm.trim()
+    if (term.length < 3) return
+    const t = setTimeout(() => {
+      trackMetaEvent("Search", { search_string: term })
+    }, 800)
+    return () => clearTimeout(t)
+  }, [searchTerm])
 
   // Build all searchable items once
   const productItems = React.useMemo(
@@ -295,7 +308,11 @@ function SearchCommand({ isDark, open, setOpen }: { isDark: boolean; open: boole
       </button>
 
       <CommandDialog open={open} onOpenChange={setOpen} filter={tokenFilter}>
-        <CommandInput placeholder="Buscar productos, descargas, FAQs..." />
+        <CommandInput
+          placeholder="Buscar productos, descargas, FAQs..."
+          value={searchTerm}
+          onValueChange={setSearchTerm}
+        />
         <CommandList>
           <CommandEmpty>Sin resultados.</CommandEmpty>
 

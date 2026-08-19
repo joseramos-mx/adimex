@@ -12,26 +12,35 @@ import {
 /**
  * Preferencias de cookies persistidas por usuario.
  *
- * - `necessary` siempre es true (no se puede rechazar).
- * - `analytics` controla Vercel Analytics y Speed Insights.
- * - `version` permite invalidar el consentimiento cuando cambia el
- *   set de categorías o la política — al subirla, el banner reaparece.
+ * - `necessary`  siempre true (no se puede rechazar).
+ * - `analytics`  controla Vercel Analytics, GA4, GTM y Contentsquare/Hotjar.
+ * - `marketing`  controla píxeles publicitarios (Meta Pixel, LinkedIn Insight,
+ *                Google Ads conversion tag). Cuando esté en false, ningún tag
+ *                de retargeting o remarketing carga.
+ * - `version`    permite invalidar el consentimiento cuando cambia el set de
+ *                categorías o la política — al subirla, el banner reaparece.
+ *                v1 = necessary + analytics.
+ *                v2 = añadió marketing.
  */
 export type CookieConsent = {
   necessary: true
   analytics: boolean
+  marketing: boolean
   version: number
   timestamp: number
 }
 
 const STORAGE_KEY = "adimex.cookie-consent"
-const CURRENT_VERSION = 1
+const CURRENT_VERSION = 2
 
 const defaultConsent: Omit<CookieConsent, "timestamp"> = {
   necessary: true,
   analytics: false,
+  marketing: false,
   version: CURRENT_VERSION,
 }
+
+type MutablePrefs = Partial<Omit<CookieConsent, "necessary" | "version" | "timestamp">>
 
 type CookieConsentContextValue = {
   /** null hasta que el usuario decide por primera vez (banner visible). */
@@ -40,7 +49,7 @@ type CookieConsentContextValue = {
   needsDecision: boolean
   acceptAll: () => void
   acceptOnlyNecessary: () => void
-  save: (prefs: Partial<Omit<CookieConsent, "necessary" | "version" | "timestamp">>) => void
+  save: (prefs: MutablePrefs) => void
   /** Fuerza reabrir el banner (para "Ajustar preferencias" en la política). */
   reopen: () => void
 }
@@ -61,9 +70,15 @@ export function CookieConsentProvider({
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY)
       if (raw) {
-        const parsed = JSON.parse(raw) as CookieConsent
+        const parsed = JSON.parse(raw) as Partial<CookieConsent>
         if (parsed.version === CURRENT_VERSION) {
-          setConsent(parsed)
+          setConsent({
+            necessary: true,
+            analytics: Boolean(parsed.analytics),
+            marketing: Boolean(parsed.marketing),
+            version: CURRENT_VERSION,
+            timestamp: parsed.timestamp ?? Date.now(),
+          })
         }
       }
     } catch {
@@ -86,6 +101,7 @@ export function CookieConsentProvider({
     persist({
       necessary: true,
       analytics: true,
+      marketing: true,
       version: CURRENT_VERSION,
       timestamp: Date.now(),
     })
@@ -95,6 +111,7 @@ export function CookieConsentProvider({
     persist({
       necessary: true,
       analytics: false,
+      marketing: false,
       version: CURRENT_VERSION,
       timestamp: Date.now(),
     })
@@ -105,11 +122,12 @@ export function CookieConsentProvider({
       persist({
         necessary: true,
         analytics: prefs.analytics ?? consent?.analytics ?? false,
+        marketing: prefs.marketing ?? consent?.marketing ?? false,
         version: CURRENT_VERSION,
         timestamp: Date.now(),
       })
     },
-    [consent?.analytics, persist]
+    [consent?.analytics, consent?.marketing, persist]
   )
 
   const reopen = useCallback(() => setForceOpen(true), [])

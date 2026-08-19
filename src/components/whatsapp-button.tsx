@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "motion/react"
 import { useState } from "react"
 import { X } from "lucide-react"
+import { trackMetaEvent } from "@/lib/meta-pixel"
 
 const PHONE = "5215635698469"
 const MESSAGE = encodeURIComponent("Hola, me gustaría obtener información sobre sus soluciones de automatización.")
@@ -42,7 +43,10 @@ export default function WhatsAppButton() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Contactar por WhatsApp"
-        onClick={() => setTooltip(false)}
+        onClick={() => {
+          setTooltip(false)
+          trackMetaEvent("Contact", { channel: "whatsapp", surface: "floating-button" })
+        }}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 1 }}

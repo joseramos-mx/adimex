@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { sileo } from 'sileo'
 import { useRegion, formatPriceForRegion } from '@/context/region-context'
+import { trackMetaEvent } from '@/lib/meta-pixel'
 
 const toastBase = {
   fill: '#111111',
@@ -199,7 +200,21 @@ export default function CartDrawer() {
                   )
                 })()}
                 <Button
-                  onClick={goToCheckout}
+                  onClick={() => {
+                    trackMetaEvent('InitiateCheckout', {
+                      content_ids: cart.items.map((i) => i.variantId),
+                      content_type: 'product',
+                      num_items: cart.items.reduce((n, i) => n + i.quantity, 0),
+                      value: parseFloat(cart.totalAmount),
+                      currency: cart.totalCurrencyCode,
+                      contents: cart.items.map((i) => ({
+                        id: i.variantId,
+                        quantity: i.quantity,
+                        item_price: parseFloat(i.price),
+                      })),
+                    })
+                    goToCheckout()
+                  }}
                   disabled={loading}
                   className="w-full h-9 text-xs bg-[#017bfd] hover:bg-[#0066d6] text-white border-0 flex items-center justify-center gap-2"
                 >
