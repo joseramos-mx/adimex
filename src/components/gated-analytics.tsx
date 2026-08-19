@@ -8,6 +8,9 @@ import { useCookieConsent } from "@/context/cookie-consent-context"
  * Sólo monta Vercel Analytics y Speed Insights cuando el usuario ha
  * consentido la categoría de analítica. Cumple LFPDPPP: no se rastrea
  * hasta que el usuario decide.
+ *
+ * Otros analytics (GA4, GTM, Contentsquare) viven en sus propios
+ * componentes con el mismo patrón de gating.
  */
 export default function GatedAnalytics() {
   const { consent } = useCookieConsent()

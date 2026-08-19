@@ -70,7 +70,8 @@ export default function PoliticaCookiesPage() {
       <p>
         Nos ayudan a entender qué páginas se visitan más, qué contenidos
         funcionan mejor y dónde hay fricción. Los datos se agregan; no te
-        identifican individualmente.
+        identifican individualmente. Se activan sólo cuando aceptas esta
+        categoría en el banner de consentimiento.
       </p>
       <ul>
         <li>
@@ -93,11 +94,13 @@ export default function PoliticaCookiesPage() {
           medición del sitio. Sólo se carga si aceptas esta categoría.
         </li>
         <li>
-          <strong>Microsoft Clarity</strong> — genera mapas de calor y
-          repeticiones anónimas de sesión (clics, desplazamiento y
-          movimiento del cursor) para detectar fricción en el sitio.
-          Establece las cookies <code>_clck</code> y <code>_clsk</code>.
-          Microsoft enmascara el texto que escribes en los formularios.
+          <strong>Contentsquare / Hotjar</strong> — mapas de calor,
+          grabaciones anónimas de sesión y análisis de embudo para
+          identificar dónde los usuarios se atascan en el flujo de compra
+          o cotización. Establece las cookies{" "}
+          <code>_hjSessionUser_*</code>, <code>_hjSession_*</code> y{" "}
+          <code>_cs_id</code>. Las grabaciones enmascaran automáticamente
+          inputs sensibles y no capturan contenido de campos personales.
         </li>
       </ul>
 

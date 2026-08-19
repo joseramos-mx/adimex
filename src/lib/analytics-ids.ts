@@ -16,8 +16,9 @@ export const GA_MEASUREMENT_ID =
   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-8XQTCY1DRC"
 
 /**
- * Project ID de Microsoft Clarity (mapas de calor y repetición de sesión).
- * Vacío desactiva la carga.
+ * Tag ID de Contentsquare (Hotjar) — mapas de calor, grabaciones de sesión
+ * y análisis de embudo. Reemplaza a Microsoft Clarity. Vacío desactiva la
+ * carga.
  */
-export const CLARITY_PROJECT_ID =
-  process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID ?? "y4jamhfiul"
+export const CONTENTSQUARE_TAG_ID =
+  process.env.NEXT_PUBLIC_CONTENTSQUARE_TAG_ID ?? "60db6e6f43e01"
