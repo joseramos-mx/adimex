@@ -21,7 +21,7 @@ export default function Contentsquare() {
     <Script
       id="contentsquare-tag"
       strategy="afterInteractive"
-      src={`https://tag.contentsquare.com/uxa/${CONTENTSQUARE_TAG_ID}.js`}
+      src={`https://t.contentsquare.net/uxa/${CONTENTSQUARE_TAG_ID}.js`}
       async
     />
   )
