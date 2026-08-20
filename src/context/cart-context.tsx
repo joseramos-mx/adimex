@@ -7,6 +7,10 @@ import { createContext, useContext, useEffect, useState, useCallback, useRef } f
 export interface CartItem {
   id: string          // Shopify line-item GID
   variantId: string
+  /** SKU real del producto (usado como content_id de Meta cuando existe). */
+  sku: string | null
+  /** Handle del producto en Shopify — segundo fallback para content_id. */
+  productHandle: string | null
   productName: string
   price: string
   currencyCode: string

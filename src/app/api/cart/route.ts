@@ -14,8 +14,9 @@ const CART_FIELDS = `
         merchandise {
           ... on ProductVariant {
             id
+            sku
             price { amount currencyCode }
-            product { title featuredImage { url altText } }
+            product { handle title featuredImage { url altText } }
           }
         }
       }
@@ -84,6 +85,8 @@ function normalizeCart(cart: any) {
     items: cart.lines.edges.map(({ node }: any) => ({
       id: node.id,
       variantId: node.merchandise.id,
+      sku: node.merchandise.sku ?? null,
+      productHandle: node.merchandise.product.handle ?? null,
       productName: node.merchandise.product.title,
       price: node.merchandise.price.amount,
       currencyCode: node.merchandise.price.currencyCode,

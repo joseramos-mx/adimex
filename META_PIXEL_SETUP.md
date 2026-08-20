@@ -164,14 +164,36 @@ Si el score sale bajo, revisa:
 
 ## 5. Content IDs y catálogo
 
-Los `content_ids` que mandamos hoy son el **slug del producto** (por ejemplo `plc-fl7`, `hmi-f007n`). Para que el **retargeting dinámico** funcione, el ID debe coincidir con el ID de producto en el **Catálogo de Meta**.
+Los `content_ids` que mandamos son los **IDs numéricos del catálogo de
+Meta**, no los slugs internos. Sin la conversión, retargeting dinámico
+(Advantage+ Catalog / DPA) no puede encontrar los productos vistos.
 
-Rutas para alinear:
+El mapa vive en `src/lib/meta-pixel.ts`:
 
-1. **Fácil (recomendado):** en el catálogo de Meta (Sales Channels → Facebook → Product Catalog), usa el mismo slug de Shopify como identificador.
-2. **Si el catálogo usa el SKU de Shopify (ej. `FL721-0808P-D`):** cambia la línea `sku={product.slug}` en `src/app/productos/[slug]/page.tsx` por el SKU de Shopify (`sku={product.shopifyHandle ?? product.slug}` o el campo que corresponda).
+```ts
+const META_CONTENT_IDS: Record<string, string> = {
+  // Por slug del sitio
+  "plc-fl7":            "43162651590865",
+  "hmi-f007n":          "43162684260561",
+  "productos-hmi-f110": "43103064195281",
+  // Por SKU de Shopify (mismo mapeo — el webhook usa SKU)
+  "FL721-0808P-D":      "43162651590865",
+  "F007N":              "43162684260561",
+  "F110C":              "43103064195281",
+}
+```
 
-Sin alineación no explota nada — pero el "producto visitado / no comprado" no aparecerá en anuncios dinámicos.
+Todos los eventos (`ViewContent`, `AddToCart`, `InitiateCheckout`,
+`Contact`, `Purchase` vía CAPI) pasan por `toMetaContentId()` antes de
+disparar.
+
+**Cuando agregues productos al catálogo de Meta:**
+1. Copia el ID de contenido de Meta (Events Manager → Catálogo → Elementos).
+2. Añádelo al mapa `META_CONTENT_IDS` con ambas llaves (slug + SKU).
+3. Deploy — el nuevo producto empieza a mapear en ambos lados.
+
+Si un producto NO está en el mapa, el evento igual llega — sólo pierde
+la relación con el catálogo (no aparece en anuncios dinámicos).
 
 ---
 

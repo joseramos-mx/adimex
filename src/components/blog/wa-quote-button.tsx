@@ -1,7 +1,7 @@
 "use client"
 
 import { MessageCircle } from "lucide-react"
-import { trackMetaEvent } from "@/lib/meta-pixel"
+import { trackMetaEvent, toMetaContentId } from "@/lib/meta-pixel"
 
 /**
  * Botón WhatsApp de la BlogProductCard — separado como componente cliente
@@ -24,7 +24,7 @@ export default function WaQuoteButton({
         trackMetaEvent("Contact", {
           channel: "whatsapp",
           surface: "blog-product-card",
-          content_ids: [productSku],
+          content_ids: [toMetaContentId(productSku)],
         })
       }
       className="inline-flex items-center gap-2 h-10 px-4 bg-[#017bfd] hover:bg-[#0066d6] text-white text-xs font-semibold transition-colors"

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { META_PIXEL_ID, hashSha256 } from "@/lib/meta-pixel"
+import { META_PIXEL_ID, hashSha256, toMetaContentId } from "@/lib/meta-pixel"
 
 /**
  * Meta Conversions API — recibe eventos server-side y los reenvía a Meta.
@@ -102,13 +102,13 @@ export async function POST(req: NextRequest) {
   const currency = order.currency ?? "MXN"
 
   const contents = order.line_items.map((li) => ({
-    id: li.sku ?? String(li.variant_id),
+    id: toMetaContentId(li.sku ?? String(li.variant_id)),
     quantity: li.quantity,
     item_price: parseFloat(li.price),
   }))
 
-  const contentIds = order.line_items.map(
-    (li) => li.sku ?? String(li.variant_id)
+  const contentIds = order.line_items.map((li) =>
+    toMetaContentId(li.sku ?? String(li.variant_id))
   )
 
   const payload = {

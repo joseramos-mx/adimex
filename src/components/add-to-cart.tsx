@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { sileo } from 'sileo'
 import { useRegion, formatPriceForRegion } from '@/context/region-context'
-import { trackMetaEvent } from '@/lib/meta-pixel'
+import { trackMetaEvent, toMetaContentId } from '@/lib/meta-pixel'
 
 const toastBase = {
   fill: '#111111',
@@ -43,7 +43,7 @@ export default function AddToCart({
 
   const priceDisplay = formatPriceForRegion(price, currencyCode, region)
 
-  const contentId = sku ?? variantId
+  const contentId = toMetaContentId(sku ?? variantId)
   const numericPrice = parseFloat(price)
 
   async function handleAddToCart() {
