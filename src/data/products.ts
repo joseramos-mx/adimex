@@ -48,6 +48,22 @@ export interface Product {
   externalUrl: string
   /** Preguntas frecuentes específicas del SKU — generan FAQPage schema. */
   faq?: ProductFAQ[]
+  /**
+   * SEO metadata que sobreescribe el fallback (`name` + `tagline`) en
+   * generateMetadata. Se aplica al <title>, <meta description>, OG y Twitter.
+   * Formato del title recomendado: "Producto - atributo · $precio" (Next.js
+   * añade " | ADIMEX" automáticamente por el template del root layout).
+   */
+  seo?: {
+    title: string
+    description: string
+  }
+  /**
+   * Alt text descriptivo para la imagen principal — se usa en el Image tag
+   * de la ficha, la tarjeta del blog y la sección de productos relacionados.
+   * Cae a `name` cuando no está definido.
+   */
+  imageAlt?: string
   /** Used by Shopify integration — leave undefined for static products */
   shopifyHandle?: string
   /** Shopify commerce fields — populated when product comes from Shopify */
@@ -455,6 +471,13 @@ const plcProducts: Product[] = [
     ],
     externalUrl: "https://es.flexem.com/products_detail/Serie_FL7.html",
     shopifyHandle: "plc-fl721-0808p-d",
+    seo: {
+      title: "PLC Flexem FL7 CODESYS 32 ejes · $3,445 MXN",
+      description:
+        "Distribuidor autorizado FLEXEM en México. PLC CODESYS con control de movimiento hasta 32 ejes. Envío 3-5 días con garantía del fabricante.",
+    },
+    imageAlt:
+      "PLC Flexem FL721-0808P-D CODESYS con 8 entradas y 8 salidas PNP, comunicación Modbus TCP/RTU, montado en riel DIN",
     faq: [
       {
         q: "¿El PLC FL7 es compatible con servos Delta, Yaskawa o Panasonic?",
@@ -791,6 +814,13 @@ const hmiProducts: Product[] = [
     ],
     externalUrl: "https://es.flexem.com/products_list/F0/1_Series.html",
     shopifyHandle: "hmi-flexem-f007n",
+    seo: {
+      title: "HMI Flexem F007N 7\" capacitiva · $7,308 MXN",
+      description:
+        "Pantalla táctil industrial multi-touch 1024×600, Modbus RTU/TCP. Envío 3-5 días desde CDMX con garantía FLEXEM en México.",
+    },
+    imageAlt:
+      "HMI Flexem F007N pantalla táctil capacitiva multi-touch de 7 pulgadas con marco negro, resolución 1024x600, para automatización industrial",
     faq: [
       {
         q: "¿Se comunica con PLC de otras marcas (Delta, Siemens, Allen-Bradley)?",
@@ -856,6 +886,13 @@ const hmiProducts: Product[] = [
     ],
     externalUrl: "https://es.flexem.com/products_list/F0/1_Series.html",
     shopifyHandle: "productos-hmi-f110",
+    seo: {
+      title: "HMI Flexem F110C 10.1\" IoT + Bluetooth · $9,103 MXN",
+      description:
+        "HMI capacitiva de 10.1 pulgadas con IoT y Bluetooth integrados. Distribuidor autorizado FLEXEM en México, envío nacional 3-5 días.",
+    },
+    imageAlt:
+      "HMI Flexem F110C pantalla capacitiva de 10.1 pulgadas con IoT y Bluetooth integrados, resolución 800x1280, para tableros industriales",
     faq: [
       {
         q: "¿Cuál es la diferencia entre F110 y F110C?",

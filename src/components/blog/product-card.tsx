@@ -48,7 +48,7 @@ export default async function BlogProductCard({
       <div className="relative aspect-video md:aspect-square md:w-56 shrink-0 bg-[#f7f8fa] border-b md:border-b-0 md:border-r border-white/10">
         <Image
           src={product.image}
-          alt={product.name}
+          alt={product.imageAlt ?? product.name}
           fill
           className="object-contain object-center p-5"
           sizes="(max-width: 768px) 100vw, 224px"

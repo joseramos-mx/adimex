@@ -74,7 +74,7 @@ export default function AvailableProducts({ products }: Props) {
                 <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
                   <Image
                     src={product.image}
-                    alt={product.name}
+                    alt={product.imageAlt ?? product.name}
                     fill
                     className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     sizes="(max-width: 640px) 100vw, 33vw"

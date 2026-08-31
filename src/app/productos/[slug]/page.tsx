@@ -39,16 +39,28 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const product = await getProductBySlug(slug)
   if (!product) return {}
   const url = `https://adimex.io/productos/${slug}`
+  // Cuando el producto define product.seo se usa; si no, cae al fallback.
+  // El title base va SIN "| ADIMEX" — el template del root layout lo añade
+  // automáticamente. Meter "| ADIMEX" acá producía doble sufijo.
+  const title = product.seo?.title ?? product.name
+  const description = product.seo?.description ?? product.tagline
+  const imageAlt = product.imageAlt ?? product.name
   return {
-    title: `${product.name} | ADIMEX`,
-    description: product.tagline,
+    title,
+    description,
     alternates: { canonical: url },
     openGraph: {
-      title: `${product.name} — ${product.categoryLabel} FLEXEM en México`,
-      description: product.tagline,
+      title: `${title} — ADIMEX`,
+      description,
       url,
       type: "website",
-      images: [{ url: product.image, alt: product.name }],
+      images: [{ url: product.image, alt: imageAlt }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [product.image],
     },
   }
 }
@@ -156,7 +168,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <div className="relative aspect-square bg-[#f7f8fa] border border-black/5 overflow-hidden">
               <Image
                 src={product.image}
-                alt={product.name}
+                alt={product.imageAlt ?? product.name}
                 fill
                 priority
                 className="object-contain object-center p-10"
@@ -330,7 +342,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   <div className="relative aspect-video bg-[#f7f8fa] overflow-hidden">
                     <Image
                       src={rel.image}
-                      alt={rel.name}
+                      alt={rel.imageAlt ?? rel.name}
                       fill
                       className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
