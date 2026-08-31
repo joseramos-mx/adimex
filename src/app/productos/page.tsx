@@ -67,9 +67,29 @@ export default async function ProductosPage({ searchParams }: PageProps) {
             <br />
             <span className="text-[#494F5F]">distribución FLEXEM</span>
           </h1>
-          <p className="mt-3 text-sm text-gray-500 max-w-xl">
-            Distribuidor autorizado de FLEXEM en México
-          </p>
+          <div className="mt-5 max-w-3xl space-y-3 text-sm text-[#494F5F] leading-relaxed">
+            <p>
+              Somos el distribuidor autorizado de FLEXEM en México. Vendemos
+              PLC, HMI, servomotores, FlexSCADA e IoT industrial a integradores,
+              OEM y responsables de planta que necesitan automatización con
+              respaldo local — no importaciones sin garantía tramitable en
+              territorio nacional.
+            </p>
+            <p>
+              Los <strong className="text-[#07080c]">tres SKUs de mayor demanda</strong>{" "}
+              están en stock con precio visible en pesos mexicanos e IVA
+              desglosado: PLC FL7 CODESYS ($3,445), HMI capacitiva de 7&quot;
+              F007N ($7,308) y HMI de 10.1&quot; con IoT F110C ($9,103). Envío
+              nacional 3-5 días hábiles y garantía del fabricante FLEXEM
+              tramitada aquí.
+            </p>
+            <p>
+              El resto del catálogo (servos FV5, PLC FL6/FL8 multi-eje, HMI
+              serie FE, IoT gateways FBox, licencias FlexSCADA y FlexCloud)
+              opera bajo pedido con cotización en 24-48 horas y entrega
+              típica de 4 a 6 semanas.
+            </p>
+          </div>
         </div>
       </section>
 

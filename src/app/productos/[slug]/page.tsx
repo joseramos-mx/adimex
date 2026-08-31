@@ -20,6 +20,7 @@ import ProductTabs from "@/components/product-tabs"
 import { WHATSAPP_NUMBER } from "@/lib/contact"
 import { BreadcrumbSchema } from "@/components/blog/breadcrumb"
 import ViewContentTracker from "@/components/meta-events/view-content"
+import ProductFAQBlock, { ProductFAQSchema } from "@/components/product-faq"
 
 const TRUST = [
   { Icon: Truck,       title: "Envío nacional",   sub: "3-5 días hábiles" },
@@ -124,6 +125,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
       <BreadcrumbSchema items={breadcrumbs} />
+      {product.faq && product.faq.length > 0 && (
+        <ProductFAQSchema items={product.faq} />
+      )}
       <ViewContentTracker
         contentId={product.slug}
         contentName={product.name}
@@ -304,6 +308,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             </Button>
           </div>
         </div>
+
+        {/* FAQ del producto */}
+        {product.faq && product.faq.length > 0 && (
+          <ProductFAQBlock items={product.faq} />
+        )}
 
         {/* Related products */}
         {related.length > 0 && (

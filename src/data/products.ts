@@ -27,6 +27,11 @@ export interface ProductSpec {
   value: string
 }
 
+export interface ProductFAQ {
+  q: string
+  a: string
+}
+
 export interface Product {
   slug: string
   name: string
@@ -41,6 +46,8 @@ export interface Product {
   specs: ProductSpec[]
   applications: string[]
   externalUrl: string
+  /** Preguntas frecuentes específicas del SKU — generan FAQPage schema. */
+  faq?: ProductFAQ[]
   /** Used by Shopify integration — leave undefined for static products */
   shopifyHandle?: string
   /** Shopify commerce fields — populated when product comes from Shopify */
@@ -448,6 +455,32 @@ const plcProducts: Product[] = [
     ],
     externalUrl: "https://es.flexem.com/products_detail/Serie_FL7.html",
     shopifyHandle: "plc-fl721-0808p-d",
+    faq: [
+      {
+        q: "¿El PLC FL7 es compatible con servos Delta, Yaskawa o Panasonic?",
+        a: "Sí. El FL7 comanda cualquier servo o driver que acepte tren de pulsos (PTO) o Modbus RTU/TCP. Está probado con Delta ASDA-A2/A3, Yaskawa Sigma-7, Panasonic MINAS y por supuesto FLEXEM FV5. Para más de 8 ejes con lazo cerrado por bus, considera el FL6 con EtherCAT.",
+      },
+      {
+        q: "¿Trae fuente de alimentación de 24 V DC?",
+        a: "No. El PLC opera a 24 V DC pero la fuente se compra por separado. Recomendamos Meanwell DR-30-24 (30 W) para configuraciones estándar o DR-60-24 (60 W) si vas a agregar módulos de expansión. La cotizamos en el mismo pedido si nos avisas.",
+      },
+      {
+        q: "¿Cuánto tarda el envío a Monterrey, Guadalajara o Querétaro?",
+        a: "3-5 días hábiles con envío nacional desde el almacén CDMX. En Monterrey y Guadalajara suele llegar en 3 días; Querétaro y Bajío en 2-3 días. Pedidos confirmados antes de las 3 pm salen ese mismo día hábil.",
+      },
+      {
+        q: "¿Facturan con CFDI 4.0 en pesos mexicanos?",
+        a: "Sí. Emitimos CFDI 4.0 con IVA desglosado en MXN. El precio publicado ($3,445.20) ya incluye IVA. Enviamos la factura al correo del comprador dentro de los 3 días hábiles posteriores al pago confirmado.",
+      },
+      {
+        q: "¿Qué garantía tiene el PLC y quién la tramita?",
+        a: "12 meses de garantía del fabricante FLEXEM, tramitada localmente por ADIMEX en México — no hay que exportar equipo dañado a China. Cubre defectos de fabricación. Si aplica, el reemplazo o reparación ocurre en 3-15 días hábiles.",
+      },
+      {
+        q: "¿Se puede programar en ladder o solo en texto estructurado?",
+        a: "Los cinco lenguajes IEC 61131-3: ladder (LD), texto estructurado (ST), diagrama de bloques (FBD), SFC y CFC. Corre CODESYS estándar con biblioteca SoftMotion para movimiento coordinado hasta 32 ejes.",
+      },
+    ],
   },
   {
     slug: "plc-fl6",
@@ -758,6 +791,32 @@ const hmiProducts: Product[] = [
     ],
     externalUrl: "https://es.flexem.com/products_list/F0/1_Series.html",
     shopifyHandle: "hmi-flexem-f007n",
+    faq: [
+      {
+        q: "¿Se comunica con PLC de otras marcas (Delta, Siemens, Allen-Bradley)?",
+        a: "Sí. La F007N incluye Modbus RTU (RS485) y Modbus TCP (Ethernet) de fábrica, más drivers nativos para Siemens S7 (ISO on TCP), Allen-Bradley EtherNet/IP y Mitsubishi MC Protocol. Publicamos un tutorial paso a paso para conectarla a cualquiera de esas marcas.",
+      },
+      {
+        q: "¿Qué corte de tablero requiere el frontal?",
+        a: "Corte aproximado de 192 × 138 mm para el frontal capacitivo de 7 pulgadas. La profundidad detrás del panel es de 32 mm. Compatible con la mayoría de retrofits que reemplazan HMI resistivas de 7\" — puedes aprovechar el corte existente.",
+      },
+      {
+        q: "¿El tacto capacitivo funciona con guantes de nitrilo o carnaza?",
+        a: "Con guantes de nitrilo delgados sí, sin problema. Con guantes gruesos de carnaza la respuesta se degrada. Para ambientes con guantes gruesos obligatorios o riesgo de agua sobre la superficie, la alternativa es la FE6300 resistiva.",
+      },
+      {
+        q: "¿Facturan con CFDI 4.0?",
+        a: "Sí, CFDI 4.0 en pesos mexicanos con IVA desglosado. El precio publicado ($7,308) ya incluye IVA. Emitimos la factura al correo del comprador en 3 días hábiles posteriores al pago.",
+      },
+      {
+        q: "¿Cuánto tarda el envío nacional?",
+        a: "3-5 días hábiles a todo México desde nuestro almacén en CDMX. Pedidos confirmados antes de las 3 pm salen ese mismo día. Envío rastreado con guía por correo.",
+      },
+      {
+        q: "¿Se programa en el mismo software que otras HMI Flexem?",
+        a: "Sí, Flexem Studio (gratuito) es el mismo IDE para F007N, F110, F110C y FE6300. Los proyectos migran entre modelos ajustando el canvas — la lógica se conserva. La guía de setup y tutoriales están en el centro de soporte.",
+      },
+    ],
   },
   {
     slug: "productos-hmi-f110",
@@ -797,6 +856,32 @@ const hmiProducts: Product[] = [
     ],
     externalUrl: "https://es.flexem.com/products_list/F0/1_Series.html",
     shopifyHandle: "productos-hmi-f110",
+    faq: [
+      {
+        q: "¿Cuál es la diferencia entre F110 y F110C?",
+        a: "La F110C es la variante premium con IoT y Bluetooth integrados de fábrica. La F110 estándar los omite. Si vas a conectar a FlexCloud, quieres emparejar por Bluetooth para diagnóstico o vas a hacer telemetría remota, elige F110C.",
+      },
+      {
+        q: "¿Se puede montar en orientación vertical (formato quiosco)?",
+        a: "Sí. La F110/F110C soportan orientación horizontal (1280×800) o vertical (800×1280) configurable desde Flexem Studio. La F007N solo soporta horizontal. La vertical es ideal para tableros de línea que se leen desde lejos o quioscos industriales.",
+      },
+      {
+        q: "¿Qué corte de tablero requiere?",
+        a: "Corte aproximado de 271 × 213 mm para el frontal capacitivo de 10.1 pulgadas. Profundidad detrás del panel de 40 mm. Requiere más espacio que la F007N — verifica el gabinete antes de pedir.",
+      },
+      {
+        q: "¿El IoT integrado necesita configuración adicional?",
+        a: "El módulo IoT de la F110C viene precargado con conectividad a FlexCloud vía Ethernet. Si conectas a otra plataforma (Ignition, Node-RED, MQTT genérico), la configuración se hace en Flexem Studio. Nuestro equipo apoya el setup como parte del soporte técnico incluido.",
+      },
+      {
+        q: "¿Facturan con CFDI 4.0 y envío 3-5 días?",
+        a: "Sí en ambos. CFDI 4.0 en pesos con IVA desglosado (el precio $9,103 ya incluye IVA). Envío nacional 3-5 días hábiles desde el almacén CDMX. Pedidos antes de las 3 pm salen ese mismo día hábil.",
+      },
+      {
+        q: "¿Cuánto tarda la garantía si algo falla?",
+        a: "12 meses de garantía FLEXEM tramitada en México. Falla en el primer arranque (DOA): reemplazo desde stock en 24-72 h. Falla dentro de los 12 meses: diagnóstico local en 3-15 días hábiles. Sin necesidad de exportar equipo dañado.",
+      },
+    ],
   },
   {
     slug: "hmi-fpad",

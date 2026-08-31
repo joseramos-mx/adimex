@@ -3,9 +3,14 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { ArrowUpRight, Check, Linkedin } from "lucide-react"
+import { ArrowUpRight, Check, Linkedin, Phone, Mail, MapPin } from "lucide-react"
+import { WHATSAPP_NUMBER } from "@/lib/contact"
 
 const LINKEDIN_URL = "https://www.linkedin.com/company/americandimex/"
+const CONTACT_EMAIL = "contacto@adimex.io"
+const CONTACT_CITY = "Ciudad de México, México"
+// Formato humano del WhatsApp: +52 56 3569 8469
+const CONTACT_PHONE_DISPLAY = `+${WHATSAPP_NUMBER.slice(0, 2)} ${WHATSAPP_NUMBER.slice(3, 5)} ${WHATSAPP_NUMBER.slice(5, 9)} ${WHATSAPP_NUMBER.slice(9)}`
 
 const nav = [
     {
@@ -70,6 +75,37 @@ export default function Footer() {
                             <p className="text-xl text-white/80 leading-relaxed max-w-xs">
                                 Distribuidor autorizado FLEXEM · Automatización industrial en México.
                             </p>
+                        </div>
+
+                        {/* Contacto */}
+                        <div className="flex flex-col gap-2">
+                            <p className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+                                Contacto directo
+                            </p>
+                            <ul className="flex flex-col gap-2">
+                                <li>
+                                    <a
+                                        href={`tel:+${WHATSAPP_NUMBER}`}
+                                        className="flex items-center gap-2 text-xs text-white/80 hover:text-white transition-colors"
+                                    >
+                                        <Phone size={12} className="text-white/60 shrink-0" />
+                                        {CONTACT_PHONE_DISPLAY}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href={`mailto:${CONTACT_EMAIL}`}
+                                        className="flex items-center gap-2 text-xs text-white/80 hover:text-white transition-colors break-all"
+                                    >
+                                        <Mail size={12} className="text-white/60 shrink-0" />
+                                        {CONTACT_EMAIL}
+                                    </a>
+                                </li>
+                                <li className="flex items-center gap-2 text-xs text-white/80">
+                                    <MapPin size={12} className="text-white/60 shrink-0" />
+                                    {CONTACT_CITY}
+                                </li>
+                            </ul>
                         </div>
 
                         {/* Newsletter — boletín técnico */}

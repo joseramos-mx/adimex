@@ -88,11 +88,24 @@ const organizationSchema = {
     addressLocality: "Ciudad de México",
     addressCountry: "MX",
   },
-  contactPoint: {
-    "@type": "ContactPoint",
-    contactType: "sales",
-    availableLanguage: "Spanish",
-  },
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      contactType: "sales",
+      email: "contacto@adimex.io",
+      telephone: "+525635698469",
+      areaServed: "MX",
+      availableLanguage: ["Spanish"],
+    },
+    {
+      "@type": "ContactPoint",
+      contactType: "technical support",
+      email: "contacto@adimex.io",
+      telephone: "+525635698469",
+      areaServed: "MX",
+      availableLanguage: ["Spanish"],
+    },
+  ],
   sameAs: [
     "https://www.linkedin.com/company/americandimex/",
   ],
