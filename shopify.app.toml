@@ -1,13 +1,19 @@
-name = "ADIMEX Headless"
-client_id = "31c16a28f72b6241b445cb32c750cdec"
-application_url = "http://localhost:3000"
+# Custom app para automatización SEO / catálogo vía Admin API.
+#
+# El client_id apunta a "ADIMEX SEO Automation" (creada en Dev Dashboard).
+# La cart/checkout usa Storefront tokens administrados por la Sales Channel
+# "Headless" nativa de Shopify — esta app NO toca ese flujo.
+name = "ADIMEX SEO Automation"
+client_id = "abf14979ce451a347fe091f3654f7b4c"
+application_url = "https://adimex.io"
 embedded = false
 
 [auth]
-redirect_urls = ["http://localhost:3000/auth/callback"]
+redirect_urls = ["https://adimex.io/auth/callback"]
 
-[access.storefront]
-scopes = "unauthenticated_read_product_listings,unauthenticated_read_product_inventory,unauthenticated_read_content,unauthenticated_read_checkouts"
+[access_scopes]
+scopes = "read_products,write_products,read_content,write_content,read_inventory,write_inventory"
+use_legacy_install_flow = false
 
 [webhooks]
-api_version = "2026-04"
+api_version = "2026-07"
