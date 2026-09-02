@@ -1,20 +1,24 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import {
   trackMetaEvent,
   toMetaContentId,
   computeMetaValue,
   newEventId,
 } from "@/lib/meta-pixel"
+import { useCookieConsent } from "@/context/cookie-consent-context"
 
 /**
- * Dispara `ViewContent` de Meta Pixel al montar la ficha de producto.
+ * Dispara `ViewContent` de Meta Pixel al cargar la ficha de producto.
  *
- * - Convierte slug interno al content_id numérico del catálogo de Meta.
- * - Convierte el precio base de Shopify a MXN con IVA (Meta lo exige así
- *   para calcular ROAS real).
- * - Genera event_id único para deduplicar server-side vía Conversions API.
+ * Timing crítico: el script del pixel se inyecta sólo después de que
+ * el usuario acepta consent.marketing. Si disparamos el evento en el
+ * primer useEffect sin más, `window.fbq` no existe todavía y el evento
+ * se pierde.
+ *
+ * Solución: watch consent.marketing + retry corto hasta que `fbq` se
+ * define. Usa `didFire` ref para no duplicar entre remontajes.
  */
 export default function ViewContentTracker({
   contentId,
@@ -22,26 +26,46 @@ export default function ViewContentTracker({
   price,
   currency = "MXN",
 }: {
-  /** Slug interno o SKU — el helper lo mapea al ID numérico de Meta. */
   contentId: string
   contentName: string
-  /** Precio base de Shopify (sin IVA). Se convierte a IVA-incluida antes de mandar. */
   price?: string | number
   currency?: string
 }) {
+  const { consent } = useCookieConsent()
+  const didFire = useRef(false)
+
   useEffect(() => {
-    const value = price !== undefined ? computeMetaValue(price, currency) : undefined
-    trackMetaEvent(
-      "ViewContent",
-      {
-        content_ids: [toMetaContentId(contentId)],
-        content_type: "product",
-        content_name: contentName,
-        ...(value !== undefined ? { value, currency: "MXN" } : {}),
-      },
-      { eventID: newEventId("vc") },
-    )
-  }, [contentId, contentName, price, currency])
+    if (!consent?.marketing || didFire.current) return
+
+    const value =
+      price !== undefined ? computeMetaValue(price, currency) : undefined
+
+    // El init del pixel es async — reintenta hasta ~2s hasta que fbq
+    // esté listo (o hasta que aparezca en el queue temprano).
+    let tries = 0
+    const maxTries = 20
+    const interval = setInterval(() => {
+      tries++
+      if (typeof window.fbq === "function") {
+        trackMetaEvent(
+          "ViewContent",
+          {
+            content_ids: [toMetaContentId(contentId)],
+            content_type: "product",
+            content_name: contentName,
+            ...(value !== undefined ? { value, currency: "MXN" } : {}),
+          },
+          { eventID: newEventId("vc") },
+        )
+        didFire.current = true
+        clearInterval(interval)
+      } else if (tries >= maxTries) {
+        clearInterval(interval)
+      }
+    }, 100)
+
+    return () => clearInterval(interval)
+  }, [consent?.marketing, contentId, contentName, price, currency])
 
   return null
 }
