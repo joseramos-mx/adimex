@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { useCallback } from "react"
-import { SlidersHorizontal, X } from "lucide-react"
+import { SlidersHorizontal, X, ChevronDown } from "lucide-react"
 import { categoryMeta, categoryOrder, type ProductCategory } from "@/lib/products"
 
 interface Props {
@@ -48,27 +48,10 @@ export default function ProductsFilter({
   const clearAll = () => router.push(pathname, { scroll: false })
   const hasFilters = activeCategory || activeSubcategory || (activeSort && activeSort !== "default")
   const totalShown = activeCategory ? counts[activeCategory] : Object.values(counts).reduce((a, b) => a + b, 0)
+  const activeLabel = activeCategory ? categoryMeta[activeCategory].label : null
 
-  return (
-    <aside className="w-full lg:w-56 shrink-0 space-y-6" style={{ fontFamily: "var(--font-geist-sans)" }}>
-
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xs font-semibold text-[#07080c]">
-          <SlidersHorizontal size={13} className="text-[#017bfd]" />
-          <span>Filtros</span>
-        </div>
-        {hasFilters && (
-          <button
-            onClick={clearAll}
-            className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-[#017bfd] transition-colors"
-          >
-            <X size={10} />
-            Limpiar
-          </button>
-        )}
-      </div>
-
+  const filterBody = (
+    <div className="space-y-6" style={{ fontFamily: "var(--font-geist-sans)" }}>
       {/* Sort */}
       <div>
         <p className="text-[9px] tracking-widest uppercase text-gray-400 font-mono mb-2">Ordenar</p>
@@ -167,7 +150,71 @@ export default function ProductsFilter({
           </p>
         </div>
       )}
+    </div>
+  )
 
-    </aside>
+  return (
+    <>
+      {/* Mobile: accordion colapsable — no empuja el grid abajo del pliegue */}
+      <details
+        className="group lg:hidden w-full border border-black/10 bg-white"
+        style={{ fontFamily: "var(--font-geist-sans)" }}
+      >
+        <summary className="flex items-center justify-between gap-2 cursor-pointer list-none min-h-11 px-4 py-2.5 select-none">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#07080c]">
+            <SlidersHorizontal size={13} className="text-[#017bfd]" />
+            <span>Filtros</span>
+            {(activeLabel || hasFilters) && (
+              <span className="ml-1 text-[10px] text-[#017bfd] font-medium">
+                · {activeLabel ?? "activos"}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            {hasFilters && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  clearAll()
+                }}
+                className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-[#017bfd] transition-colors"
+              >
+                <X size={10} />
+                Limpiar
+              </button>
+            )}
+            <ChevronDown
+              size={14}
+              className="text-gray-400 transition-transform group-open:rotate-180"
+            />
+          </div>
+        </summary>
+        <div className="px-4 pb-4 pt-2 border-t border-black/5">{filterBody}</div>
+      </details>
+
+      {/* Desktop: sidebar completo, siempre abierto */}
+      <aside
+        className="hidden lg:block w-56 shrink-0 space-y-6"
+        style={{ fontFamily: "var(--font-geist-sans)" }}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#07080c]">
+            <SlidersHorizontal size={13} className="text-[#017bfd]" />
+            <span>Filtros</span>
+          </div>
+          {hasFilters && (
+            <button
+              onClick={clearAll}
+              className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-[#017bfd] transition-colors"
+            >
+              <X size={10} />
+              Limpiar
+            </button>
+          )}
+        </div>
+        {filterBody}
+      </aside>
+    </>
   )
 }
