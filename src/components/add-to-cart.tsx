@@ -1,12 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { ShoppingCart, Zap, Minus, Plus } from 'lucide-react'
+import { ShoppingCart, Zap, Minus, Plus, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { sileo } from 'sileo'
 import { useRegion, formatPriceForRegion } from '@/context/region-context'
-import { trackMetaEvent, toMetaContentId } from '@/lib/meta-pixel'
+import {
+  trackMetaEvent,
+  toMetaContentId,
+  computeMetaValue,
+  newEventId,
+} from '@/lib/meta-pixel'
+import { WHATSAPP_NUMBER } from '@/lib/contact'
 
 const toastBase = {
   fill: '#111111',
@@ -44,20 +50,28 @@ export default function AddToCart({
   const priceDisplay = formatPriceForRegion(price, currencyCode, region)
 
   const contentId = toMetaContentId(sku ?? variantId)
-  const numericPrice = parseFloat(price)
+  // Meta espera el value CON IVA en MXN, no el precio base de Shopify.
+  const unitValue = computeMetaValue(price, currencyCode)
+
+  const waMsg = `Hola, tengo dudas técnicas sobre el ${productName}. Vi la ficha en su sitio.`
+  const waHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waMsg)}`
 
   async function handleAddToCart() {
     setLocalLoading(true)
     try {
       for (let i = 0; i < qty; i++) await addItem(variantId)
-      trackMetaEvent('AddToCart', {
-        content_ids: [contentId],
-        content_type: 'product',
-        content_name: productName,
-        value: numericPrice * qty,
-        currency: currencyCode,
-        contents: [{ id: contentId, quantity: qty, item_price: numericPrice }],
-      })
+      trackMetaEvent(
+        'AddToCart',
+        {
+          content_ids: [contentId],
+          content_type: 'product',
+          content_name: productName,
+          value: unitValue * qty,
+          currency: 'MXN',
+          contents: [{ id: contentId, quantity: qty, item_price: unitValue }],
+        },
+        { eventID: newEventId('atc') },
+      )
       sileo.success({
         title: qty > 1 ? `${qty}× artículos agregados` : 'Agregado al carrito',
         description: `${productName} está listo en tu pedido.`,
@@ -78,14 +92,19 @@ export default function AddToCart({
     setLocalLoading(true)
     try {
       for (let i = 0; i < qty; i++) await addItem(variantId)
-      trackMetaEvent('InitiateCheckout', {
-        content_ids: [contentId],
-        content_type: 'product',
-        num_items: qty,
-        value: numericPrice * qty,
-        currency: currencyCode,
-        contents: [{ id: contentId, quantity: qty, item_price: numericPrice }],
-      })
+      trackMetaEvent(
+        'InitiateCheckout',
+        {
+          content_ids: [contentId],
+          content_type: 'product',
+          content_name: productName,
+          num_items: qty,
+          value: unitValue * qty,
+          currency: 'MXN',
+          contents: [{ id: contentId, quantity: qty, item_price: unitValue }],
+        },
+        { eventID: newEventId('ic') },
+      )
       sileo.success({
         title: 'Redirigiendo al checkout',
         description: 'Serás llevado al pago seguro de Shopify.',
@@ -178,6 +197,28 @@ export default function AddToCart({
           <ShoppingCart size={15} className="mr-2" />
           Agregar al carrito
         </Button>
+
+        {/* WhatsApp secundario — tercerio visual, no compite con Comprar */}
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() =>
+            trackMetaEvent(
+              'Contact',
+              {
+                channel: 'whatsapp',
+                surface: 'product-detail',
+                content_ids: [contentId],
+              },
+              { eventID: newEventId('contact') },
+            )
+          }
+          className="flex items-center justify-center gap-1.5 min-h-11 text-xs text-[#0066FF] hover:text-[#0055dd] font-medium transition-colors"
+        >
+          <MessageCircle size={13} />
+          ¿Dudas técnicas? Escríbenos por WhatsApp
+        </a>
       </div>
 
       <p className="text-[10px] text-gray-300 font-mono text-center">

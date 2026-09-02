@@ -21,6 +21,7 @@ import { WHATSAPP_NUMBER } from "@/lib/contact"
 import { BreadcrumbSchema } from "@/components/blog/breadcrumb"
 import ViewContentTracker from "@/components/meta-events/view-content"
 import ProductFAQBlock, { ProductFAQSchema } from "@/components/product-faq"
+import ProductStickyBar from "@/components/product-sticky-bar"
 
 const TRUST = [
   { Icon: Truck,       title: "Envío nacional",   sub: "3-5 días hábiles" },
@@ -143,8 +144,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       <ViewContentTracker
         contentId={product.slug}
         contentName={product.name}
-        value={priceMXN}
-        currency="MXN"
+        price={product.price}
+        currency={product.currencyCode ?? "MXN"}
       />
       <Header />
 
@@ -382,6 +383,18 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       </main>
 
       <Footer />
+
+      {/* Sticky mobile buy bar — solo productos comprables, oculto en md+ */}
+      {product.variantId && product.price && (
+        <ProductStickyBar
+          variantId={product.variantId}
+          price={product.price}
+          currencyCode={product.currencyCode ?? "MXN"}
+          availableForSale={product.availableForSale ?? false}
+          productName={product.name}
+          sku={product.slug}
+        />
+      )}
     </div>
   )
 }

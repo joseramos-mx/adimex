@@ -5,6 +5,16 @@
       "has": [{ "type": "host", "value": "www.adimex.io" }],
       "destination": "https://adimex.io/:path*",
       "permanent": true
+    },
+    {
+      "source": "/productos/plc-flexem-fl721-0808p-d",
+      "destination": "/productos/plc-fl7",
+      "permanent": true
+    },
+    {
+      "source": "/productos/hmi-flexem-f110c",
+      "destination": "/productos/productos-hmi-f110",
+      "permanent": true
     }
   ]
 }

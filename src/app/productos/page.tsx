@@ -56,18 +56,25 @@ export default async function ProductosPage({ searchParams }: PageProps) {
       />
       <Header />
 
-      {/* Hero */}
-      <section data-theme="light" className="pt-32 pb-12 px-6 border-b border-black/5">
+      {/* Hero — compacto en móvil para que la 1ra tarjeta entre en el pliegue.
+          La intro larga queda para desktop (>= md) y para SEO en el DOM. */}
+      <section data-theme="light" className="pt-20 pb-4 md:pt-32 md:pb-8 px-6 border-b border-black/5">
         <div className="max-w-6xl mx-auto">
-          <p className="text-[10px] tracking-widest text-[#017bfd] uppercase font-mono mb-4">
+          <p className="text-[10px] tracking-widest text-[#017bfd] uppercase font-mono mb-2 md:mb-4">
             Catálogo de productos
           </p>
-          <h1 className="text-3xl md:text-4xl font-semibold text-[#07080c] leading-tight tracking-tight">
-            {pageTitle}
-            <br />
-            <span className="text-[#494F5F]">distribución FLEXEM</span>
+          <h1 className="text-xl md:text-4xl font-semibold text-[#07080c] leading-tight tracking-tight">
+            <span className="md:hidden">
+              {category ? pageTitle : "Todos los productos FLEXEM"}
+            </span>
+            <span className="hidden md:inline">
+              {pageTitle}
+              <br />
+              <span className="text-[#494F5F]">distribución FLEXEM</span>
+            </span>
           </h1>
-          <div className="mt-5 max-w-3xl space-y-3 text-sm text-[#494F5F] leading-relaxed">
+          {/* Intro larga: solo desktop */}
+          <div className="hidden md:block mt-5 max-w-3xl space-y-3 text-sm text-[#494F5F] leading-relaxed">
             <p>
               Somos el distribuidor autorizado de FLEXEM en México. Vendemos
               PLC, HMI, servomotores, FlexSCADA e IoT industrial a integradores,
@@ -93,9 +100,40 @@ export default async function ProductosPage({ searchParams }: PageProps) {
         </div>
       </section>
 
+      {/* Trust bar — sticky bajo el header, scrollable horizontal en móvil */}
+      <section
+        data-theme="light"
+        aria-label="Garantías del pedido"
+        className="bg-[#F0F2F5] border-b border-black/5"
+      >
+        <div className="max-w-6xl mx-auto">
+          <ul
+            className="flex items-center gap-4 md:gap-6 overflow-x-auto whitespace-nowrap px-6 py-2.5 md:justify-center text-[11px] md:text-xs font-medium text-[#0B1220]"
+            style={{ scrollbarWidth: "none" }}
+          >
+            <li className="flex items-center gap-1.5 shrink-0">
+              <span className="w-1 h-1 rounded-full bg-[#0066FF]" />
+              IVA incluido
+            </li>
+            <li className="flex items-center gap-1.5 shrink-0">
+              <span className="w-1 h-1 rounded-full bg-[#0066FF]" />
+              Envío 3-5 días a todo México
+            </li>
+            <li className="flex items-center gap-1.5 shrink-0">
+              <span className="w-1 h-1 rounded-full bg-[#0066FF]" />
+              Garantía de fábrica FLEXEM
+            </li>
+            <li className="flex items-center gap-1.5 shrink-0">
+              <span className="w-1 h-1 rounded-full bg-[#0066FF]" />
+              Soporte técnico en español
+            </li>
+          </ul>
+        </div>
+      </section>
+
       {/* Body */}
-      <div data-theme="light" className="flex-1 max-w-6xl mx-auto w-full px-6 py-12">
-        <div className="flex flex-col lg:flex-row gap-10">
+      <div data-theme="light" className="flex-1 max-w-6xl mx-auto w-full px-6 pt-4 pb-12 md:pt-12">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
 
           {/* Filter sidebar */}
           <Suspense fallback={null}>
@@ -122,63 +160,74 @@ export default async function ProductosPage({ searchParams }: PageProps) {
               <>
                 {/* ── DISPONIBLES AHORA — featured ──────────────────────────── */}
                 {availableProducts.length > 0 && (
-                  <section className="mb-14">
-                    <div className="flex items-end justify-between mb-5 pb-3 border-b border-[#017bfd]/20">
-                      <div>
-                        <p className="text-[10px] tracking-widest text-[#017bfd] uppercase font-mono mb-1">
-                          Disponibles ahora
-                        </p>
-                        <h2 className="text-lg font-semibold text-[#07080c]">
-                          Listos para envío en México
-                        </h2>
-                      </div>
-                      <p className="text-[11px] text-gray-400 font-mono">
-                        {availableProducts.length} producto{availableProducts.length !== 1 ? "s" : ""}
+                  <section className="mb-10 md:mb-14">
+                    {/* Header de sección: compacto en móvil */}
+                    <div className="flex items-center justify-between mb-3 md:mb-5 pb-2 md:pb-3 border-b border-[#017bfd]/20">
+                      <p className="text-[10px] tracking-widest text-[#017bfd] uppercase font-mono">
+                        Disponibles ahora · {availableProducts.length} en stock
                       </p>
+                      <span className="hidden md:inline text-[11px] text-gray-400 font-mono">
+                        Envío 3-5 días
+                      </span>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
                       {availableProducts.map((product) => (
                         <Link
                           key={product.slug}
                           href={`/productos/${product.slug}`}
-                          className="group flex flex-col border-2 border-[#017bfd]/15 hover:border-[#017bfd] hover:shadow-md transition-all duration-200 bg-white"
+                          className="group flex flex-col md:flex-col border-2 border-[#017bfd]/15 hover:border-[#017bfd] hover:shadow-md transition-all duration-200 bg-white min-h-11"
+                          aria-label={`Ver ${product.name}`}
                         >
-                          <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
-                            <Image
-                              src={product.image}
-                              alt={product.imageAlt ?? product.name}
-                              fill
-                              className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            />
-                            <span className="absolute top-3 left-3 text-[9px] tracking-widest uppercase text-[#017bfd] bg-white border border-[#017bfd]/30 px-2 py-0.5 font-mono">
-                              {product.subcategory}
-                            </span>
-                            <span className="absolute top-3 right-3 flex items-center gap-1 text-[9px] tracking-widest uppercase text-white bg-[#017bfd] px-2 py-0.5 font-mono">
-                              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                              Disponible
-                            </span>
-                          </div>
-
-                          <div className="flex flex-col flex-1 p-5 gap-2">
-                            <h3 className="text-sm font-semibold text-[#07080c] group-hover:text-[#017bfd] transition-colors leading-snug line-clamp-3">
-                              {product.name}
-                            </h3>
-                            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
-                              {product.tagline}
-                            </p>
-                            {product.price && (
-                              <PriceTag
-                                price={product.price}
-                                currencyCode={product.currencyCode ?? "MXN"}
-                                size="md"
-                                className="mt-2"
+                          {/* En móvil: imagen a la izquierda + info a la derecha (row).
+                              En md+: layout tradicional en columna. Compacta la
+                              tarjeta para que quepa arriba del pliegue en 390x844. */}
+                          <div className="flex md:block">
+                            <div className="relative aspect-square md:aspect-4/3 w-32 md:w-full shrink-0 overflow-hidden bg-gray-50">
+                              <Image
+                                src={product.image}
+                                alt={product.imageAlt ?? product.name}
+                                fill
+                                className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                                sizes="(max-width: 640px) 128px, (max-width: 1024px) 50vw, 33vw"
                               />
-                            )}
-                            <div className="flex items-center justify-between mt-2 pt-3 border-t border-black/5">
-                              <span className="text-xs text-[#017bfd] font-medium">Comprar</span>
-                              <ArrowRight size={13} className="text-[#017bfd] group-hover:translate-x-1 transition-transform" />
+                              <span className="hidden md:inline-flex absolute top-3 left-3 items-center text-[9px] tracking-widest uppercase text-[#017bfd] bg-white border border-[#017bfd]/30 px-2 py-0.5 font-mono">
+                                {product.subcategory}
+                              </span>
+                              <span className="hidden md:inline-flex absolute top-3 right-3 items-center gap-1 text-[9px] tracking-widest uppercase text-white bg-[#017bfd] px-2 py-0.5 font-mono">
+                                <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                                Disponible
+                              </span>
+                            </div>
+
+                            <div className="flex flex-col flex-1 min-w-0 p-3 md:p-5 gap-1.5 md:gap-2">
+                              {/* Chip de subcategoría en móvil */}
+                              <span className="md:hidden inline-flex items-center self-start text-[9px] tracking-widest uppercase text-[#0066FF] bg-[#0066FF]/8 px-1.5 py-0.5 font-mono">
+                                {product.subcategory} · En stock
+                              </span>
+                              <h3 className="text-sm md:text-sm font-semibold text-[#0B1220] group-hover:text-[#0066FF] transition-colors leading-snug line-clamp-2 md:line-clamp-3">
+                                {product.name}
+                              </h3>
+                              <p className="hidden md:block text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
+                                {product.tagline}
+                              </p>
+                              {product.price && (
+                                <PriceTag
+                                  price={product.price}
+                                  currencyCode={product.currencyCode ?? "MXN"}
+                                  size="md"
+                                  className="mt-auto md:mt-2"
+                                />
+                              )}
+                              <div className="flex items-center justify-between mt-2 pt-2 md:pt-3 border-t border-black/5 min-h-11 md:min-h-0">
+                                <span className="text-sm md:text-xs text-[#0066FF] font-semibold md:font-medium">
+                                  Comprar →
+                                </span>
+                                <ArrowRight
+                                  size={16}
+                                  className="hidden md:block text-[#0066FF] group-hover:translate-x-1 transition-transform"
+                                />
+                              </div>
                             </div>
                           </div>
                         </Link>
