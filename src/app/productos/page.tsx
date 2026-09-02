@@ -15,6 +15,8 @@ import {
   type SortOption,
 } from "@/lib/products"
 import { BreadcrumbSchema } from "@/components/blog/breadcrumb"
+import ProductosHero from "@/components/productos-hero"
+import ProductosTrustBar from "@/components/productos-trust-bar"
 
 interface PageProps {
   searchParams: Promise<{ category?: string; subcategory?: string; sort?: string }>
@@ -56,80 +58,8 @@ export default async function ProductosPage({ searchParams }: PageProps) {
       />
       <Header />
 
-      {/* Hero — compacto en móvil para que la 1ra tarjeta entre en el pliegue.
-          La intro larga queda para desktop (>= md) y para SEO en el DOM. */}
-      <section data-theme="light" className="pt-20 pb-4 md:pt-32 md:pb-8 px-6 border-b border-black/5">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-[10px] tracking-widest text-[#017bfd] uppercase font-mono mb-2 md:mb-4">
-            Catálogo de productos
-          </p>
-          <h1 className="text-xl md:text-4xl font-semibold text-[#07080c] leading-tight tracking-tight">
-            <span className="md:hidden">
-              {category ? pageTitle : "Todos los productos FLEXEM"}
-            </span>
-            <span className="hidden md:inline">
-              {pageTitle}
-              <br />
-              <span className="text-[#494F5F]">distribución FLEXEM</span>
-            </span>
-          </h1>
-          {/* Intro larga: solo desktop */}
-          <div className="hidden md:block mt-5 max-w-3xl space-y-3 text-sm text-[#494F5F] leading-relaxed">
-            <p>
-              Somos el distribuidor autorizado de FLEXEM en México. Vendemos
-              PLC, HMI, servomotores, FlexSCADA e IoT industrial a integradores,
-              OEM y responsables de planta que necesitan automatización con
-              respaldo local — no importaciones sin garantía tramitable en
-              territorio nacional.
-            </p>
-            <p>
-              Los <strong className="text-[#07080c]">tres SKUs de mayor demanda</strong>{" "}
-              están en stock con precio visible en pesos mexicanos e IVA
-              desglosado: PLC FL7 CODESYS ($3,445), HMI capacitiva de 7&quot;
-              F007N ($7,308) y HMI de 10.1&quot; con IoT F110C ($9,103). Envío
-              nacional 3-5 días hábiles y garantía del fabricante FLEXEM
-              tramitada aquí.
-            </p>
-            <p>
-              El resto del catálogo (servos FV5, PLC FL6/FL8 multi-eje, HMI
-              serie FE, IoT gateways FBox, licencias FlexSCADA y FlexCloud)
-              opera bajo pedido con cotización en 24-48 horas y entrega
-              típica de 4 a 6 semanas.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust bar — sticky bajo el header, scrollable horizontal en móvil */}
-      <section
-        data-theme="light"
-        aria-label="Garantías del pedido"
-        className="bg-[#F0F2F5] border-b border-black/5"
-      >
-        <div className="max-w-6xl mx-auto">
-          <ul
-            className="flex items-center gap-4 md:gap-6 overflow-x-auto whitespace-nowrap px-6 py-2.5 md:justify-center text-[11px] md:text-xs font-medium text-[#0B1220]"
-            style={{ scrollbarWidth: "none" }}
-          >
-            <li className="flex items-center gap-1.5 shrink-0">
-              <span className="w-1 h-1 rounded-full bg-[#0066FF]" />
-              IVA incluido
-            </li>
-            <li className="flex items-center gap-1.5 shrink-0">
-              <span className="w-1 h-1 rounded-full bg-[#0066FF]" />
-              Envío 3-5 días a todo México
-            </li>
-            <li className="flex items-center gap-1.5 shrink-0">
-              <span className="w-1 h-1 rounded-full bg-[#0066FF]" />
-              Garantía de fábrica FLEXEM
-            </li>
-            <li className="flex items-center gap-1.5 shrink-0">
-              <span className="w-1 h-1 rounded-full bg-[#0066FF]" />
-              Soporte técnico en español
-            </li>
-          </ul>
-        </div>
-      </section>
+      <ProductosHero pageTitle={pageTitle} />
+      <ProductosTrustBar />
 
       {/* Body */}
       <div data-theme="light" className="flex-1 max-w-6xl mx-auto w-full px-6 pt-4 pb-12 md:pt-12">
