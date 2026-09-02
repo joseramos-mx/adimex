@@ -32,7 +32,7 @@ const productosDropdown = {
   viewAll: { label: "Ver catálogo completo", href: "/productos" },
   items: [
     { icon: Monitor, name: "HMI F007N",  desc: "Capacitiva 7\" HD multi-touch",            href: "/productos/hmi-f007n#comprar", badge: "Comprar" },
-    { icon: Monitor, name: "HMI F110",   desc: "Capacitiva 10.1\" con IoT y Bluetooth",   href: "/productos/productos-hmi-f110#comprar",  badge: "Comprar" },
+    { icon: Monitor, name: "HMI F110C",  desc: "Capacitiva 10.1\" con IoT y Bluetooth",   href: "/productos/hmi-f110c#comprar",           badge: "Comprar" },
     { icon: Cpu,     name: "PLC FL7",    desc: "CODESYS, hasta 32 ejes de movimiento",    href: "/productos/plc-fl7#comprar",   badge: "Comprar" },
   ],
 }
@@ -607,9 +607,14 @@ export const Header = () => {
             </Button>
           </div>
 
-          {/* Mobile toggle */}
-          <button onClick={() => setMenuState(!menuState)}
-            className={cn("block lg:hidden p-2 transition-colors duration-200", isLight ? "text-[#07080c]" : "text-white")}
+          {/* Mobile toggle — 44x44 touch target */}
+          <button
+            onClick={() => setMenuState(!menuState)}
+            aria-label={menuState ? "Cerrar menú" : "Abrir menú"}
+            className={cn(
+              "flex lg:hidden min-h-11 min-w-11 items-center justify-center transition-colors duration-200",
+              isLight ? "text-[#07080c]" : "text-white",
+            )}
           >
             {menuState ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -663,7 +668,7 @@ export const Header = () => {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="block py-2 text-sm text-white/70 hover:text-white transition-colors"
+                    className="flex items-center min-h-11 py-2 text-sm text-white/70 hover:text-white transition-colors"
                     onClick={() => setMenuState(false)}
                   >
                     {item.name}
@@ -676,7 +681,7 @@ export const Header = () => {
               <li key={item.name}>
                 <button
                   onClick={() => setActiveDropdown(expanded ? null : item.dropdown!)}
-                  className="w-full flex items-center justify-between py-2 text-sm text-white/70 hover:text-white transition-colors"
+                  className="w-full flex items-center justify-between min-h-11 py-2 text-sm text-white/70 hover:text-white transition-colors"
                 >
                   <span>{item.name}</span>
                   <ChevronDown size={14} className={cn("transition-transform duration-200", expanded && "rotate-180")} />
@@ -690,7 +695,7 @@ export const Header = () => {
                             key={p.name}
                             href={p.href}
                             onClick={() => { setMenuState(false); setActiveDropdown(null) }}
-                            className="flex items-start gap-2.5 pl-4 py-1.5 text-xs text-white/60 hover:text-white transition-colors"
+                            className="flex items-start gap-2.5 min-h-11 pl-4 py-2 text-xs text-white/60 hover:text-white transition-colors"
                           >
                             <p.icon size={13} className="text-[#017bfd] mt-0.5 shrink-0" />
                             <span className="flex flex-col gap-0.5">
@@ -702,7 +707,7 @@ export const Header = () => {
                         <Link
                           href={productosDropdown.viewAll.href}
                           onClick={() => { setMenuState(false); setActiveDropdown(null) }}
-                          className="flex items-center justify-between pl-4 py-1.5 text-xs text-white/50 hover:text-white transition-colors"
+                          className="flex items-center justify-between min-h-11 pl-4 py-2 text-xs text-white/50 hover:text-white transition-colors"
                         >
                           <span>{productosDropdown.viewAll.label}</span>
                           <ArrowRight size={12} />
@@ -719,7 +724,7 @@ export const Header = () => {
                               key={c.name}
                               href={c.href}
                               onClick={() => { setMenuState(false); setActiveDropdown(null) }}
-                              className="flex items-center gap-2.5 pl-4 py-1.5 text-xs text-white/60 hover:text-white transition-colors"
+                              className="flex items-center gap-2.5 min-h-11 pl-4 py-2 text-xs text-white/60 hover:text-white transition-colors"
                             >
                               <c.icon size={13} className="text-white/40 shrink-0" />
                               <span>{c.name}</span>
@@ -728,7 +733,7 @@ export const Header = () => {
                         <Link
                           href="/casos"
                           onClick={() => { setMenuState(false); setActiveDropdown(null) }}
-                          className="flex items-center justify-between pl-4 py-1.5 text-xs text-white/50 hover:text-white transition-colors"
+                          className="flex items-center justify-between min-h-11 pl-4 py-2 text-xs text-white/50 hover:text-white transition-colors"
                         >
                           <span>Ver todos los casos</span>
                           <ArrowRight size={12} />

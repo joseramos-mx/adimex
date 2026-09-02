@@ -32,7 +32,7 @@ export const post: BlogPost = {
     src: "https://images.pexels.com/photos/37769419/pexels-photo-37769419.jpeg?auto=compress&cs=tinysrgb&w=1600",
     alt: "Ingeniero operando panel HMI de control industrial",
   },
-  relatedProductSlugs: ["hmi-f007n", "productos-hmi-f110", "hmi-fe6300"],
+  relatedProductSlugs: ["hmi-f007n", "hmi-f110c", "hmi-fe6300"],
   relatedPostSlugs: [
     "guia-compra-plc-flexem-fl7",
     "flexem-en-mexico-distribuidor-autorizado",
@@ -180,7 +180,7 @@ export const post: BlogPost = {
         </LI>
       </UL>
 
-      <BlogProductCard slug="productos-hmi-f110" variant="buy" />
+      <BlogProductCard slug="hmi-f110c" variant="buy" />
 
       <H2 id="opcion-c">¿Y si necesitas 10\" con FLink2?</H2>
       <P>

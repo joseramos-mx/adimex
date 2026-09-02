@@ -32,7 +32,7 @@ export const post: BlogPost = {
     src: "https://images.pexels.com/photos/36496927/pexels-photo-36496927.jpeg?auto=compress&cs=tinysrgb&w=1600",
     alt: "Programador escribiendo código en laptop para configuración de HMI",
   },
-  relatedProductSlugs: ["hmi-f007n", "productos-hmi-f110"],
+  relatedProductSlugs: ["hmi-f007n", "hmi-f110c"],
   relatedPostSlugs: [
     "hmi-flexem-modbus-plc-otra-marca",
     "guia-compra-plc-flexem-fl7",

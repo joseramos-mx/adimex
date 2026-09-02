@@ -32,7 +32,7 @@ export const post: BlogPost = {
     src: "https://images.pexels.com/photos/18471551/pexels-photo-18471551.jpeg?auto=compress&cs=tinysrgb&w=1600",
     alt: "Máquina industrial con cableado y borneras de comunicación RS485",
   },
-  relatedProductSlugs: ["hmi-f007n", "productos-hmi-f110", "plc-fl7"],
+  relatedProductSlugs: ["hmi-f007n", "hmi-f110c", "plc-fl7"],
   relatedPostSlugs: [
     "primer-proyecto-flexem-studio-parte-1",
     "hmi-flexem-f007n-vs-f110c",
@@ -204,7 +204,7 @@ export const post: BlogPost = {
         </LI>
       </OL>
 
-      <BlogProductCard slug="productos-hmi-f110" variant="buy" />
+      <BlogProductCard slug="hmi-f110c" variant="buy" />
 
       <H2 id="ab">Escenario 3 · HMI Flexem + PLC Allen-Bradley</H2>
       <P>

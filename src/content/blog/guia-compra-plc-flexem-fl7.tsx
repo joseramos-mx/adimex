@@ -209,7 +209,7 @@ export const post: BlogPost = {
       </P>
 
       <BlogProductCard slug="hmi-f007n" variant="buy" />
-      <BlogProductCard slug="productos-hmi-f110" variant="buy" />
+      <BlogProductCard slug="hmi-f110c" variant="buy" />
 
       <P>
         Si dudas entre ambos tamaños, revisa la{" "}

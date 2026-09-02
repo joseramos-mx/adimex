@@ -24,12 +24,17 @@ export const META_PIXEL_ID =
  * Actualiza este mapa cuando agregues productos al catálogo de Meta.
  */
 const META_CONTENT_IDS: Record<string, string> = {
-  // Por slug interno del sitio
+  // Por slug interno del sitio (URL actual)
   "plc-fl7": "43162651590865",
   "hmi-f007n": "43162684260561",
+  "hmi-f110c": "43103064195281",
+
+  // Slug viejo (antes del rename productos-hmi-f110 → hmi-f110c) — el
+  // Shopify handle nunca cambió, así que el cart drawer sigue enviándolo.
   "productos-hmi-f110": "43103064195281",
 
-  // Por SKU de Shopify (misma correspondencia)
+  // Por SKU de Shopify (misma correspondencia — el webhook orders/create
+  // manda el SKU en el line item, no el handle).
   "FL721-0808P-D": "43162651590865",
   "F007N": "43162684260561",
   "F110C": "43103064195281",

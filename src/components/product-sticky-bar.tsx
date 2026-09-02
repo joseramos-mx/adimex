@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Zap, MessageCircle } from "lucide-react"
 import { useCart } from "@/context/cart-context"
 import { useRegion, formatPriceForRegion } from "@/context/region-context"
+import { useCookieConsent } from "@/context/cookie-consent-context"
 import { WHATSAPP_NUMBER } from "@/lib/contact"
 import {
   trackMetaEvent,
@@ -39,6 +40,7 @@ export default function ProductStickyBar({
 }) {
   const { addItem, goToCheckout } = useCart()
   const { region } = useRegion()
+  const { needsDecision } = useCookieConsent()
   const [loading, setLoading] = useState(false)
 
   const priceDisplay = formatPriceForRegion(price, currencyCode, region)
@@ -72,16 +74,24 @@ export default function ProductStickyBar({
     }
   }
 
+  // Mientras el usuario no haya decidido sobre cookies, ocultamos la barra —
+  // el cookie banner tapaba visualmente el botón Comprar y era mala UX competir.
+  // Una vez aceptadas (o rechazadas) las cookies, aparece con transición.
+  const hidden = needsDecision
+
   return (
     <>
       {/* Spacer para que el contenido no quede oculto detrás de la barra */}
-      <div className="md:hidden h-20" aria-hidden="true" />
+      {!hidden && <div className="md:hidden h-20" aria-hidden="true" />}
 
       {/* La barra */}
       <aside
         role="region"
         aria-label="Barra de compra"
-        className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-black/10 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
+        aria-hidden={hidden}
+        className={`md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-black/10 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] transition-transform duration-200 ${
+          hidden ? "translate-y-full pointer-events-none" : "translate-y-0"
+        }`}
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="flex items-stretch gap-2 px-3 py-2">

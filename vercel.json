@@ -7,13 +7,18 @@
       "permanent": true
     },
     {
+      "source": "/productos/productos-hmi-f110",
+      "destination": "/productos/hmi-f110c",
+      "permanent": true
+    },
+    {
       "source": "/productos/plc-flexem-fl721-0808p-d",
       "destination": "/productos/plc-fl7",
       "permanent": true
     },
     {
       "source": "/productos/hmi-flexem-f110c",
-      "destination": "/productos/productos-hmi-f110",
+      "destination": "/productos/hmi-f110c",
       "permanent": true
     }
   ]

@@ -4,9 +4,9 @@ import { motion } from "motion/react"
 
 const ITEMS = [
   "IVA incluido",
-  "Envío 3-5 días a todo México",
-  "Garantía de fábrica FLEXEM",
-  "Soporte técnico en español",
+  "Envío 3-5 días",
+  "Garantía FLEXEM",
+  "Soporte en español",
 ]
 
 /**

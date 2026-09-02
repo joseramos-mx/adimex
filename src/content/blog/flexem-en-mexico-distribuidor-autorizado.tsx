@@ -32,7 +32,7 @@ export const post: BlogPost = {
     src: "https://images.pexels.com/photos/10871565/pexels-photo-10871565.jpeg?auto=compress&cs=tinysrgb&w=1600",
     alt: "Operadores trabajando con maquinaria industrial en planta mexicana",
   },
-  relatedProductSlugs: ["plc-fl7", "hmi-f007n", "productos-hmi-f110"],
+  relatedProductSlugs: ["plc-fl7", "hmi-f007n", "hmi-f110c"],
   relatedPostSlugs: [
     "guia-compra-plc-flexem-fl7",
     "hmi-flexem-f007n-vs-f110c",
@@ -211,7 +211,7 @@ export const post: BlogPost = {
 
       <BlogProductCard slug="plc-fl7" variant="buy" />
       <BlogProductCard slug="hmi-f007n" variant="buy" />
-      <BlogProductCard slug="productos-hmi-f110" variant="buy" />
+      <BlogProductCard slug="hmi-f110c" variant="buy" />
 
       <H3>Bajo pedido (4 a 8 semanas)</H3>
       <P>

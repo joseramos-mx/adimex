@@ -849,7 +849,7 @@ const hmiProducts: Product[] = [
     ],
   },
   {
-    slug: "productos-hmi-f110",
+    slug: "hmi-f110c",
     name: "F110",
     series: "F0/1",
     category: "hmi",
