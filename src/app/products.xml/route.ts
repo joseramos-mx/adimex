@@ -77,7 +77,6 @@ export async function GET() {
       <g:brand>FLEXEM</g:brand>
       <g:condition>new</g:condition>
       <g:mpn>${xmlEscape(mpn)}</g:mpn>
-      <g:identifier_exists>no</g:identifier_exists>
     </item>`
     })
     .join("\n")
