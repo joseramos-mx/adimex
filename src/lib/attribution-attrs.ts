@@ -23,6 +23,9 @@ function readCookie(name: string): string | undefined {
 /**
  * Devuelve los atributos que el cliente conoce y puede pasar al carrito.
  * El server añade `client_ip_address` después si hay consent.
+ *
+ * Siempre incluimos `meta_consent=true|false` — el webhook lo usa para
+ * decidir si adjunta PII del pedido a Meta CAPI (round-5 p3).
  */
 export function gatherAttributionAttrs(marketingConsent: boolean): CartAttribute[] {
   const attrs: CartAttribute[] = []
@@ -38,6 +41,13 @@ export function gatherAttributionAttrs(marketingConsent: boolean): CartAttribute
       attrs.push({ key: "landing_url", value: utms.landing_url })
     }
   }
+
+  // Snapshot del consentimiento marketing al momento de crear/actualizar
+  // el carrito — el webhook lo lee para saber si puede hidratar user_data.
+  attrs.push({
+    key: `${ATTR_PREFIX}consent`,
+    value: marketingConsent ? "true" : "false",
+  })
 
   // Datos de matching de Meta — sólo con consent.marketing.
   if (marketingConsent) {

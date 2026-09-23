@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { META_PIXEL_ID, hashSha256 } from "@/lib/meta-pixel"
 import { META_ATTR_PREFIX } from "@/lib/attribution-attrs"
+import { SEND_ORDER_PII_WITHOUT_CONSENT } from "@/lib/consent-mode"
 
 /**
  * Meta Conversions API — recibe webhooks `orders/create` de Shopify y
@@ -186,7 +187,22 @@ export async function POST(req: NextRequest) {
   }
 
   const eventId = eventIdFromOrder(order)
-  const userData = await buildUserData(order)
+
+  // Consent gating (round-5 p3): sólo adjuntamos user_data con PII si
+  // (a) el pedido lleva meta_consent=true en note_attributes, o
+  // (b) el sitio permite explícitamente enviar PII sin consent
+  //     (SEND_ORDER_PII_WITHOUT_CONSENT=true — decisión legal, no default).
+  const consentAttr = attrValue(order, `${META_ATTR_PREFIX}consent`)
+  const hasMarketingConsent = consentAttr === "true"
+  const includePii = SEND_ORDER_PII_WITHOUT_CONSENT || hasMarketingConsent
+  const userData = includePii ? await buildUserData(order) : {}
+  if (!includePii) {
+    console.info(
+      "[meta-capi] Purchase sin PII — meta_consent no era true",
+      { order_id: order.id, meta_consent: consentAttr ?? "(missing)" },
+    )
+  }
+
   // Shopify total_price incluye impuestos + envío por defecto en tiendas
   // configuradas para "incluir impuestos" (nuestro caso: precio con IVA).
   // Currency siempre MXN para consistencia con el pixel del navegador.
