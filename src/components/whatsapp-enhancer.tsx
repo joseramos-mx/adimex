@@ -2,6 +2,7 @@
 
 import { useEffect } from "react"
 import { captureUtmsFromLocation, appendUtmRefToWaHref } from "@/lib/utm"
+import { captureFbclidFromLocation } from "@/lib/fbclid"
 import { trackMetaEvent, newEventId } from "@/lib/meta-pixel"
 
 /**
@@ -18,6 +19,9 @@ import { trackMetaEvent, newEventId } from "@/lib/meta-pixel"
 export default function WhatsAppEnhancer() {
   useEffect(() => {
     captureUtmsFromLocation()
+    // fbclid llega en URL de Meta Ads; la cookie _fbc real la sintetizamos
+    // sólo cuando el usuario acepte marketing (round-5 p2).
+    captureFbclidFromLocation()
 
     function onClick(e: MouseEvent) {
       const target = e.target as Element | null

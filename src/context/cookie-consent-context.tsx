@@ -8,6 +8,7 @@ import {
   useMemo,
   useState,
 } from "react"
+import { ensureFbcCookie } from "@/lib/fbclid"
 
 /**
  * Preferencias de cookies persistidas por usuario.
@@ -141,6 +142,12 @@ export function CookieConsentProvider({
       // Silencioso — cookies rechazadas o modo privado.
     }
     writeConsentCookie(next)
+    // Al aceptar marketing, si el visitante llegó con fbclid pero fbevents.js
+    // no había cargado (bloqueado por consent), sintetizamos _fbc con el
+    // timestamp del click (round-5 p2). Idempotente si _fbc ya existe.
+    if (next.marketing) {
+      ensureFbcCookie()
+    }
   }, [])
 
   const acceptAll = useCallback(() => {
