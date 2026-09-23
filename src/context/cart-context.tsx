@@ -1,6 +1,8 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'
+import { useCookieConsent } from './cookie-consent-context'
+import { gatherAttributionAttrs } from '@/lib/attribution-attrs'
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -48,6 +50,7 @@ const CART_ID_KEY = 'adimex_cart_id'
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { consent } = useCookieConsent()
   const [cart, setCart] = useState<CartData | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -88,10 +91,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     async (variantId: string) => {
       setLoading(true)
       try {
+        // Sólo en la primera adición (cartCreate) enviamos atributos de
+        // atribución — Shopify no permite update de attributes sobre un
+        // cart existente vía Storefront, y así preservamos la fuente
+        // original de la sesión.
+        const isFirstAdd = !cart?.id
+        const attributes = isFirstAdd
+          ? gatherAttributionAttrs(consent?.marketing ?? false)
+          : undefined
         const res = await fetch('/api/cart', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ variantId, cartId: cart?.id ?? null }),
+          body: JSON.stringify({
+            variantId,
+            cartId: cart?.id ?? null,
+            ...(attributes && attributes.length > 0 ? { attributes } : {}),
+          }),
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error)
@@ -104,7 +119,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false)
       }
     },
-    [cart?.id, persistCart]
+    [cart?.id, consent?.marketing, persistCart]
   )
 
   const removeItem = useCallback(

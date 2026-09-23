@@ -1,5 +1,6 @@
 import { shopifyClient } from '@/lib/shopify'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { META_ATTR_PREFIX } from '@/lib/attribution-attrs'
 
 // ─── Fragments ────────────────────────────────────────────────────────────────
 
@@ -33,8 +34,8 @@ const CART_FIELDS = `
 // configured in the admin (16% IVA over the MXN base price).
 
 const CART_CREATE = `
-  mutation cartCreate($lines: [CartLineInput!]!) @inContext(country: MX, language: ES) {
-    cartCreate(input: { lines: $lines, buyerIdentity: { countryCode: MX } }) {
+  mutation cartCreate($lines: [CartLineInput!]!, $attributes: [AttributeInput!]) @inContext(country: MX, language: ES) {
+    cartCreate(input: { lines: $lines, buyerIdentity: { countryCode: MX }, attributes: $attributes }) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
     }
@@ -115,11 +116,66 @@ export async function GET(req: Request) {
   return NextResponse.json(normalizeCart(data.cart))
 }
 
-/** POST /api/cart  — body: { variantId, cartId?, quantity? }
+function clientIp(req: NextRequest): string | undefined {
+  const xff = req.headers.get('x-forwarded-for')
+  if (xff) return xff.split(',')[0]!.trim()
+  return req.headers.get('x-real-ip') ?? undefined
+}
+
+function marketingConsentFromCookie(req: NextRequest): boolean {
+  const raw = req.cookies.get('adimex_consent')?.value
+  if (!raw) return false
+  try {
+    const parsed = JSON.parse(decodeURIComponent(raw)) as { marketing?: boolean }
+    return Boolean(parsed.marketing)
+  } catch {
+    return false
+  }
+}
+
+type Attr = { key: string; value: string }
+
+function sanitizeClientAttrs(attrs: unknown, marketing: boolean): Attr[] {
+  if (!Array.isArray(attrs)) return []
+  const out: Attr[] = []
+  for (const a of attrs) {
+    if (!a || typeof a !== 'object') continue
+    const key = String((a as { key?: unknown }).key ?? '').trim()
+    const value = String((a as { value?: unknown }).value ?? '').slice(0, 500)
+    if (!key || !value) continue
+    // Cortamos identificadores de matching si el consent bajó entre el
+    // gathering en el navegador y el POST (defensa en profundidad).
+    if (
+      !marketing &&
+      (key === `${META_ATTR_PREFIX}fbp` ||
+        key === `${META_ATTR_PREFIX}fbc` ||
+        key === `${META_ATTR_PREFIX}user_agent`)
+    ) {
+      continue
+    }
+    // Whitelist para no permitir inyectar campos arbitrarios en el pedido.
+    const allowed = new Set([
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'utm_term',
+      'utm_content',
+      'landing_url',
+      `${META_ATTR_PREFIX}fbp`,
+      `${META_ATTR_PREFIX}fbc`,
+      `${META_ATTR_PREFIX}user_agent`,
+    ])
+    if (!allowed.has(key)) continue
+    out.push({ key, value })
+  }
+  return out
+}
+
+/** POST /api/cart  — body: { variantId, cartId?, quantity?, attributes? }
  *  Creates a new cart if no cartId, otherwise adds a line to the existing one. */
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   if (!shopifyClient) return noClient()
-  const { variantId, cartId, quantity = 1 } = await req.json()
+  const { variantId, cartId, quantity = 1, attributes: rawAttrs } = await req.json()
   if (!variantId) return NextResponse.json({ error: 'variantId required' }, { status: 400 })
 
   if (cartId) {
@@ -131,8 +187,20 @@ export async function POST(req: Request) {
     return NextResponse.json(normalizeCart(data.cartLinesAdd.cart))
   }
 
+  // cartCreate: agregamos atributos de atribución. El servidor añade la IP
+  // del cliente sólo si hay consent.marketing (round-4 p3).
+  const marketing = marketingConsentFromCookie(req)
+  const attributes = sanitizeClientAttrs(rawAttrs, marketing)
+  if (marketing) {
+    const ip = clientIp(req)
+    if (ip) attributes.push({ key: `${META_ATTR_PREFIX}client_ip_address`, value: ip })
+  }
+
   const { data, errors } = await shopifyClient.request(CART_CREATE, {
-    variables: { lines: [{ merchandiseId: variantId, quantity }] },
+    variables: {
+      lines: [{ merchandiseId: variantId, quantity }],
+      attributes: attributes.length > 0 ? attributes : null,
+    },
   })
   if (errors || !data?.cartCreate?.cart)
     return NextResponse.json({ error: 'No se pudo crear el carrito' }, { status: 500 })

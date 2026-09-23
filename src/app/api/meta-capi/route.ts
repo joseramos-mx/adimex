@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { META_PIXEL_ID, hashSha256 } from "@/lib/meta-pixel"
+import { META_ATTR_PREFIX } from "@/lib/attribution-attrs"
 
 /**
  * Meta Conversions API — recibe webhooks `orders/create` de Shopify y
@@ -46,6 +47,12 @@ type ShopifyOrder = {
     zip?: string
     country_code?: string
   }
+  /**
+   * Atributos que set-eamos en cart.attributes desde el navegador o el
+   * server (round-4 p3). Shopify los expone como `note_attributes` en
+   * el webhook orders/create.
+   */
+  note_attributes?: { name: string; value: string }[]
 }
 
 /**
@@ -57,23 +64,60 @@ function eventIdFromOrder(order: ShopifyOrder): string {
   return String(order.id)
 }
 
-async function buildUserData(order: ShopifyOrder) {
-  const email = order.customer?.email ?? order.email
-  const phone = (order.customer?.phone ?? order.phone ?? "").replace(/[^\d]/g, "")
-  const firstName = order.customer?.first_name ?? order.shipping_address?.first_name
-  const lastName = order.customer?.last_name ?? order.shipping_address?.last_name
-  const city = order.shipping_address?.city
-  const zip = order.shipping_address?.zip
-  const country = order.shipping_address?.country_code
+/**
+ * Normalización de campos advanced-matching per Meta spec:
+ *   em, fn, ln, ct → lowercase + trim
+ *   zp             → lowercase + trim (Meta acepta el CP tal cual)
+ *   ph             → sólo dígitos (con código de país, sin +)
+ *   country        → 2 letras ISO en minúsculas
+ * Cualquier campo vacío se omite (nunca hashear string vacío).
+ */
+function normalizePhone(raw: string | undefined): string {
+  const digits = (raw ?? "").replace(/[^\d]/g, "")
+  // Shopify a veces manda "521..." (LADA MX), otras "52...". Meta acepta
+  // ambos con tal de que empiece por código de país.
+  return digits
+}
 
+function attrValue(order: ShopifyOrder, key: string): string | undefined {
+  const rec = order.note_attributes?.find((a) => a.name === key)
+  return rec?.value?.trim() || undefined
+}
+
+async function buildUserData(order: ShopifyOrder) {
   const ud: Record<string, string | string[]> = {}
+
+  const email = (order.customer?.email ?? order.email ?? "").trim()
   if (email) ud.em = [await hashSha256(email)]
+
+  const phone = normalizePhone(order.customer?.phone ?? order.phone)
   if (phone) ud.ph = [await hashSha256(phone)]
+
+  const firstName = (order.customer?.first_name ?? order.shipping_address?.first_name ?? "").trim()
   if (firstName) ud.fn = [await hashSha256(firstName)]
+
+  const lastName = (order.customer?.last_name ?? order.shipping_address?.last_name ?? "").trim()
   if (lastName) ud.ln = [await hashSha256(lastName)]
+
+  const city = (order.shipping_address?.city ?? "").trim()
   if (city) ud.ct = [await hashSha256(city)]
+
+  const zip = (order.shipping_address?.zip ?? "").trim()
   if (zip) ud.zp = [await hashSha256(zip)]
+
+  const country = (order.shipping_address?.country_code ?? "").trim()
   if (country) ud.country = [await hashSha256(country)]
+
+  // Datos de matching de sesión guardados como cart attributes (round-4 p3).
+  // Estos NO se hashean — Meta los espera en claro.
+  const fbp = attrValue(order, `${META_ATTR_PREFIX}fbp`)
+  if (fbp) ud.fbp = fbp
+  const fbc = attrValue(order, `${META_ATTR_PREFIX}fbc`)
+  if (fbc) ud.fbc = fbc
+  const ua = attrValue(order, `${META_ATTR_PREFIX}user_agent`)
+  if (ua) ud.client_user_agent = ua
+  const ip = attrValue(order, `${META_ATTR_PREFIX}client_ip_address`)
+  if (ip) ud.client_ip_address = ip
 
   return ud
 }
