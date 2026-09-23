@@ -15,6 +15,7 @@ import { Header } from "@/components/ui/header-04"
 import Footer from "@/components/footer"
 import { getProductBySlug, categoryMeta, getProducts } from "@/lib/products"
 import { mxnWithIva, formatMxnWithIva, formatRawCurrency } from "@/lib/pricing"
+import { extractShopifyNumericId } from "@/lib/shopify-id"
 import { Button } from "@/components/ui/button"
 import AddToCart from "@/components/add-to-cart"
 import ProductTabs from "@/components/product-tabs"
@@ -47,6 +48,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = product.seo?.title ?? product.name
   const description = product.seo?.description ?? product.tagline
   const imageAlt = product.imageAlt ?? product.name
+  // meta:content_id — mismo variant ID numérico que el feed g:id y que
+  // ViewContent (round-4 punto 1). Usado por el test de coincidencia y por
+  // integraciones externas que necesitan mapear la URL a un item del catálogo.
+  const metaContentId = product.variantId
+    ? extractShopifyNumericId(product.variantId)
+    : undefined
+
   return {
     title,
     description,
@@ -64,6 +72,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       images: [product.image],
     },
+    ...(metaContentId
+      ? { other: { "meta:content_id": metaContentId } }
+      : {}),
   }
 }
 
@@ -160,12 +171,14 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       {product.faq && product.faq.length > 0 && (
         <ProductFAQSchema items={product.faq} />
       )}
-      <ViewContentTracker
-        contentId={product.slug}
-        contentName={product.name}
-        price={product.price}
-        currency={product.currencyCode ?? "MXN"}
-      />
+      {product.variantId && (
+        <ViewContentTracker
+          variantId={product.variantId}
+          contentName={product.name}
+          price={product.price}
+          currency={product.currencyCode ?? "MXN"}
+        />
+      )}
       <Header />
 
       {/* Breadcrumb */}
@@ -235,7 +248,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   availableForSale={product.availableForSale ?? false}
                   quantityAvailable={product.quantityAvailable ?? 0}
                   productName={product.name}
-                  sku={product.slug}
                 />
               ) : (
                 <div className="flex flex-col gap-3">
@@ -408,7 +420,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           currencyCode={product.currencyCode ?? "MXN"}
           availableForSale={product.availableForSale ?? false}
           productName={product.name}
-          sku={product.slug}
         />
       )}
     </div>

@@ -1,7 +1,8 @@
 "use client"
 
 import { MessageCircle } from "lucide-react"
-import { trackMetaEvent, toMetaContentId } from "@/lib/meta-pixel"
+import { trackMetaEvent } from "@/lib/meta-pixel"
+import { extractShopifyNumericId } from "@/lib/shopify-id"
 
 /**
  * Botón WhatsApp de la BlogProductCard — separado como componente cliente
@@ -10,11 +11,13 @@ import { trackMetaEvent, toMetaContentId } from "@/lib/meta-pixel"
  */
 export default function WaQuoteButton({
   href,
-  productSku,
+  variantId,
 }: {
   href: string
-  productSku: string
+  /** GID de variante Shopify — opcional, sólo para productos comprables. */
+  variantId?: string
 }) {
+  const contentId = variantId ? extractShopifyNumericId(variantId) : undefined
   return (
     <a
       href={href}
@@ -24,7 +27,7 @@ export default function WaQuoteButton({
         trackMetaEvent("Contact", {
           channel: "whatsapp",
           surface: "blog-product-card",
-          content_ids: [toMetaContentId(productSku)],
+          ...(contentId ? { content_ids: [contentId] } : {}),
         })
       }
       className="inline-flex items-center gap-2 h-10 px-4 bg-[#017bfd] hover:bg-[#0066d6] text-white text-xs font-semibold transition-colors"

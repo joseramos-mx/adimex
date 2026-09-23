@@ -91,7 +91,7 @@ export default async function BlogProductCard({
               Comprar en línea
             </Link>
           ) : (
-            <WaQuoteButton href={waHref} productSku={product.slug} />
+            <WaQuoteButton href={waHref} variantId={product.variantId} />
           )}
           <Link
             href={productHref}

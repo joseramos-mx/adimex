@@ -8,10 +8,10 @@ import { sileo } from 'sileo'
 import { useRegion, formatPriceForRegion } from '@/context/region-context'
 import {
   trackMetaEvent,
-  toMetaContentId,
   computeMetaValue,
   newEventId,
 } from '@/lib/meta-pixel'
+import { extractShopifyNumericId } from '@/lib/shopify-id'
 import { pushEcommerceEvent } from '@/lib/gtm-datalayer'
 import { useCookieConsent } from '@/context/cookie-consent-context'
 import { WHATSAPP_NUMBER } from '@/lib/contact'
@@ -29,8 +29,6 @@ interface Props {
   availableForSale: boolean
   quantityAvailable: number
   productName: string
-  /** SKU / handle usado como content_id en Meta Pixel. */
-  sku?: string
 }
 
 export default function AddToCart({
@@ -40,7 +38,6 @@ export default function AddToCart({
   availableForSale,
   quantityAvailable,
   productName,
-  sku,
 }: Props) {
   const { addItem, goToCheckout, loading: cartLoading } = useCart()
   const { region } = useRegion()
@@ -52,7 +49,7 @@ export default function AddToCart({
 
   const priceDisplay = formatPriceForRegion(price, currencyCode, region)
 
-  const contentId = toMetaContentId(sku ?? variantId)
+  const contentId = extractShopifyNumericId(variantId)
   // Meta espera el value CON IVA en MXN, no el precio base de Shopify.
   const unitValue = computeMetaValue(price, currencyCode)
 

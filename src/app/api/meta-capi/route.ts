@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { META_PIXEL_ID, hashSha256, toMetaContentId } from "@/lib/meta-pixel"
+import { META_PIXEL_ID, hashSha256 } from "@/lib/meta-pixel"
 
 /**
  * Meta Conversions API — recibe webhooks `orders/create` de Shopify y
@@ -160,15 +160,15 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  // content_ids = variant_id de Shopify (numérico), mismo valor que emite
+  // el pixel del navegador vía `extractShopifyNumericId(product.variantId)`.
   const contents = order.line_items.map((li) => ({
-    id: toMetaContentId(li.sku ?? String(li.variant_id)),
+    id: String(li.variant_id),
     quantity: li.quantity,
     item_price: parseFloat(li.price),
   }))
 
-  const contentIds = order.line_items.map((li) =>
-    toMetaContentId(li.sku ?? String(li.variant_id))
-  )
+  const contentIds = order.line_items.map((li) => String(li.variant_id))
 
   const payload = {
     data: [

@@ -9,50 +9,10 @@
 export const META_PIXEL_ID =
   process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "3413615145484207"
 
-/**
- * Mapa producto → content_id del catálogo de Meta.
- *
- * Los IDs numéricos los asigna Meta al importar el catálogo desde Shopify
- * (Sales Channels → Facebook → Product Catalog). Sin este mapeo, los eventos
- * llegan pero el retargeting dinámico (DPA / Advantage+ Catalog) no puede
- * encontrar los productos vistos y no puede armar audiencias de "vieron X".
- *
- * Aceptamos tanto el `slug` de nuestro sitio como el `sku` de Shopify —
- * el navegador manda el slug, el webhook orders/create de Shopify manda
- * el SKU. Ambos apuntan al mismo Meta ID.
- *
- * Actualiza este mapa cuando agregues productos al catálogo de Meta.
- */
-const META_CONTENT_IDS: Record<string, string> = {
-  // Por slug interno del sitio (URL actual)
-  "plc-fl7": "43162651590865",
-  "hmi-f007n": "43162684260561",
-  "hmi-f110c": "43103064195281",
-
-  // Slug viejo (antes del rename productos-hmi-f110 → hmi-f110c) — el
-  // Shopify handle nunca cambió, así que el cart drawer sigue enviándolo.
-  "productos-hmi-f110": "43103064195281",
-
-  // Por SKU de Shopify (misma correspondencia — el webhook orders/create
-  // manda el SKU en el line item, no el handle).
-  "FL721-0808P-D": "43162651590865",
-  "F007N": "43162684260561",
-  "F110C": "43103064195281",
-}
-
-/**
- * Convierte un slug o SKU al content_id del catálogo de Meta.
- * Si no está mapeado, devuelve el input tal cual — el evento sigue llegando
- * pero DPA no podrá relacionarlo con un producto del catálogo.
- */
-export function toMetaContentId(slugOrSku: string): string {
-  return META_CONTENT_IDS[slugOrSku] ?? slugOrSku
-}
-
-/** Versión array — útil para el cart drawer que loopea items. */
-export function toMetaContentIds(slugsOrSkus: string[]): string[] {
-  return slugsOrSkus.map(toMetaContentId)
-}
+// Nota: hasta round-3 tuvimos un mapa hard-coded slug/SKU → content_id.
+// Round-4 lo eliminó: el content_id ahora sale del variant ID numérico de
+// Shopify (mismo pipeline en feed, pixel y webhook Purchase). El helper
+// vive en `src/lib/shopify-id.ts`.
 
 import { mxnWithIva, USD_MXN_RATE } from "./pricing"
 

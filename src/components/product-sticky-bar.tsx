@@ -9,10 +9,10 @@ import { pushEcommerceEvent } from "@/lib/gtm-datalayer"
 import { WHATSAPP_NUMBER } from "@/lib/contact"
 import {
   trackMetaEvent,
-  toMetaContentId,
   computeMetaValue,
   newEventId,
 } from "@/lib/meta-pixel"
+import { extractShopifyNumericId } from "@/lib/shopify-id"
 
 /**
  * Sticky bottom bar visible sólo en móvil (< md).
@@ -30,14 +30,12 @@ export default function ProductStickyBar({
   currencyCode,
   availableForSale,
   productName,
-  sku,
 }: {
   variantId: string
   price: string
   currencyCode: string
   availableForSale: boolean
   productName: string
-  sku?: string
 }) {
   const { addItem, goToCheckout } = useCart()
   const { region } = useRegion()
@@ -45,7 +43,7 @@ export default function ProductStickyBar({
   const [loading, setLoading] = useState(false)
 
   const priceDisplay = formatPriceForRegion(price, currencyCode, region)
-  const contentId = toMetaContentId(sku ?? variantId)
+  const contentId = extractShopifyNumericId(variantId)
   const value = computeMetaValue(price, currencyCode)
 
   const waMsg = `Hola, tengo dudas técnicas sobre el ${productName}. Vi la ficha en su sitio.`
