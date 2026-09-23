@@ -1,6 +1,53 @@
 import { NextRequest, NextResponse } from "next/server"
 import { META_PIXEL_ID } from "@/lib/meta-pixel"
 
+// Orígenes válidos para el CAPI-mirror. Los previews de Vercel llevan
+// hostname `adimex-*.vercel.app`; los cubrimos con el sufijo.
+const ALLOWED_ORIGIN_HOSTS = [
+  "adimex.io",
+  "www.adimex.io",
+  "localhost",
+]
+const ALLOWED_ORIGIN_SUFFIX = ".vercel.app"
+
+function originAllowed(req: NextRequest): boolean {
+  const raw = req.headers.get("origin") ?? req.headers.get("referer")
+  if (!raw) return false
+  try {
+    const host = new URL(raw).hostname
+    if (ALLOWED_ORIGIN_HOSTS.includes(host)) return true
+    if (host.endsWith(ALLOWED_ORIGIN_SUFFIX) && host.startsWith("adimex-")) return true
+    return false
+  } catch {
+    return false
+  }
+}
+
+// Rate limit muy simple en memoria: sliding window de 60 s por IP.
+// Con serverless multi-instancia esto NO es global — un atacante en
+// paralelo podría burlar. Si esto llega a importar, migrar a Vercel KV.
+const RATE_LIMIT_MAX = 30
+const RATE_LIMIT_WINDOW_MS = 60_000
+const ipHits = new Map<string, number[]>()
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now()
+  const bucket = (ipHits.get(ip) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS)
+  if (bucket.length >= RATE_LIMIT_MAX) {
+    ipHits.set(ip, bucket)
+    return true
+  }
+  bucket.push(now)
+  ipHits.set(ip, bucket)
+  // Limpieza básica para no acumular memoria en instancias de larga vida.
+  if (ipHits.size > 5000) {
+    for (const [k, v] of ipHits) {
+      if (v.every((t) => now - t >= RATE_LIMIT_WINDOW_MS)) ipHits.delete(k)
+    }
+  }
+  return false
+}
+
 /**
  * Meta Conversions API — endpoint para eventos del navegador (T06).
  *
@@ -69,6 +116,15 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  if (!originAllowed(req)) {
+    return NextResponse.json({ error: "origin not allowed" }, { status: 403 })
+  }
+
+  const requesterIp = clientIp(req)
+  if (rateLimited(requesterIp ?? "unknown")) {
+    return NextResponse.json({ error: "rate limit exceeded" }, { status: 429 })
+  }
+
   if (!consentAllowed(req)) {
     // Respondemos 204 para que el navegador no falle ruidosamente.
     return new NextResponse(null, { status: 204 })
@@ -103,8 +159,7 @@ export async function POST(req: NextRequest) {
   }
 
   const userData: Record<string, string> = {}
-  const ip = clientIp(req)
-  if (ip) userData.client_ip_address = ip
+  if (requesterIp) userData.client_ip_address = requesterIp
   const ua = req.headers.get("user-agent")
   if (ua) userData.client_user_agent = ua
   const fbp = readCookie(req, "_fbp")
