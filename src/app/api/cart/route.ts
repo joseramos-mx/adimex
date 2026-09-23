@@ -1,12 +1,13 @@
 import { shopifyClient } from '@/lib/shopify'
 import { NextRequest, NextResponse } from 'next/server'
-import { META_ATTR_PREFIX } from '@/lib/attribution-attrs'
+import { META_ATTR_PREFIX, sanitizeCartAttrs } from '@/lib/attribution-attrs'
 
 // ─── Fragments ────────────────────────────────────────────────────────────────
 
-const CART_FIELDS = `
+export const CART_FIELDS = `
   id
   checkoutUrl
+  attributes { key value }
   lines(first: 100) {
     edges {
       node {
@@ -83,6 +84,8 @@ function normalizeCart(cart: any) {
     id: cart.id,
     checkoutUrl: cart.checkoutUrl,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    attributes: (cart.attributes ?? []).map((a: any) => ({ key: a.key, value: a.value })),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     items: cart.lines.edges.map(({ node }: any) => ({
       id: node.id,
       variantId: node.merchandise.id,
@@ -133,44 +136,6 @@ function marketingConsentFromCookie(req: NextRequest): boolean {
   }
 }
 
-type Attr = { key: string; value: string }
-
-function sanitizeClientAttrs(attrs: unknown, marketing: boolean): Attr[] {
-  if (!Array.isArray(attrs)) return []
-  const out: Attr[] = []
-  for (const a of attrs) {
-    if (!a || typeof a !== 'object') continue
-    const key = String((a as { key?: unknown }).key ?? '').trim()
-    const value = String((a as { value?: unknown }).value ?? '').slice(0, 500)
-    if (!key || !value) continue
-    // Cortamos identificadores de matching si el consent bajó entre el
-    // gathering en el navegador y el POST (defensa en profundidad).
-    if (
-      !marketing &&
-      (key === `${META_ATTR_PREFIX}fbp` ||
-        key === `${META_ATTR_PREFIX}fbc` ||
-        key === `${META_ATTR_PREFIX}user_agent`)
-    ) {
-      continue
-    }
-    // Whitelist para no permitir inyectar campos arbitrarios en el pedido.
-    const allowed = new Set([
-      'utm_source',
-      'utm_medium',
-      'utm_campaign',
-      'utm_term',
-      'utm_content',
-      'landing_url',
-      `${META_ATTR_PREFIX}fbp`,
-      `${META_ATTR_PREFIX}fbc`,
-      `${META_ATTR_PREFIX}user_agent`,
-    ])
-    if (!allowed.has(key)) continue
-    out.push({ key, value })
-  }
-  return out
-}
-
 /** POST /api/cart  — body: { variantId, cartId?, quantity?, attributes? }
  *  Creates a new cart if no cartId, otherwise adds a line to the existing one. */
 export async function POST(req: NextRequest) {
@@ -190,7 +155,7 @@ export async function POST(req: NextRequest) {
   // cartCreate: agregamos atributos de atribución. El servidor añade la IP
   // del cliente sólo si hay consent.marketing (round-4 p3).
   const marketing = marketingConsentFromCookie(req)
-  const attributes = sanitizeClientAttrs(rawAttrs, marketing)
+  const attributes = sanitizeCartAttrs(rawAttrs, marketing)
   if (marketing) {
     const ip = clientIp(req)
     if (ip) attributes.push({ key: `${META_ATTR_PREFIX}client_ip_address`, value: ip })

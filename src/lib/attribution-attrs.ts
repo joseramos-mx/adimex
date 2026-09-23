@@ -59,3 +59,72 @@ export function gatherAttributionAttrs(marketingConsent: boolean): CartAttribute
 
 /** Prefijo usado para leer los atributos en el webhook. */
 export const META_ATTR_PREFIX = ATTR_PREFIX
+
+/**
+ * Whitelist de keys permitidas como cart attribute. Todo lo que no esté acá
+ * se descarta antes de mandar la mutation. Evita que un actor externo
+ * inyecte campos arbitrarios que después aparecen como note_attributes
+ * del pedido.
+ */
+export const ALLOWED_CART_ATTR_KEYS = new Set<string>([
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+  "landing_url",
+  `${ATTR_PREFIX}fbp`,
+  `${ATTR_PREFIX}fbc`,
+  `${ATTR_PREFIX}user_agent`,
+  `${ATTR_PREFIX}client_ip_address`,
+  `${ATTR_PREFIX}consent`,
+])
+
+/** Keys que sólo pueden persistirse con consent.marketing = true. */
+export const MARKETING_ONLY_ATTR_KEYS = new Set<string>([
+  `${ATTR_PREFIX}fbp`,
+  `${ATTR_PREFIX}fbc`,
+  `${ATTR_PREFIX}user_agent`,
+  `${ATTR_PREFIX}client_ip_address`,
+])
+
+/**
+ * Sanea una lista {key,value} contra la whitelist y el consent actual.
+ * Corta length a 500 chars (límite Shopify) y drop campos vacíos.
+ */
+export function sanitizeCartAttrs(
+  raw: unknown,
+  marketing: boolean,
+): CartAttribute[] {
+  if (!Array.isArray(raw)) return []
+  const out: CartAttribute[] = []
+  for (const a of raw) {
+    if (!a || typeof a !== "object") continue
+    const key = String((a as { key?: unknown }).key ?? "").trim()
+    const value = String((a as { value?: unknown }).value ?? "").slice(0, 500)
+    if (!key || !value) continue
+    if (!ALLOWED_CART_ATTR_KEYS.has(key)) continue
+    if (!marketing && MARKETING_ONLY_ATTR_KEYS.has(key)) continue
+    out.push({ key, value })
+  }
+  return out
+}
+
+/**
+ * Merge de atributos preservando los existentes (los UTM originales de la
+ * sesión no se pierden). Reglas:
+ *   - Cualquier key no presente en `incoming` se conserva de `existing`.
+ *   - Cualquier key en `incoming` sobrescribe la vieja (fresh > stale).
+ *   - Devuelve un array estable (útil para tests).
+ */
+export function mergeCartAttrs(
+  existing: CartAttribute[],
+  incoming: CartAttribute[],
+): CartAttribute[] {
+  const map = new Map<string, string>()
+  for (const a of existing) map.set(a.key, a.value)
+  for (const a of incoming) map.set(a.key, a.value)
+  return [...map.entries()]
+    .map(([key, value]) => ({ key, value }))
+    .sort((a, b) => a.key.localeCompare(b.key))
+}

@@ -38,7 +38,7 @@ interface CartContextValue {
   addItem: (variantId: string) => Promise<void>
   removeItem: (lineId: string) => Promise<void>
   updateQuantity: (lineId: string, quantity: number) => Promise<void>
-  goToCheckout: () => void
+  goToCheckout: () => Promise<void>
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -163,13 +163,48 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [cart?.id, persistCart, removeItem]
   )
 
-  const goToCheckout = useCallback(() => {
+  /**
+   * Empuja los atributos de atribución de la sesión actual al cart existente
+   * vía `cartAttributesUpdate` (round-5 p1). Merge preserva UTMs originales.
+   * No falla ruidosamente — es best-effort: si Shopify rechaza, seguimos.
+   */
+  const syncAttributionAttrs = useCallback(
+    async (): Promise<void> => {
+      if (!cart?.id) return
+      const attributes = gatherAttributionAttrs(consent?.marketing ?? false)
+      if (attributes.length === 0) return
+      try {
+        await fetch('/api/cart/attributes', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cartId: cart.id, attributes }),
+        })
+      } catch (err) {
+        // Silencioso — analytics no puede tumbar la UX.
+        console.warn('[Cart] syncAttributionAttrs failed', err)
+      }
+    },
+    [cart?.id, consent?.marketing],
+  )
+
+  // (a) Cuando el usuario acepta marketing y ya existe un carrito, adjunta
+  //     fbp/fbc/user_agent que no pudimos setear en el cartCreate original.
+  useEffect(() => {
+    if (!consent?.marketing || !cart?.id) return
+    void syncAttributionAttrs()
+    // Dependencia sobre marketing: sólo dispara al pasar de false→true.
+  }, [consent?.marketing, cart?.id, syncAttributionAttrs])
+
+  const goToCheckout = useCallback(async () => {
     if (!cart?.checkoutUrl) return
+    // (b) Antes de redirigir, refrescamos atributos por si el fbc/UA cambió
+    //     o el usuario aceptó marketing después de crear el carrito.
+    await syncAttributionAttrs()
     // `return_to` sets the "Continue shopping" button destination in Shopify checkout
     const url = new URL(cart.checkoutUrl)
     url.searchParams.set('return_to', '/')
     window.location.href = url.toString()
-  }, [cart?.checkoutUrl])
+  }, [cart?.checkoutUrl, syncAttributionAttrs])
 
   const itemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0
 
