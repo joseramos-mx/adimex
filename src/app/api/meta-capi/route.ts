@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { META_PIXEL_ID, hashSha256 } from "@/lib/meta-pixel"
 import { META_ATTR_PREFIX } from "@/lib/attribution-attrs"
 import { SEND_ORDER_PII_WITHOUT_CONSENT } from "@/lib/consent-mode"
+import { shouldSendCapi, forceTestEventCode } from "@/lib/env-gating"
 
 /**
  * Meta Conversions API — recibe webhooks `orders/create` de Shopify y
@@ -230,6 +231,17 @@ export async function POST(req: NextRequest) {
 
   const contentIds = order.line_items.map((li) => String(li.variant_id))
 
+  // Gate por entorno (round-5 p4): preview no debe enviar a producción de
+  // Meta salvo que el operador haya definido explícitamente un test code.
+  if (!shouldSendCapi()) {
+    console.info("[meta-capi] preview/dev sin META_CAPI_TEST_CODE — Purchase no reenviado", {
+      order_id: order.id,
+    })
+    return NextResponse.json({ ok: true, skipped: "non-prod without test code" })
+  }
+
+  const useTestCode = forceTestEventCode() || Boolean(process.env.META_CAPI_TEST_CODE)
+
   const payload = {
     data: [
       {
@@ -250,7 +262,7 @@ export async function POST(req: NextRequest) {
         },
       },
     ],
-    ...(process.env.META_CAPI_TEST_CODE
+    ...(useTestCode && process.env.META_CAPI_TEST_CODE
       ? { test_event_code: process.env.META_CAPI_TEST_CODE }
       : {}),
   }

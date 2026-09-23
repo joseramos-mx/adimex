@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { META_PIXEL_ID } from "@/lib/meta-pixel"
+import { shouldSendCapi, forceTestEventCode } from "@/lib/env-gating"
 
 // Orígenes válidos para el CAPI-mirror. Los previews de Vercel llevan
 // hostname `adimex-*.vercel.app`; los cubrimos con el sufijo.
@@ -158,6 +159,12 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  // Gate por entorno (round-5 p4): preview / dev sólo reenvía si hay
+  // META_CAPI_TEST_CODE definido. En prod siempre.
+  if (!shouldSendCapi()) {
+    return new NextResponse(null, { status: 204 })
+  }
+
   const userData: Record<string, string> = {}
   if (requesterIp) userData.client_ip_address = requesterIp
   const ua = req.headers.get("user-agent")
@@ -166,6 +173,8 @@ export async function POST(req: NextRequest) {
   if (fbp) userData.fbp = fbp
   const fbc = readCookie(req, "_fbc")
   if (fbc) userData.fbc = fbc
+
+  const useTestCode = forceTestEventCode() || Boolean(process.env.META_CAPI_TEST_CODE)
 
   const payload = {
     data: [
@@ -180,7 +189,7 @@ export async function POST(req: NextRequest) {
         ...(ev.custom_data ? { custom_data: ev.custom_data } : {}),
       },
     ],
-    ...(process.env.META_CAPI_TEST_CODE
+    ...(useTestCode && process.env.META_CAPI_TEST_CODE
       ? { test_event_code: process.env.META_CAPI_TEST_CODE }
       : {}),
   }
