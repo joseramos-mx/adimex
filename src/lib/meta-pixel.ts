@@ -54,18 +54,11 @@ export function toMetaContentIds(slugsOrSkus: string[]): string[] {
   return slugsOrSkus.map(toMetaContentId)
 }
 
-/**
- * IVA aplicado a los precios base de Shopify (que se almacenan sin impuesto).
- * Coincide con `IVA_RATE` de region-context — duplicado acá para no arrastrar
- * la dependencia del context en pipeline server-side.
- */
-const IVA_RATE = Number(process.env.NEXT_PUBLIC_IVA_RATE) || 0.16
-const USD_MXN_RATE = Number(process.env.NEXT_PUBLIC_USD_MXN_RATE) || 18
+import { mxnWithIva, USD_MXN_RATE } from "./pricing"
 
 /**
  * Convierte el precio base de Shopify a la cantidad que Meta espera en `value`:
- * IVA-inclusiva y en MXN. Aplica el mismo cálculo que ve el usuario en la
- * ficha (sin dupliar el 16% cuando el precio ya venga con impuesto).
+ * IVA-inclusiva y en MXN. Reutiliza la función única de precio (pricing.ts).
  *
  * Regla:
  *   MXN base sin IVA  → × 1.16 → value MXN con IVA
@@ -74,7 +67,7 @@ const USD_MXN_RATE = Number(process.env.NEXT_PUBLIC_USD_MXN_RATE) || 18
 export function computeMetaValue(price: string | number, currency: string): number {
   const raw = typeof price === "string" ? parseFloat(price) : price
   const c = currency.toUpperCase()
-  if (c === "MXN") return Number((raw * (1 + IVA_RATE)).toFixed(2))
+  if (c === "MXN") return Number(mxnWithIva(raw).toFixed(2))
   if (c === "USD") return Number((raw * USD_MXN_RATE).toFixed(2))
   return Number(raw.toFixed(2))
 }

@@ -1,6 +1,15 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import {
+  IVA_RATE,
+  USD_MXN_RATE,
+  formatMxnWithIva,
+  formatUsdWithIva,
+  formatRawCurrency,
+} from '@/lib/pricing'
+
+export { IVA_RATE, USD_MXN_RATE }
 
 export type RegionCode = 'MX' | 'US'
 
@@ -18,15 +27,6 @@ export const REGIONS: Record<RegionCode, Region> = {
 }
 
 export const REGION_LIST: Region[] = [REGIONS.MX, REGIONS.US]
-
-// ─── Pricing config ───────────────────────────────────────────────────────────
-// Shopify stores the base price in MXN without IVA. The customer-facing price
-// includes 16% IVA (Mexican VAT) baked in, and USD is converted from the
-// IVA-inclusive MXN amount using a fixed exchange rate.
-//
-// These can be overridden at deploy time via env vars.
-export const IVA_RATE = Number(process.env.NEXT_PUBLIC_IVA_RATE) || 0.16
-export const USD_MXN_RATE = Number(process.env.NEXT_PUBLIC_USD_MXN_RATE) || 18
 
 type RegionContextValue = {
   region: Region
@@ -118,43 +118,26 @@ export function formatPriceForRegion(
   sourceCurrency: string,
   region: Region,
 ): PriceDisplay {
-  const raw = typeof amount === 'string' ? parseFloat(amount) : amount
   const src = sourceCurrency.toUpperCase()
 
-  // Defensive: if Shopify ever returns a non-MXN amount, show it raw.
   if (src !== 'MXN') {
     return {
-      formatted: new Intl.NumberFormat(region.locale, {
-        style: 'currency',
-        currency: src,
-        minimumFractionDigits: 2,
-      }).format(raw),
+      formatted: formatRawCurrency(amount, src, region.locale),
       ivaIncluded: false,
       currency: region.displayCurrency,
     }
   }
 
-  const mxnWithIva = raw * (1 + IVA_RATE)
-
   if (region.displayCurrency === 'USD') {
-    const usd = mxnWithIva / USD_MXN_RATE
     return {
-      formatted: new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-      }).format(usd),
+      formatted: formatUsdWithIva(amount),
       ivaIncluded: true,
       currency: 'USD',
     }
   }
 
   return {
-    formatted: new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
-      minimumFractionDigits: 2,
-    }).format(mxnWithIva),
+    formatted: formatMxnWithIva(amount),
     ivaIncluded: true,
     currency: 'MXN',
   }

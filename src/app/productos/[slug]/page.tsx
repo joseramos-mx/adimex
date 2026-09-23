@@ -14,6 +14,7 @@ import {
 import { Header } from "@/components/ui/header-04"
 import Footer from "@/components/footer"
 import { getProductBySlug, categoryMeta, getProducts } from "@/lib/products"
+import { mxnWithIva, formatMxnWithIva, formatRawCurrency } from "@/lib/pricing"
 import { Button } from "@/components/ui/button"
 import AddToCart from "@/components/add-to-cart"
 import ProductTabs from "@/components/product-tabs"
@@ -89,11 +90,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     { name: product.name, href: `/productos/${product.slug}` },
   ]
 
-  // Product JSON-LD — recuperado como rich result en Google Search
+  // Product JSON-LD — recuperado como rich result en Google Search.
+  // Publica el mismo precio con IVA que ve el usuario (fuente única: pricing.ts).
   const priceMXN =
     product.price && product.currencyCode
-      ? product.currencyCode === "MXN"
-        ? parseFloat(product.price)
+      ? product.currencyCode.toUpperCase() === "MXN"
+        ? mxnWithIva(product.price)
         : parseFloat(product.price) * 18
       : undefined
   const productSchema = {
@@ -357,16 +359,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                       {rel.name}
                     </p>
                     <p className="text-[11px] text-gray-400 line-clamp-2">{rel.tagline}</p>
-                    <div className="mt-auto pt-3 flex items-center justify-between">
-                      {rel.price && (
-                        <span className="text-xs font-mono font-semibold text-[#07080c]">
-                          {new Intl.NumberFormat("es-MX", {
-                            style: "currency",
-                            currency: "MXN",
-                            minimumFractionDigits: 0,
-                          }).format(
-                            parseFloat(rel.price) * (rel.currencyCode !== "MXN" ? 18 : 1)
-                          )}
+                    <div className="mt-auto pt-3 flex items-center justify-between gap-2">
+                      {rel.price && rel.currencyCode && (
+                        <span className="text-xs font-mono font-semibold text-[#07080c] flex items-baseline gap-1.5">
+                          {rel.currencyCode.toUpperCase() === "MXN"
+                            ? formatMxnWithIva(rel.price)
+                            : formatRawCurrency(rel.price, rel.currencyCode)}
+                          <span className="text-[9px] text-gray-400 font-normal">IVA incluido</span>
                         </span>
                       )}
                       <ArrowRight
