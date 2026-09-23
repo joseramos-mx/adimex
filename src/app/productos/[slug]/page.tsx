@@ -123,9 +123,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     brand: { "@type": "Brand", name: "FLEXEM" },
     category: product.categoryLabel,
     sku: product.slug,
-    // mpn (Manufacturer Part Number) = modelo FLEXEM. Requerido por Google
-    // Merchant para productos sin GTIN.
-    ...(product.series ? { mpn: product.series, model: product.series } : { mpn: product.slug }),
+    // mpn (Manufacturer Part Number) = modelo real del fabricante FLEXEM.
+    // Requerido por Google Merchant para productos sin GTIN. Prefiere el
+    // campo dedicado `mpn`; cae a `series` (familia) o slug si no existe.
+    mpn: product.mpn ?? product.series ?? product.slug,
+    ...(product.series ? { model: product.series } : {}),
     ...(priceMXN
       ? {
           offers: {

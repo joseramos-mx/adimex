@@ -72,6 +72,12 @@ export interface Product {
   currencyCode?: string
   availableForSale?: boolean
   quantityAvailable?: number
+  /**
+   * Manufacturer Part Number — modelo real del fabricante (FLEXEM).
+   * Requerido para Google Merchant / Meta Catalog cuando no hay GTIN.
+   * Ej: "FL721-0808P-D", "F007N", "F110C".
+   */
+  mpn?: string
 }
 
 const CDN = "https://omo-oss-image.thefastimg.com"
@@ -471,6 +477,7 @@ const plcProducts: Product[] = [
     ],
     externalUrl: "https://es.flexem.com/products_detail/Serie_FL7.html",
     shopifyHandle: "plc-fl721-0808p-d",
+    mpn: "FL721-0808P-D",
     seo: {
       title: "PLC Flexem FL7 CODESYS 32 ejes · $3,445 MXN",
       description:
@@ -814,6 +821,7 @@ const hmiProducts: Product[] = [
     ],
     externalUrl: "https://es.flexem.com/products_list/F0/1_Series.html",
     shopifyHandle: "hmi-flexem-f007n",
+    mpn: "F007N",
     seo: {
       title: "HMI Flexem F007N 7\" capacitiva · $7,308 MXN",
       description:
@@ -886,6 +894,7 @@ const hmiProducts: Product[] = [
     ],
     externalUrl: "https://es.flexem.com/products_list/F0/1_Series.html",
     shopifyHandle: "productos-hmi-f110",
+    mpn: "F110C",
     seo: {
       title: "HMI Flexem F110C 10.1\" IoT + Bluetooth · $9,103 MXN",
       description:

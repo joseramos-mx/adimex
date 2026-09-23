@@ -219,3 +219,80 @@ test.describe("Slug F110C", () => {
     }
   })
 })
+
+// ── /products.xml — Google Merchant / Meta Catalog feed ────────────────────
+
+type FeedItem = { id: string; link: string; price: string; mpn: string; availability: string; brand: string; title: string }
+
+async function parseFeed(page: Page): Promise<FeedItem[]> {
+  const res = await page.request.get(`${BASE}/products.xml`)
+  expect(res.ok(), `products.xml debe responder 2xx (fue ${res.status()})`).toBe(true)
+  const contentType = res.headers()["content-type"] ?? ""
+  expect(contentType).toContain("xml")
+  const xml = await res.text()
+
+  const items: FeedItem[] = []
+  const itemRegex = /<item>([\s\S]*?)<\/item>/g
+  const grab = (block: string, tag: string): string => {
+    const m = new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`).exec(block)
+    return m ? m[1]!.trim() : ""
+  }
+  for (const [, inner] of xml.matchAll(itemRegex)) {
+    items.push({
+      id: grab(inner, "g:id"),
+      link: grab(inner, "g:link"),
+      price: grab(inner, "g:price"),
+      mpn: grab(inner, "g:mpn"),
+      availability: grab(inner, "g:availability"),
+      brand: grab(inner, "g:brand"),
+      title: grab(inner, "g:title"),
+    })
+  }
+  return items
+}
+
+test.describe("/products.xml", () => {
+  test("XML válido con campos obligatorios de Google Merchant", async ({ page }) => {
+    const items = await parseFeed(page)
+
+    if (items.length === 0) {
+      test.skip(true, "sitio sin conexión a Shopify — feed vacío por falta de variantId")
+      return
+    }
+
+    for (const item of items) {
+      expect(item.id, "g:id no vacío").toMatch(/^\d+$/)
+      expect(item.link, "g:link apunta a adimex.io/productos/").toMatch(
+        /^https:\/\/adimex\.io\/productos\/[a-z0-9-]+$/,
+      )
+      expect(item.price, "g:price sin '$' y con ' MXN'").toMatch(/^\d+\.\d{2} MXN$/)
+      expect(item.price, "g:price no lleva símbolo $").not.toContain("$")
+      expect(item.price, "g:price no lleva comas de miles").not.toContain(",")
+      expect(item.brand).toBe("FLEXEM")
+      expect(item.mpn, "g:mpn no vacío").not.toBe("")
+      expect(["in_stock", "out_of_stock"]).toContain(item.availability)
+      expect(item.title).not.toBe("")
+    }
+  })
+
+  test("g:id del feed coincide con meta:content_id de cada ficha (base para ViewContent)", async ({ page }) => {
+    const items = await parseFeed(page)
+    if (items.length === 0) {
+      test.skip(true, "sitio sin conexión a Shopify — feed vacío")
+      return
+    }
+
+    for (const item of items) {
+      await page.goto(item.link, { waitUntil: "domcontentloaded" })
+      const metaId = await page
+        .locator("meta[name='meta:content_id']")
+        .first()
+        .getAttribute("content")
+      expect(metaId, `ficha ${item.link} debe declarar meta:content_id`).toBeTruthy()
+      expect(
+        metaId,
+        `feed g:id ${item.id} debe coincidir con meta:content_id de ${item.link}`,
+      ).toBe(item.id)
+    }
+  })
+})
