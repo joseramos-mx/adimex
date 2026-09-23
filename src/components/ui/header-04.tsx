@@ -602,22 +602,68 @@ export const Header = () => {
                 Login
               </Button>
             )}
+            {/* Tienda como CTA primario para tráfico de pauta (T13) */}
             <Button asChild size="sm" className="text-xs h-8 bg-[#017bfd] hover:bg-[#0066d6] text-white border-0">
+              <Link href="/productos" className="flex items-center gap-1.5">
+                <ShoppingCart size={13} />
+                Tienda
+              </Link>
+            </Button>
+            {/* Agendar demo pasa a estilo secundario (outline) */}
+            <Button
+              asChild
+              size="sm"
+              variant="outline"
+              className={cn(
+                "text-xs h-8 bg-transparent",
+                isDark
+                  ? "border-white/20 text-white hover:bg-white/10 hover:text-white"
+                  : "border-black/20 text-[#07080c] hover:bg-black/8 hover:text-[#07080c]"
+              )}
+            >
               <a href={WA_DEMO} target="_blank" rel="noopener noreferrer">Agendar demo</a>
             </Button>
           </div>
 
-          {/* Mobile toggle — 44x44 touch target */}
-          <button
-            onClick={() => setMenuState(!menuState)}
-            aria-label={menuState ? "Cerrar menú" : "Abrir menú"}
-            className={cn(
-              "flex lg:hidden min-h-11 min-w-11 items-center justify-center transition-colors duration-200",
-              isLight ? "text-[#07080c]" : "text-white",
-            )}
-          >
-            {menuState ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          {/* Mobile: Tienda + carrito visibles siempre + menu toggle */}
+          <div className="flex lg:hidden items-center gap-1 ml-auto">
+            <Link
+              href="/productos"
+              className={cn(
+                "flex items-center gap-1.5 min-h-11 px-3 text-xs font-semibold transition-colors",
+                isLight ? "text-[#0066FF]" : "text-white"
+              )}
+              aria-label="Ir a la tienda"
+            >
+              <ShoppingCart size={14} />
+              Tienda
+            </Link>
+            <button
+              onClick={openCart}
+              aria-label="Abrir carrito"
+              className={cn(
+                "relative flex items-center justify-center min-h-11 min-w-11 transition-colors",
+                isLight ? "text-[#07080c]" : "text-white",
+              )}
+            >
+              <ShoppingCart size={18} />
+              {itemCount > 0 && (
+                <span className="absolute top-1.5 right-1 min-w-4 h-4 px-1 bg-[#017bfd] text-white text-[9px] font-mono flex items-center justify-center">
+                  {itemCount > 99 ? '99+' : itemCount}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setMenuState(!menuState)}
+              aria-label={menuState ? "Cerrar menú" : "Abrir menú"}
+              className={cn(
+                "flex min-h-11 min-w-11 items-center justify-center transition-colors duration-200",
+                isLight ? "text-[#07080c]" : "text-white",
+              )}
+            >
+              {menuState ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
 
         </div>
 
