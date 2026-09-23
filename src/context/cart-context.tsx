@@ -199,7 +199,29 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (!cart?.checkoutUrl) return
     // (b) Antes de redirigir, refrescamos atributos por si el fbc/UA cambió
     //     o el usuario aceptó marketing después de crear el carrito.
-    await syncAttributionAttrs()
+    //
+    // Timeout duro de 1500 ms: si Shopify Storefront tarda o falla, seguimos
+    // al checkout de todos modos — atribución nunca puede bloquear la compra
+    // (round-6 p3). El sync es best-effort.
+    const SYNC_TIMEOUT_MS = 1500
+    let timeoutHit = false
+    try {
+      await Promise.race([
+        syncAttributionAttrs(),
+        new Promise<void>((_, reject) =>
+          setTimeout(() => {
+            timeoutHit = true
+            reject(new Error('sync timeout'))
+          }, SYNC_TIMEOUT_MS),
+        ),
+      ])
+    } catch (err) {
+      if (timeoutHit) {
+        console.warn('[Cart] syncAttributionAttrs excedió 1500ms — checkout continúa sin refresh de atributos')
+      } else {
+        console.warn('[Cart] syncAttributionAttrs falló — checkout continúa', err)
+      }
+    }
     // `return_to` sets the "Continue shopping" button destination in Shopify checkout
     const url = new URL(cart.checkoutUrl)
     url.searchParams.set('return_to', '/')
