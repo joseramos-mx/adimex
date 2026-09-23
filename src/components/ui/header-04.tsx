@@ -652,7 +652,7 @@ export const Header = () => {
         <div className="px-6 pt-4">
           <button
             onClick={() => { setMenuState(false); setSearchOpen(true) }}
-            className="w-full flex items-center gap-2 h-9 px-3 border border-white/15 text-xs text-white/50 hover:text-white hover:border-white/30 transition-colors"
+            className="w-full flex items-center gap-2 min-h-11 px-3 border border-white/15 text-xs text-white/50 hover:text-white hover:border-white/30 transition-colors"
           >
             <Search size={12} />
             <span>Buscar productos...</span>
@@ -757,7 +757,7 @@ export const Header = () => {
                   key={r.code}
                   onClick={() => setRegion(r.code)}
                   className={cn(
-                    "flex flex-col items-center justify-center gap-0.5 h-10 border text-xs transition-colors",
+                    "flex flex-col items-center justify-center gap-0.5 min-h-11 border text-xs transition-colors",
                     r.code === region.code
                       ? "border-[#017bfd]/50 bg-[#017bfd]/10 text-white"
                       : "border-white/10 text-white/40 hover:border-white/25 hover:text-white/70"
@@ -774,7 +774,7 @@ export const Header = () => {
           </div>
           <button
             onClick={() => { setMenuState(false); openCart() }}
-            className="w-full flex items-center justify-between px-4 h-9 border border-white/20 text-xs text-white hover:bg-white/5 transition-colors"
+            className="w-full flex items-center justify-between px-4 min-h-11 border border-white/20 text-xs text-white hover:bg-white/5 transition-colors"
           >
             <span className="flex items-center gap-2">
               <ShoppingCart size={13} />
