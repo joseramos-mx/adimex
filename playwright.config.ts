@@ -9,7 +9,9 @@ import { defineConfig, devices } from "@playwright/test"
  */
 export default defineConfig({
   testDir: "./scripts",
-  testMatch: /verify-launch\.ts$/,
+  // Incluye el e2e principal (verify-launch) y todos los unit tests con
+  // sufijo `.test.ts` (round-5 p6).
+  testMatch: [/verify-launch\.ts$/, /unit-.*\.test\.ts$/],
   fullyParallel: false,
   workers: 1,
   retries: 1,

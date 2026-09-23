@@ -3,6 +3,14 @@ import { META_PIXEL_ID, hashSha256 } from "@/lib/meta-pixel"
 import { META_ATTR_PREFIX } from "@/lib/attribution-attrs"
 import { SEND_ORDER_PII_WITHOUT_CONSENT } from "@/lib/consent-mode"
 import { shouldSendCapi, forceTestEventCode } from "@/lib/env-gating"
+import {
+  normalizeCity,
+  normalizeCountry,
+  normalizeEmail,
+  normalizeName,
+  normalizePhone,
+  normalizeZip,
+} from "@/lib/meta-user-data"
 
 /**
  * Meta Conversions API — recibe webhooks `orders/create` de Shopify y
@@ -66,48 +74,42 @@ function eventIdFromOrder(order: ShopifyOrder): string {
   return String(order.id)
 }
 
-/**
- * Normalización de campos advanced-matching per Meta spec:
- *   em, fn, ln, ct → lowercase + trim
- *   zp             → lowercase + trim (Meta acepta el CP tal cual)
- *   ph             → sólo dígitos (con código de país, sin +)
- *   country        → 2 letras ISO en minúsculas
- * Cualquier campo vacío se omite (nunca hashear string vacío).
- */
-function normalizePhone(raw: string | undefined): string {
-  const digits = (raw ?? "").replace(/[^\d]/g, "")
-  // Shopify a veces manda "521..." (LADA MX), otras "52...". Meta acepta
-  // ambos con tal de que empiece por código de país.
-  return digits
-}
-
 function attrValue(order: ShopifyOrder, key: string): string | undefined {
   const rec = order.note_attributes?.find((a) => a.name === key)
   return rec?.value?.trim() || undefined
 }
 
+/**
+ * user_data para Meta CAPI. Normaliza cada campo según la spec de Meta
+ * (`@/lib/meta-user-data`), skip si vacío tras normalización.
+ * fbp/fbc/UA/IP se pasan en CLARO (Meta no los hashea).
+ */
 async function buildUserData(order: ShopifyOrder) {
   const ud: Record<string, string | string[]> = {}
 
-  const email = (order.customer?.email ?? order.email ?? "").trim()
+  const email = normalizeEmail(order.customer?.email ?? order.email)
   if (email) ud.em = [await hashSha256(email)]
 
   const phone = normalizePhone(order.customer?.phone ?? order.phone)
   if (phone) ud.ph = [await hashSha256(phone)]
 
-  const firstName = (order.customer?.first_name ?? order.shipping_address?.first_name ?? "").trim()
+  const firstName = normalizeName(
+    order.customer?.first_name ?? order.shipping_address?.first_name,
+  )
   if (firstName) ud.fn = [await hashSha256(firstName)]
 
-  const lastName = (order.customer?.last_name ?? order.shipping_address?.last_name ?? "").trim()
+  const lastName = normalizeName(
+    order.customer?.last_name ?? order.shipping_address?.last_name,
+  )
   if (lastName) ud.ln = [await hashSha256(lastName)]
 
-  const city = (order.shipping_address?.city ?? "").trim()
+  const city = normalizeCity(order.shipping_address?.city)
   if (city) ud.ct = [await hashSha256(city)]
 
-  const zip = (order.shipping_address?.zip ?? "").trim()
+  const zip = normalizeZip(order.shipping_address?.zip)
   if (zip) ud.zp = [await hashSha256(zip)]
 
-  const country = (order.shipping_address?.country_code ?? "").trim()
+  const country = normalizeCountry(order.shipping_address?.country_code)
   if (country) ud.country = [await hashSha256(country)]
 
   // Datos de matching de sesión guardados como cart attributes (round-4 p3).
