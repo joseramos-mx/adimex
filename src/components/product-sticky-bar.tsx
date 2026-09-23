@@ -4,6 +4,8 @@ import { useState } from "react"
 import { Zap, MessageCircle } from "lucide-react"
 import { useCart } from "@/context/cart-context"
 import { useRegion, formatPriceForRegion } from "@/context/region-context"
+import { useCookieConsent } from "@/context/cookie-consent-context"
+import { pushEcommerceEvent } from "@/lib/gtm-datalayer"
 import { WHATSAPP_NUMBER } from "@/lib/contact"
 import {
   trackMetaEvent,
@@ -39,6 +41,7 @@ export default function ProductStickyBar({
 }) {
   const { addItem, goToCheckout } = useCart()
   const { region } = useRegion()
+  const { consent } = useCookieConsent()
   const [loading, setLoading] = useState(false)
 
   const priceDisplay = formatPriceForRegion(price, currencyCode, region)
@@ -65,6 +68,23 @@ export default function ProductStickyBar({
           contents: [{ id: contentId, quantity: 1, item_price: value }],
         },
         { eventID: newEventId("ic") }
+      )
+      pushEcommerceEvent(
+        "begin_checkout",
+        {
+          currency: "MXN",
+          value,
+          items: [
+            {
+              item_id: contentId,
+              item_name: productName,
+              price: value,
+              quantity: 1,
+              item_brand: "FLEXEM",
+            },
+          ],
+        },
+        consent?.analytics ?? false,
       )
       goToCheckout()
     } catch {

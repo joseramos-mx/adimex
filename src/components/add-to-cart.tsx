@@ -12,6 +12,8 @@ import {
   computeMetaValue,
   newEventId,
 } from '@/lib/meta-pixel'
+import { pushEcommerceEvent } from '@/lib/gtm-datalayer'
+import { useCookieConsent } from '@/context/cookie-consent-context'
 import { WHATSAPP_NUMBER } from '@/lib/contact'
 
 const toastBase = {
@@ -42,6 +44,7 @@ export default function AddToCart({
 }: Props) {
   const { addItem, goToCheckout, loading: cartLoading } = useCart()
   const { region } = useRegion()
+  const { consent } = useCookieConsent()
   const [localLoading, setLocalLoading] = useState(false)
   const [qty, setQty] = useState(1)
 
@@ -71,6 +74,23 @@ export default function AddToCart({
           contents: [{ id: contentId, quantity: qty, item_price: unitValue }],
         },
         { eventID: newEventId('atc') },
+      )
+      pushEcommerceEvent(
+        'add_to_cart',
+        {
+          currency: 'MXN',
+          value: unitValue * qty,
+          items: [
+            {
+              item_id: contentId,
+              item_name: productName,
+              price: unitValue,
+              quantity: qty,
+              item_brand: 'FLEXEM',
+            },
+          ],
+        },
+        consent?.analytics ?? false,
       )
       sileo.success({
         title: qty > 1 ? `${qty}× artículos agregados` : 'Agregado al carrito',
@@ -104,6 +124,23 @@ export default function AddToCart({
           contents: [{ id: contentId, quantity: qty, item_price: unitValue }],
         },
         { eventID: newEventId('ic') },
+      )
+      pushEcommerceEvent(
+        'begin_checkout',
+        {
+          currency: 'MXN',
+          value: unitValue * qty,
+          items: [
+            {
+              item_id: contentId,
+              item_name: productName,
+              price: unitValue,
+              quantity: qty,
+              item_brand: 'FLEXEM',
+            },
+          ],
+        },
+        consent?.analytics ?? false,
       )
       sileo.success({
         title: 'Redirigiendo al checkout',

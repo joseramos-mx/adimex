@@ -116,6 +116,10 @@ export function newEventId(prefix: string = "e"): string {
 /**
  * Track seguro: no-op si `fbq` aún no está cargado (consentimiento denegado
  * o carga diferida). Nunca revienta el render.
+ *
+ * Si se pasa `options.eventID`, refleja el evento server-side (CAPI) con
+ * el mismo `event_id` para deduplicación (T06). La compra `Purchase`
+ * queda excluida — se manda desde el webhook de Shopify, no del cliente.
  */
 export function trackMetaEvent(
   event: MetaEvent,
@@ -124,8 +128,41 @@ export function trackMetaEvent(
 ): void {
   if (typeof window === "undefined") return
   const fbq = window.fbq
-  if (!fbq) return
-  fbq("track", event, params, options)
+  if (fbq) fbq("track", event, params, options)
+
+  if (options?.eventID && event !== "Purchase") {
+    mirrorEventToCapi(event, params, options.eventID)
+  }
+}
+
+/**
+ * POST silencioso al endpoint CAPI del sitio. Usa `keepalive` para que el
+ * request sobreviva si el usuario navega inmediatamente (típico de
+ * InitiateCheckout que redirige a Shopify).
+ */
+function mirrorEventToCapi(
+  event: string,
+  params: Record<string, unknown> | undefined,
+  eventID: string,
+): void {
+  try {
+    const body = JSON.stringify({
+      event_name: event,
+      event_id: eventID,
+      event_source_url: window.location.href,
+      custom_data: params,
+    })
+    void fetch("/api/meta-capi/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+      keepalive: true,
+    }).catch(() => {
+      // silencioso — analytics no puede tumbar la UX
+    })
+  } catch {
+    // silencioso
+  }
 }
 
 /**

@@ -8,6 +8,7 @@ import {
   newEventId,
 } from "@/lib/meta-pixel"
 import { useCookieConsent } from "@/context/cookie-consent-context"
+import { pushEcommerceEvent } from "@/lib/gtm-datalayer"
 
 /**
  * Dispara `ViewContent` de Meta Pixel al cargar la ficha de producto.
@@ -40,6 +41,27 @@ export default function ViewContentTracker({
     const value =
       price !== undefined ? computeMetaValue(price, currency) : undefined
 
+    // Empuja al dataLayer de GA4 en paralelo (respeta consent.analytics).
+    if (value !== undefined) {
+      pushEcommerceEvent(
+        "view_item",
+        {
+          currency: "MXN",
+          value,
+          items: [
+            {
+              item_id: toMetaContentId(contentId),
+              item_name: contentName,
+              price: value,
+              quantity: 1,
+              item_brand: "FLEXEM",
+            },
+          ],
+        },
+        consent?.analytics ?? false,
+      )
+    }
+
     // El init del pixel es async — reintenta hasta ~2s hasta que fbq
     // esté listo (o hasta que aparezca en el queue temprano).
     let tries = 0
@@ -65,7 +87,7 @@ export default function ViewContentTracker({
     }, 100)
 
     return () => clearInterval(interval)
-  }, [consent?.marketing, contentId, contentName, price, currency])
+  }, [consent?.marketing, consent?.analytics, contentId, contentName, price, currency])
 
   return null
 }
