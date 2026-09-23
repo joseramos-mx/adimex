@@ -125,6 +125,9 @@ export function sanitizeCartAttrs(
  * sesión no se pierden). Reglas:
  *   - Cualquier key no presente en `incoming` se conserva de `existing`.
  *   - Cualquier key en `incoming` sobrescribe la vieja (fresh > stale).
+ *   - Si `incoming` trae `meta_consent=false`, se REVOCA: se borran del
+ *     resultado todas las MARKETING_ONLY_ATTR_KEYS aunque ya estuvieran
+ *     en `existing`. (round-6 p2 — respeta el "opt-out" retroactivo).
  *   - Devuelve un array estable (útil para tests).
  */
 export function mergeCartAttrs(
@@ -134,6 +137,13 @@ export function mergeCartAttrs(
   const map = new Map<string, string>()
   for (const a of existing) map.set(a.key, a.value)
   for (const a of incoming) map.set(a.key, a.value)
+
+  // Revocación de consent marketing → borra las llaves de matching.
+  const incomingConsent = incoming.find((a) => a.key === `${ATTR_PREFIX}consent`)
+  if (incomingConsent && incomingConsent.value === "false") {
+    for (const k of MARKETING_ONLY_ATTR_KEYS) map.delete(k)
+  }
+
   return [...map.entries()]
     .map(([key, value]) => ({ key, value }))
     .sort((a, b) => a.key.localeCompare(b.key))
