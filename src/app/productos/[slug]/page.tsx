@@ -98,6 +98,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         ? mxnWithIva(product.price)
         : parseFloat(product.price) * 18
       : undefined
+  // priceValidUntil: 1 año — Google Merchant lo pide para offers con precio.
+  const priceValidUntil = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0]
+
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -107,7 +112,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     brand: { "@type": "Brand", name: "FLEXEM" },
     category: product.categoryLabel,
     sku: product.slug,
-    ...(product.series ? { model: product.series } : {}),
+    // mpn (Manufacturer Part Number) = modelo FLEXEM. Requerido por Google
+    // Merchant para productos sin GTIN.
+    ...(product.series ? { mpn: product.series, model: product.series } : { mpn: product.slug }),
     ...(priceMXN
       ? {
           offers: {
@@ -115,11 +122,16 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             url: canonical,
             priceCurrency: "MXN",
             price: priceMXN.toFixed(2),
+            priceValidUntil,
             availability: product.availableForSale
               ? "https://schema.org/InStock"
               : "https://schema.org/OutOfStock",
             itemCondition: "https://schema.org/NewCondition",
-            seller: { "@type": "Organization", name: "ADIMEX" },
+            seller: {
+              "@type": "Organization",
+              name: "ADIMEX",
+              url: "https://adimex.io",
+            },
           },
         }
       : {
@@ -128,7 +140,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             url: canonical,
             priceCurrency: "MXN",
             availability: "https://schema.org/PreOrder",
-            seller: { "@type": "Organization", name: "ADIMEX" },
+            itemCondition: "https://schema.org/NewCondition",
+            seller: {
+              "@type": "Organization",
+              name: "ADIMEX",
+              url: "https://adimex.io",
+            },
           },
         }),
   }
