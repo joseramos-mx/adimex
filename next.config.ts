@@ -30,6 +30,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // T10 — slug viejo del F110C. Meta y Google todavía indexan la URL vieja.
+      {
+        source: "/productos/productos-hmi-f110",
+        destination: "/productos/hmi-f110c",
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;
