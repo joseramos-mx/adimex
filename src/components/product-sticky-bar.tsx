@@ -95,6 +95,8 @@ export default function ProductStickyBar({
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-wa-manual="1"
+                data-wa-surface="product-sticky-bar"
                 onClick={() =>
                   trackMetaEvent("Contact", {
                     channel: "whatsapp",
