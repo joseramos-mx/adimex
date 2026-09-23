@@ -33,6 +33,34 @@ import { test, expect, type Page, type Route } from "@playwright/test"
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3000"
 
+/**
+ * Vercel Deployment Protection bypass (round-5 p7). Cuando corremos contra
+ * un preview privado, la primera navegación necesita pasar el secret en el
+ * query param para setear la cookie de bypass. Header ya va en todos los
+ * requests vía extraHTTPHeaders (ver playwright.config.ts). El secret sólo
+ * se lee de env — nunca se hardcodea.
+ */
+const BYPASS = process.env.VERCEL_AUTOMATION_BYPASS_SECRET
+
+function bypassUrl(url: string): string {
+  if (!BYPASS) return url
+  const u = new URL(url)
+  if (!u.searchParams.has("x-vercel-protection-bypass")) {
+    u.searchParams.set("x-vercel-protection-bypass", BYPASS)
+    u.searchParams.set("x-vercel-set-bypass-cookie", "true")
+  }
+  return u.toString()
+}
+
+// Antes de cada test: si estamos apuntando a un preview protegido, hace una
+// primera navegación con el secret en el query param para setear la cookie
+// de bypass. El header ya va en cada request vía extraHTTPHeaders, así que
+// esto es redundante-por-diseño para minimizar flakiness.
+test.beforeEach(async ({ page }) => {
+  if (!BYPASS) return
+  await page.goto(bypassUrl(`${BASE}/`), { waitUntil: "domcontentloaded" }).catch(() => undefined)
+})
+
 const EXPECTED_PRICES = ["$3,445.20", "$7,308.00", "$9,103.47"] as const
 
 const FICHAS = ["/productos/plc-fl7", "/productos/hmi-f007n", "/productos/hmi-f110c"]
