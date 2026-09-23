@@ -3,6 +3,7 @@
 import Script from "next/script"
 import { useCookieConsent } from "@/context/cookie-consent-context"
 import { META_PIXEL_ID } from "@/lib/meta-pixel"
+import { shouldLoadMarketing } from "@/lib/consent-mode"
 
 /**
  * Meta Pixel — se carga sólo con consentimiento de marketing.
@@ -19,7 +20,8 @@ import { META_PIXEL_ID } from "@/lib/meta-pixel"
 export default function MetaPixel() {
   const { consent } = useCookieConsent()
 
-  if (!META_PIXEL_ID || !consent?.marketing) return null
+  if (!META_PIXEL_ID) return null
+  if (!shouldLoadMarketing(consent?.marketing ?? false)) return null
 
   return (
     <>

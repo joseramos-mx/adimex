@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { captureUtmsFromLocation, appendUtmRefToWaHref } from "@/lib/utm"
-import { trackMetaEvent } from "@/lib/meta-pixel"
+import { trackMetaEvent, newEventId } from "@/lib/meta-pixel"
 
 /**
  * WhatsApp Enhancer (T07)
@@ -35,10 +35,14 @@ export default function WhatsAppEnhancer() {
       // Fire Contact — salvo que el link marque tracking manual
       if (!anchor.dataset.waManual) {
         try {
-          trackMetaEvent("Contact", {
-            channel: "whatsapp",
-            surface: anchor.dataset.waSurface ?? "unknown",
-          })
+          trackMetaEvent(
+            "Contact",
+            {
+              channel: "whatsapp",
+              surface: anchor.dataset.waSurface ?? "unknown",
+            },
+            { eventID: newEventId("contact") },
+          )
         } catch {
           // silencioso
         }

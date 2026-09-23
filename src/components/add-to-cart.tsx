@@ -203,6 +203,8 @@ export default function AddToCart({
           href={waHref}
           target="_blank"
           rel="noopener noreferrer"
+          data-wa-manual="1"
+          data-wa-surface="product-detail"
           onClick={() =>
             trackMetaEvent(
               'Contact',

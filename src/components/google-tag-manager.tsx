@@ -3,6 +3,7 @@
 import Script from "next/script"
 import { useCookieConsent } from "@/context/cookie-consent-context"
 import { GTM_ID } from "@/lib/analytics-ids"
+import { shouldLoadAnalytics } from "@/lib/consent-mode"
 
 /**
  * Carga el contenedor de Google Tag Manager sólo cuando el usuario consintió
@@ -15,7 +16,8 @@ import { GTM_ID } from "@/lib/analytics-ids"
 export default function GoogleTagManager() {
   const { consent } = useCookieConsent()
 
-  if (!GTM_ID || !consent?.analytics) return null
+  if (!GTM_ID) return null
+  if (!shouldLoadAnalytics(consent?.analytics ?? false)) return null
 
   return (
     <Script id="gtm-loader" strategy="afterInteractive">
