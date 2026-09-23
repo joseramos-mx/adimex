@@ -36,6 +36,15 @@ type ShopifyLineItem = {
   price: string
 }
 
+type ShopifyAddress = {
+  first_name?: string
+  last_name?: string
+  phone?: string
+  city?: string
+  zip?: string
+  country_code?: string
+}
+
 type ShopifyOrder = {
   id: number | string
   name?: string
@@ -50,19 +59,28 @@ type ShopifyOrder = {
     first_name?: string
     last_name?: string
   }
-  shipping_address?: {
-    first_name?: string
-    last_name?: string
-    city?: string
-    zip?: string
-    country_code?: string
-  }
+  shipping_address?: ShopifyAddress
+  billing_address?: ShopifyAddress
   /**
    * Atributos que set-eamos en cart.attributes desde el navegador o el
    * server (round-4 p3). Shopify los expone como `note_attributes` en
    * el webhook orders/create.
    */
   note_attributes?: { name: string; value: string }[]
+}
+
+/**
+ * Devuelve el primer valor no-vacío (tras trim) de la cadena de fallbacks.
+ * Corta el "todos undefined" del típico `a?.b ?? c?.d ?? ...` cuando lo
+ * queremos con más de dos niveles.
+ */
+function firstNonEmpty(...values: (string | undefined | null)[]): string | undefined {
+  for (const v of values) {
+    if (v == null) continue
+    const t = String(v).trim()
+    if (t) return t
+  }
+  return undefined
 }
 
 /**
@@ -82,6 +100,13 @@ function attrValue(order: ShopifyOrder, key: string): string | undefined {
 /**
  * user_data para Meta CAPI. Normaliza cada campo según la spec de Meta
  * (`@/lib/meta-user-data`), skip si vacío tras normalización.
+ *
+ * Fallback chains (round-6 p4):
+ *   phone → order.phone → shipping.phone → billing.phone → customer.phone
+ *   name  → shipping → billing
+ *   city  → shipping → billing
+ * (Un pedido puede llegar sin customer expandido si el checkout fue guest,
+ *  o sin shipping si es un producto digital. Cubrimos ambos casos.)
  * fbp/fbc/UA/IP se pasan en CLARO (Meta no los hashea).
  */
 async function buildUserData(order: ShopifyOrder) {
@@ -90,26 +115,47 @@ async function buildUserData(order: ShopifyOrder) {
   const email = normalizeEmail(order.customer?.email ?? order.email)
   if (email) ud.em = [await hashSha256(email)]
 
-  const phone = normalizePhone(order.customer?.phone ?? order.phone)
+  const phoneRaw = firstNonEmpty(
+    order.phone,
+    order.shipping_address?.phone,
+    order.billing_address?.phone,
+    order.customer?.phone,
+  )
+  const phone = normalizePhone(phoneRaw)
   if (phone) ud.ph = [await hashSha256(phone)]
 
   const firstName = normalizeName(
-    order.customer?.first_name ?? order.shipping_address?.first_name,
+    firstNonEmpty(
+      order.shipping_address?.first_name,
+      order.billing_address?.first_name,
+    ),
   )
   if (firstName) ud.fn = [await hashSha256(firstName)]
 
   const lastName = normalizeName(
-    order.customer?.last_name ?? order.shipping_address?.last_name,
+    firstNonEmpty(
+      order.shipping_address?.last_name,
+      order.billing_address?.last_name,
+    ),
   )
   if (lastName) ud.ln = [await hashSha256(lastName)]
 
-  const city = normalizeCity(order.shipping_address?.city)
+  const city = normalizeCity(
+    firstNonEmpty(order.shipping_address?.city, order.billing_address?.city),
+  )
   if (city) ud.ct = [await hashSha256(city)]
 
-  const zip = normalizeZip(order.shipping_address?.zip)
+  const zip = normalizeZip(
+    firstNonEmpty(order.shipping_address?.zip, order.billing_address?.zip),
+  )
   if (zip) ud.zp = [await hashSha256(zip)]
 
-  const country = normalizeCountry(order.shipping_address?.country_code)
+  const country = normalizeCountry(
+    firstNonEmpty(
+      order.shipping_address?.country_code,
+      order.billing_address?.country_code,
+    ),
+  )
   if (country) ud.country = [await hashSha256(country)]
 
   // Datos de matching de sesión guardados como cart attributes (round-4 p3).
