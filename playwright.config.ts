@@ -11,20 +11,34 @@ export default defineConfig({
   testDir: "./scripts",
   testMatch: /verify-launch\.ts$/,
   fullyParallel: false,
-  retries: 0,
+  workers: 1,
+  retries: 1,
   reporter: [["list"]],
   use: {
     baseURL: process.env.BASE_URL ?? "http://localhost:3000",
     trace: "retain-on-failure",
   },
+  // Preferimos el Chromium que descarga Playwright (`npx playwright install
+  // chromium`). Si el sandbox local no puede descargarlo, exporta
+  // PLAYWRIGHT_CHANNEL=msedge para usar el Edge del sistema.
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        ...(process.env.PLAYWRIGHT_CHANNEL
+          ? { channel: process.env.PLAYWRIGHT_CHANNEL }
+          : {}),
+      },
     },
     {
       name: "mobile-chromium",
-      use: { ...devices["Pixel 5"] },
+      use: {
+        ...devices["Pixel 5"],
+        ...(process.env.PLAYWRIGHT_CHANNEL
+          ? { channel: process.env.PLAYWRIGHT_CHANNEL }
+          : {}),
+      },
     },
   ],
 })

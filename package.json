@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify:launch": "playwright test"
+    "verify:launch": "playwright test",
+    "check:no-placeholders": "node scripts/check-no-placeholders.mjs",
+    "prebuild": "node scripts/check-no-placeholders.mjs"
   },
   "dependencies": {
     "@aliimam/icons": "^1.1.3",
