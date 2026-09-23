@@ -275,13 +275,18 @@ export async function getProducts(opts: {
   return products
 }
 
+/**
+ * Cuenta productos "comprables" (con handle de Shopify) por categoría.
+ * El catálogo separa productos disponibles de referencias bajo pedido, y el
+ * filtro sólo debe listar categorías con productos comprables (T09).
+ */
 export async function getProductCounts(): Promise<Record<ProductCategory, number>> {
   const all = await fetchAllShopifyProducts()
   const counts: Record<ProductCategory, number> = {
     servo: 0, plc: 0, hmi: 0, 'iot-gateway': 0, scada: 0, cloud: 0,
   }
   for (const p of all) {
-    if (p.category in counts) counts[p.category]++
+    if (p.shopifyHandle && p.category in counts) counts[p.category]++
   }
   return counts
 }
