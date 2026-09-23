@@ -149,6 +149,17 @@ export async function POST(req: NextRequest) {
   const value = parseFloat(order.total_price ?? "0")
   const currency = "MXN"
 
+  // Alerta suave: un value < 100 MXN sugiere que la tienda quedó configurada
+  // en modo "los precios NO incluyen impuestos" o que Shopify mandó el monto
+  // en USD. No bloqueamos el envío — Meta acepta el evento; nosotros dejamos
+  // huella en logs para poder auditar en Vercel Logs.
+  if (value < 100) {
+    console.warn(
+      "[meta-capi] Purchase value sospechosamente bajo",
+      { order_id: order.id, value, currency, total_price: order.total_price },
+    )
+  }
+
   const contents = order.line_items.map((li) => ({
     id: toMetaContentId(li.sku ?? String(li.variant_id)),
     quantity: li.quantity,
