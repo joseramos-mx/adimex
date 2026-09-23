@@ -52,13 +52,30 @@ function bypassUrl(url: string): string {
   return u.toString()
 }
 
-// Antes de cada test: si estamos apuntando a un preview protegido, hace una
-// primera navegación con el secret en el query param para setear la cookie
-// de bypass. El header ya va en cada request vía extraHTTPHeaders, así que
-// esto es redundante-por-diseño para minimizar flakiness.
+/**
+ * Devuelve la URL con `?pixel_test=1` (además del bypass si aplica). Se usa
+ * SÓLO en la primera navegación de cada test — el flag se persiste en
+ * sessionStorage por `shouldLoadPixelInEnv()` para navs subsiguientes.
+ * En prod la env gate no exige el flag, pero mandarlo es no-op.
+ */
+function pixelTestFirstNavUrl(url: string): string {
+  const u = new URL(bypassUrl(url))
+  if (!u.searchParams.has("pixel_test")) {
+    u.searchParams.set("pixel_test", "1")
+  }
+  return u.toString()
+}
+
+// Antes de cada test:
+//   1. Setea la cookie de bypass (si aplica) para que el resto de requests
+//      pase el Deployment Protection sin friction.
+//   2. Envía `?pixel_test=1` para que el gate por VERCEL_ENV cargue el pixel
+//      en previews (round-6 p1). Sin esto los tests de ViewContent/AddToCart
+//      no verían fbq en preview y saltarían por env, no por red.
 test.beforeEach(async ({ page }) => {
-  if (!BYPASS) return
-  await page.goto(bypassUrl(`${BASE}/`), { waitUntil: "domcontentloaded" }).catch(() => undefined)
+  await page
+    .goto(pixelTestFirstNavUrl(`${BASE}/`), { waitUntil: "domcontentloaded" })
+    .catch(() => undefined)
 })
 
 const EXPECTED_PRICES = ["$3,445.20", "$7,308.00", "$9,103.47"] as const
