@@ -144,8 +144,11 @@ export default function RootLayout({
         <ThemeProvider attribute="class" forcedTheme="light">
           <RegionProvider>
             <AuthProvider>
-              <CartProvider>
-                <CookieConsentProvider>
+              {/* CookieConsent va por encima de Cart — Cart lee consent
+                  para decidir si adjunta fbp/fbc/UA como cart attributes
+                  (round-4 p3). */}
+              <CookieConsentProvider>
+                <CartProvider>
                   {children}
                   <CartDrawer />
                   <WhatsAppButton />
@@ -156,8 +159,8 @@ export default function RootLayout({
                   <Contentsquare />
                   <MetaPixel />
                   <WhatsAppEnhancer />
-                </CookieConsentProvider>
-              </CartProvider>
+                </CartProvider>
+              </CookieConsentProvider>
             </AuthProvider>
           </RegionProvider>
         </ThemeProvider>
