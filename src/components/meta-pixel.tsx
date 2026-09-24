@@ -1,8 +1,11 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Script from "next/script"
 import { useCookieConsent } from "@/context/cookie-consent-context"
 import { META_PIXEL_ID } from "@/lib/meta-pixel"
+import { shouldLoadMarketing } from "@/lib/consent-mode"
+import { shouldLoadPixelInEnv } from "@/lib/env-gating"
 
 /**
  * Meta Pixel — se carga sólo con consentimiento de marketing.
@@ -18,8 +21,19 @@ import { META_PIXEL_ID } from "@/lib/meta-pixel"
  */
 export default function MetaPixel() {
   const { consent } = useCookieConsent()
+  // Evaluamos el gate de entorno client-side después del mount para poder
+  // leer sessionStorage y ?pixel_test=1 (round-5 p4).
+  const [envAllows, setEnvAllows] = useState<boolean | null>(null)
+  useEffect(() => {
+    setEnvAllows(shouldLoadPixelInEnv())
+  }, [])
 
-  if (!META_PIXEL_ID || !consent?.marketing) return null
+  if (!META_PIXEL_ID) return null
+  if (!shouldLoadMarketing(consent?.marketing ?? false)) return null
+  if (envAllows === false) return null
+  // envAllows === null durante el primer render — no cargamos aún; el
+  // useEffect corre y re-renderiza con el valor definitivo.
+  if (envAllows === null) return null
 
   return (
     <>

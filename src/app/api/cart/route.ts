@@ -1,11 +1,13 @@
 import { shopifyClient } from '@/lib/shopify'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { META_ATTR_PREFIX, sanitizeCartAttrs } from '@/lib/attribution-attrs'
 
 // ─── Fragments ────────────────────────────────────────────────────────────────
 
-const CART_FIELDS = `
+export const CART_FIELDS = `
   id
   checkoutUrl
+  attributes { key value }
   lines(first: 100) {
     edges {
       node {
@@ -33,8 +35,8 @@ const CART_FIELDS = `
 // configured in the admin (16% IVA over the MXN base price).
 
 const CART_CREATE = `
-  mutation cartCreate($lines: [CartLineInput!]!) @inContext(country: MX, language: ES) {
-    cartCreate(input: { lines: $lines, buyerIdentity: { countryCode: MX } }) {
+  mutation cartCreate($lines: [CartLineInput!]!, $attributes: [AttributeInput!]) @inContext(country: MX, language: ES) {
+    cartCreate(input: { lines: $lines, buyerIdentity: { countryCode: MX }, attributes: $attributes }) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
     }
@@ -82,6 +84,8 @@ function normalizeCart(cart: any) {
     id: cart.id,
     checkoutUrl: cart.checkoutUrl,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    attributes: (cart.attributes ?? []).map((a: any) => ({ key: a.key, value: a.value })),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     items: cart.lines.edges.map(({ node }: any) => ({
       id: node.id,
       variantId: node.merchandise.id,
@@ -115,11 +119,28 @@ export async function GET(req: Request) {
   return NextResponse.json(normalizeCart(data.cart))
 }
 
-/** POST /api/cart  — body: { variantId, cartId?, quantity? }
+function clientIp(req: NextRequest): string | undefined {
+  const xff = req.headers.get('x-forwarded-for')
+  if (xff) return xff.split(',')[0]!.trim()
+  return req.headers.get('x-real-ip') ?? undefined
+}
+
+function marketingConsentFromCookie(req: NextRequest): boolean {
+  const raw = req.cookies.get('adimex_consent')?.value
+  if (!raw) return false
+  try {
+    const parsed = JSON.parse(decodeURIComponent(raw)) as { marketing?: boolean }
+    return Boolean(parsed.marketing)
+  } catch {
+    return false
+  }
+}
+
+/** POST /api/cart  — body: { variantId, cartId?, quantity?, attributes? }
  *  Creates a new cart if no cartId, otherwise adds a line to the existing one. */
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   if (!shopifyClient) return noClient()
-  const { variantId, cartId, quantity = 1 } = await req.json()
+  const { variantId, cartId, quantity = 1, attributes: rawAttrs } = await req.json()
   if (!variantId) return NextResponse.json({ error: 'variantId required' }, { status: 400 })
 
   if (cartId) {
@@ -131,8 +152,20 @@ export async function POST(req: Request) {
     return NextResponse.json(normalizeCart(data.cartLinesAdd.cart))
   }
 
+  // cartCreate: agregamos atributos de atribución. El servidor añade la IP
+  // del cliente sólo si hay consent.marketing (round-4 p3).
+  const marketing = marketingConsentFromCookie(req)
+  const attributes = sanitizeCartAttrs(rawAttrs, marketing)
+  if (marketing) {
+    const ip = clientIp(req)
+    if (ip) attributes.push({ key: `${META_ATTR_PREFIX}client_ip_address`, value: ip })
+  }
+
   const { data, errors } = await shopifyClient.request(CART_CREATE, {
-    variables: { lines: [{ merchandiseId: variantId, quantity }] },
+    variables: {
+      lines: [{ merchandiseId: variantId, quantity }],
+      attributes: attributes.length > 0 ? attributes : null,
+    },
   })
   if (errors || !data?.cartCreate?.cart)
     return NextResponse.json({ error: 'No se pudo crear el carrito' }, { status: 500 })

@@ -8,10 +8,12 @@ import { sileo } from 'sileo'
 import { useRegion, formatPriceForRegion } from '@/context/region-context'
 import {
   trackMetaEvent,
-  toMetaContentId,
   computeMetaValue,
   newEventId,
 } from '@/lib/meta-pixel'
+import { extractShopifyNumericId } from '@/lib/shopify-id'
+import { pushEcommerceEvent } from '@/lib/gtm-datalayer'
+import { useCookieConsent } from '@/context/cookie-consent-context'
 import { WHATSAPP_NUMBER } from '@/lib/contact'
 
 const toastBase = {
@@ -27,8 +29,6 @@ interface Props {
   availableForSale: boolean
   quantityAvailable: number
   productName: string
-  /** SKU / handle usado como content_id en Meta Pixel. */
-  sku?: string
 }
 
 export default function AddToCart({
@@ -38,10 +38,10 @@ export default function AddToCart({
   availableForSale,
   quantityAvailable,
   productName,
-  sku,
 }: Props) {
   const { addItem, goToCheckout, loading: cartLoading } = useCart()
   const { region } = useRegion()
+  const { consent } = useCookieConsent()
   const [localLoading, setLocalLoading] = useState(false)
   const [qty, setQty] = useState(1)
 
@@ -49,7 +49,7 @@ export default function AddToCart({
 
   const priceDisplay = formatPriceForRegion(price, currencyCode, region)
 
-  const contentId = toMetaContentId(sku ?? variantId)
+  const contentId = extractShopifyNumericId(variantId)
   // Meta espera el value CON IVA en MXN, no el precio base de Shopify.
   const unitValue = computeMetaValue(price, currencyCode)
 
@@ -71,6 +71,23 @@ export default function AddToCart({
           contents: [{ id: contentId, quantity: qty, item_price: unitValue }],
         },
         { eventID: newEventId('atc') },
+      )
+      pushEcommerceEvent(
+        'add_to_cart',
+        {
+          currency: 'MXN',
+          value: unitValue * qty,
+          items: [
+            {
+              item_id: contentId,
+              item_name: productName,
+              price: unitValue,
+              quantity: qty,
+              item_brand: 'FLEXEM',
+            },
+          ],
+        },
+        consent?.analytics ?? false,
       )
       sileo.success({
         title: qty > 1 ? `${qty}× artículos agregados` : 'Agregado al carrito',
@@ -104,6 +121,23 @@ export default function AddToCart({
           contents: [{ id: contentId, quantity: qty, item_price: unitValue }],
         },
         { eventID: newEventId('ic') },
+      )
+      pushEcommerceEvent(
+        'begin_checkout',
+        {
+          currency: 'MXN',
+          value: unitValue * qty,
+          items: [
+            {
+              item_id: contentId,
+              item_name: productName,
+              price: unitValue,
+              quantity: qty,
+              item_brand: 'FLEXEM',
+            },
+          ],
+        },
+        consent?.analytics ?? false,
       )
       sileo.success({
         title: 'Redirigiendo al checkout',
@@ -203,6 +237,8 @@ export default function AddToCart({
           href={waHref}
           target="_blank"
           rel="noopener noreferrer"
+          data-wa-manual="1"
+          data-wa-surface="product-detail"
           onClick={() =>
             trackMetaEvent(
               'Contact',

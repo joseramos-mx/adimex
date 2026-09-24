@@ -26,8 +26,8 @@ const nav = [
         heading: "Soluciones",
         links: [
             { label: "FlexSCADA",        href: "/productos/scada-flexscada" },
-            { label: "Servomotores",     href: "/productos?category=servo" },
-            { label: "IoT Gateways",     href: "/productos?category=iot-gateway" },
+            { label: "Servomotores",     href: "/bajo-pedido#servomotores" },
+            { label: "IoT Gateways",     href: "/bajo-pedido#iot-gateways" },
             { label: "Casos de estudio", href: "/casos" },
         ],
     },

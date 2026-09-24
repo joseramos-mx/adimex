@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { sileo } from 'sileo'
 import { useRegion, formatPriceForRegion } from '@/context/region-context'
-import { trackMetaEvent, toMetaContentId, computeMetaValue, newEventId } from '@/lib/meta-pixel'
+import { trackMetaEvent, computeMetaValue, newEventId } from '@/lib/meta-pixel'
+import { extractShopifyNumericId } from '@/lib/shopify-id'
 
 const toastBase = {
   fill: '#111111',
@@ -202,7 +203,7 @@ export default function CartDrawer() {
                 <Button
                   onClick={() => {
                     const idsPerItem = cart.items.map((i) =>
-                      toMetaContentId(i.sku ?? i.productHandle ?? i.variantId)
+                      extractShopifyNumericId(i.variantId)
                     )
                     // Meta espera value CON IVA en MXN — computeMetaValue lo aplica.
                     const totalWithIva = computeMetaValue(

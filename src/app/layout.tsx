@@ -13,6 +13,7 @@ import GoogleTagManager from "@/components/google-tag-manager";
 import GoogleAnalytics from "@/components/google-analytics";
 import Contentsquare from "@/components/contentsquare";
 import MetaPixel from "@/components/meta-pixel";
+import WhatsAppEnhancer from "@/components/whatsapp-enhancer";
 import { GTM_ID } from "@/lib/analytics-ids";
 import { Toaster } from "sileo";
 import "./globals.css";
@@ -143,8 +144,11 @@ export default function RootLayout({
         <ThemeProvider attribute="class" forcedTheme="light">
           <RegionProvider>
             <AuthProvider>
-              <CartProvider>
-                <CookieConsentProvider>
+              {/* CookieConsent va por encima de Cart — Cart lee consent
+                  para decidir si adjunta fbp/fbc/UA como cart attributes
+                  (round-4 p3). */}
+              <CookieConsentProvider>
+                <CartProvider>
                   {children}
                   <CartDrawer />
                   <WhatsAppButton />
@@ -154,8 +158,9 @@ export default function RootLayout({
                   <GoogleAnalytics />
                   <Contentsquare />
                   <MetaPixel />
-                </CookieConsentProvider>
-              </CartProvider>
+                  <WhatsAppEnhancer />
+                </CartProvider>
+              </CookieConsentProvider>
             </AuthProvider>
           </RegionProvider>
         </ThemeProvider>

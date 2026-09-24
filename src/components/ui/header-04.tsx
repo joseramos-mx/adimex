@@ -602,22 +602,68 @@ export const Header = () => {
                 Login
               </Button>
             )}
+            {/* Tienda como CTA primario para tráfico de pauta (T13) */}
             <Button asChild size="sm" className="text-xs h-8 bg-[#017bfd] hover:bg-[#0066d6] text-white border-0">
+              <Link href="/productos" className="flex items-center gap-1.5">
+                <ShoppingCart size={13} />
+                Tienda
+              </Link>
+            </Button>
+            {/* Agendar demo pasa a estilo secundario (outline) */}
+            <Button
+              asChild
+              size="sm"
+              variant="outline"
+              className={cn(
+                "text-xs h-8 bg-transparent",
+                isDark
+                  ? "border-white/20 text-white hover:bg-white/10 hover:text-white"
+                  : "border-black/20 text-[#07080c] hover:bg-black/8 hover:text-[#07080c]"
+              )}
+            >
               <a href={WA_DEMO} target="_blank" rel="noopener noreferrer">Agendar demo</a>
             </Button>
           </div>
 
-          {/* Mobile toggle — 44x44 touch target */}
-          <button
-            onClick={() => setMenuState(!menuState)}
-            aria-label={menuState ? "Cerrar menú" : "Abrir menú"}
-            className={cn(
-              "flex lg:hidden min-h-11 min-w-11 items-center justify-center transition-colors duration-200",
-              isLight ? "text-[#07080c]" : "text-white",
-            )}
-          >
-            {menuState ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          {/* Mobile: Tienda + carrito visibles siempre + menu toggle */}
+          <div className="flex lg:hidden items-center gap-1 ml-auto">
+            <Link
+              href="/productos"
+              className={cn(
+                "flex items-center gap-1.5 min-h-11 px-3 text-xs font-semibold transition-colors",
+                isLight ? "text-[#0066FF]" : "text-white"
+              )}
+              aria-label="Ir a la tienda"
+            >
+              <ShoppingCart size={14} />
+              Tienda
+            </Link>
+            <button
+              onClick={openCart}
+              aria-label="Abrir carrito"
+              className={cn(
+                "relative flex items-center justify-center min-h-11 min-w-11 transition-colors",
+                isLight ? "text-[#07080c]" : "text-white",
+              )}
+            >
+              <ShoppingCart size={18} />
+              {itemCount > 0 && (
+                <span className="absolute top-1.5 right-1 min-w-4 h-4 px-1 bg-[#017bfd] text-white text-[9px] font-mono flex items-center justify-center">
+                  {itemCount > 99 ? '99+' : itemCount}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setMenuState(!menuState)}
+              aria-label={menuState ? "Cerrar menú" : "Abrir menú"}
+              className={cn(
+                "flex min-h-11 min-w-11 items-center justify-center transition-colors duration-200",
+                isLight ? "text-[#07080c]" : "text-white",
+              )}
+            >
+              {menuState ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
 
         </div>
 
@@ -652,7 +698,7 @@ export const Header = () => {
         <div className="px-6 pt-4">
           <button
             onClick={() => { setMenuState(false); setSearchOpen(true) }}
-            className="w-full flex items-center gap-2 h-9 px-3 border border-white/15 text-xs text-white/50 hover:text-white hover:border-white/30 transition-colors"
+            className="w-full flex items-center gap-2 min-h-11 px-3 border border-white/15 text-xs text-white/50 hover:text-white hover:border-white/30 transition-colors"
           >
             <Search size={12} />
             <span>Buscar productos...</span>
@@ -757,7 +803,7 @@ export const Header = () => {
                   key={r.code}
                   onClick={() => setRegion(r.code)}
                   className={cn(
-                    "flex flex-col items-center justify-center gap-0.5 h-10 border text-xs transition-colors",
+                    "flex flex-col items-center justify-center gap-0.5 min-h-11 border text-xs transition-colors",
                     r.code === region.code
                       ? "border-[#017bfd]/50 bg-[#017bfd]/10 text-white"
                       : "border-white/10 text-white/40 hover:border-white/25 hover:text-white/70"
@@ -774,7 +820,7 @@ export const Header = () => {
           </div>
           <button
             onClick={() => { setMenuState(false); openCart() }}
-            className="w-full flex items-center justify-between px-4 h-9 border border-white/20 text-xs text-white hover:bg-white/5 transition-colors"
+            className="w-full flex items-center justify-between px-4 min-h-11 border border-white/20 text-xs text-white hover:bg-white/5 transition-colors"
           >
             <span className="flex items-center gap-2">
               <ShoppingCart size={13} />

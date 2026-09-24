@@ -39,23 +39,24 @@ export default function CookieConsentBanner() {
           key="cookie-banner"
           role="dialog"
           aria-label="Consentimiento de cookies"
-          initial={{ y: "100%", opacity: 0 }}
+          initial={{ y: "-100%", opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: "100%", opacity: 0 }}
+          exit={{ y: "-100%", opacity: 0 }}
           transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
-          className="fixed bottom-4 left-4 right-4 md:right-auto md:max-w-md z-50 bg-white border border-black/10 shadow-2xl"
+          className="fixed top-14 inset-x-0 md:top-auto md:bottom-4 md:left-4 md:right-auto md:max-w-md z-50 bg-white border-b md:border border-black/10 shadow-2xl"
           style={{ fontFamily: "var(--font-geist-sans)" }}
         >
-          {/* Header */}
-          <div className="flex items-start gap-3 p-5 pb-4">
-            <div className="w-9 h-9 shrink-0 flex items-center justify-center bg-[#017bfd]/8 text-[#017bfd]">
-              <Cookie size={17} />
+          {/* Header — versión compacta 1 línea en móvil (< 15% viewport de 812px) */}
+          <div className="flex items-center gap-2 px-3 py-2 md:items-start md:gap-3 md:p-5 md:pb-4">
+            <div className="w-7 h-7 md:w-9 md:h-9 shrink-0 flex items-center justify-center bg-[#017bfd]/8 text-[#017bfd]">
+              <Cookie size={15} className="md:hidden" />
+              <Cookie size={17} className="hidden md:block" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-[#07080c] leading-snug">
+              <p className="text-xs md:text-sm font-semibold text-[#07080c] leading-snug">
                 Este sitio usa cookies
               </p>
-              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+              <p className="hidden md:block text-xs text-gray-500 mt-1 leading-relaxed">
                 Las necesarias operan carrito y sesión. Las analíticas nos ayudan
                 a mejorar. Las de marketing miden campañas publicitarias.
                 Consulta la{" "}
@@ -67,6 +68,32 @@ export default function CookieConsentBanner() {
                 </Link>
                 .
               </p>
+              <p className="md:hidden text-[10px] text-gray-500 leading-tight truncate">
+                Analíticas y marketing opcionales · {" "}
+                <Link
+                  href="/legal/politica-de-cookies"
+                  className="text-[#017bfd] underline"
+                >
+                  Política
+                </Link>
+              </p>
+            </div>
+            {/* Actions inline en móvil (compactas), duplicadas abajo en desktop */}
+            <div className="flex md:hidden items-center gap-1 shrink-0">
+              <button
+                onClick={acceptOnlyNecessary}
+                aria-label="Solo cookies necesarias"
+                className="min-h-11 px-2.5 text-[11px] font-medium text-[#07080c] hover:bg-gray-50 transition-colors"
+              >
+                Solo necesarias
+              </button>
+              <button
+                onClick={acceptAll}
+                aria-label="Aceptar todas las cookies"
+                className="min-h-11 px-3 bg-[#017bfd] hover:bg-[#0066d6] text-[11px] font-semibold text-white transition-colors"
+              >
+                Aceptar
+              </button>
             </div>
           </div>
 
@@ -106,19 +133,20 @@ export default function CookieConsentBanner() {
             )}
           </AnimatePresence>
 
-          {/* Actions */}
-          <div className="px-5 pb-5 pt-1 flex flex-col gap-2">
+          {/* Actions primarias — visibles sólo en desktop (en móvil van en el header inline).
+              La versión "Guardar preferencias" aparece en móvil sólo cuando se expandió. */}
+          <div className={`${expanded ? "flex" : "hidden md:flex"} px-3 pb-3 pt-1 md:px-5 md:pb-5 flex-col gap-2`}>
             {expanded ? (
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={acceptOnlyNecessary}
-                  className="h-9 border border-black/15 text-xs font-medium text-[#07080c] hover:bg-gray-50 transition-colors"
+                  className="min-h-11 border border-black/15 text-xs font-medium text-[#07080c] hover:bg-gray-50 transition-colors"
                 >
                   Rechazar opcionales
                 </button>
                 <button
                   onClick={savePreferences}
-                  className="h-9 bg-[#017bfd] hover:bg-[#0066d6] text-xs font-semibold text-white transition-colors flex items-center justify-center gap-1.5"
+                  className="min-h-11 bg-[#017bfd] hover:bg-[#0066d6] text-xs font-semibold text-white transition-colors flex items-center justify-center gap-1.5"
                 >
                   <Check size={13} /> Guardar preferencias
                 </button>
@@ -127,22 +155,25 @@ export default function CookieConsentBanner() {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={acceptOnlyNecessary}
-                  className="h-9 border border-black/15 text-xs font-medium text-[#07080c] hover:bg-gray-50 transition-colors"
+                  className="min-h-11 border border-black/15 text-xs font-medium text-[#07080c] hover:bg-gray-50 transition-colors"
                 >
                   Solo necesarias
                 </button>
                 <button
                   onClick={acceptAll}
-                  className="h-9 bg-[#017bfd] hover:bg-[#0066d6] text-xs font-semibold text-white transition-colors"
+                  className="min-h-11 bg-[#017bfd] hover:bg-[#0066d6] text-xs font-semibold text-white transition-colors"
                 >
                   Aceptar todo
                 </button>
               </div>
             )}
+          </div>
 
+          {/* Toggle "Ver preferencias" — visible siempre para permitir granularidad */}
+          <div className="px-3 pb-2 md:px-5 md:pb-4">
             <button
               onClick={() => setExpanded((v) => !v)}
-              className="flex items-center justify-center gap-1 text-[11px] text-gray-500 hover:text-[#07080c] transition-colors py-1 font-mono"
+              className="w-full flex items-center justify-center gap-1 text-[11px] text-gray-500 hover:text-[#07080c] transition-colors py-1 font-mono"
             >
               {expanded ? (
                 <>

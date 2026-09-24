@@ -8,6 +8,7 @@ import {
   useMemo,
   useState,
 } from "react"
+import { ensureFbcCookie } from "@/lib/fbclid"
 
 /**
  * Preferencias de cookies persistidas por usuario.
@@ -31,7 +32,42 @@ export type CookieConsent = {
 }
 
 const STORAGE_KEY = "adimex.cookie-consent"
+const COOKIE_NAME = "adimex_consent"
+// 180 días — el prompt (T04) exige no volver a preguntar en ~6 meses.
+const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 180
 const CURRENT_VERSION = 2
+
+function writeConsentCookie(value: CookieConsent): void {
+  if (typeof document === "undefined") return
+  try {
+    const payload = encodeURIComponent(JSON.stringify(value))
+    document.cookie = `${COOKIE_NAME}=${payload}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`
+  } catch {
+    // silencioso
+  }
+}
+
+function readConsentCookie(): CookieConsent | null {
+  if (typeof document === "undefined") return null
+  try {
+    const match = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith(`${COOKIE_NAME}=`))
+    if (!match) return null
+    const raw = decodeURIComponent(match.slice(COOKIE_NAME.length + 1))
+    const parsed = JSON.parse(raw) as Partial<CookieConsent>
+    if (parsed.version !== CURRENT_VERSION) return null
+    return {
+      necessary: true,
+      analytics: Boolean(parsed.analytics),
+      marketing: Boolean(parsed.marketing),
+      version: CURRENT_VERSION,
+      timestamp: parsed.timestamp ?? Date.now(),
+    }
+  } catch {
+    return null
+  }
+}
 
 const defaultConsent: Omit<CookieConsent, "timestamp"> = {
   necessary: true,
@@ -65,24 +101,34 @@ export function CookieConsentProvider({
   const [hydrated, setHydrated] = useState(false)
   const [forceOpen, setForceOpen] = useState(false)
 
-  // Hidrata desde localStorage en el cliente
+  // Hidrata desde cookie (180 d) primero — sobrevive a cambio de localStorage —
+  // y cae a localStorage si no está.
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        const parsed = JSON.parse(raw) as Partial<CookieConsent>
-        if (parsed.version === CURRENT_VERSION) {
-          setConsent({
-            necessary: true,
-            analytics: Boolean(parsed.analytics),
-            marketing: Boolean(parsed.marketing),
-            version: CURRENT_VERSION,
-            timestamp: parsed.timestamp ?? Date.now(),
-          })
+    let restored: CookieConsent | null = readConsentCookie()
+    if (!restored) {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY)
+        if (raw) {
+          const parsed = JSON.parse(raw) as Partial<CookieConsent>
+          if (parsed.version === CURRENT_VERSION) {
+            restored = {
+              necessary: true,
+              analytics: Boolean(parsed.analytics),
+              marketing: Boolean(parsed.marketing),
+              version: CURRENT_VERSION,
+              timestamp: parsed.timestamp ?? Date.now(),
+            }
+          }
         }
+      } catch {
+        // localStorage bloqueado o JSON inválido — banner reaparece.
       }
-    } catch {
-      // localStorage bloqueado o JSON inválido — banner reaparece.
+    }
+    if (restored) {
+      setConsent(restored)
+      // Reescribe la cookie para renovar el max-age y mantener sincronizados
+      // ambos storages.
+      writeConsentCookie(restored)
     }
     setHydrated(true)
   }, [])
@@ -94,6 +140,13 @@ export function CookieConsentProvider({
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
     } catch {
       // Silencioso — cookies rechazadas o modo privado.
+    }
+    writeConsentCookie(next)
+    // Al aceptar marketing, si el visitante llegó con fbclid pero fbevents.js
+    // no había cargado (bloqueado por consent), sintetizamos _fbc con el
+    // timestamp del click (round-5 p2). Idempotente si _fbc ya existe.
+    if (next.marketing) {
+      ensureFbcCookie()
     }
   }, [])
 

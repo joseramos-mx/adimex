@@ -31,13 +31,13 @@ export function CallToAction() {
           className="text-center font-bold text-2xl lg:text-3xl text-[#07080c] tracking-tight"
           style={{ fontFamily: "var(--font-geist-sans)" }}
         >
-          ¿Listo para transformar su operación?
+          ¿Tienes un proceso que automatizar?
         </h2>
         <p
           className="text-center text-[#07080c]/50 text-sm"
           style={{ fontFamily: "var(--font-geist-sans)" }}
         >
-          Hable con nuestros especialistas. Sin compromiso.
+          Cuéntanos qué necesitas. Te decimos si podemos y cómo.
         </p>
       </div>
 
@@ -46,7 +46,7 @@ export function CallToAction() {
           className="text-center text-sm text-[#017bfd] border border-[#017bfd]/30 px-6 py-4 w-full max-w-md"
           style={{ fontFamily: "var(--font-geist-sans)" }}
         >
-          Mensaje recibido — le contactaremos pronto.
+          Recibimos tu mensaje. Un ingeniero te contesta pronto.
         </div>
       ) : (
         <form
@@ -82,7 +82,7 @@ export function CallToAction() {
           <textarea
             required
             rows={3}
-            placeholder="¿En qué podemos ayudarle?"
+            placeholder="¿Qué quieres automatizar?"
             value={form.message}
             onChange={(e) => setForm({ ...form, message: e.target.value })}
             className={cn(inputClass, "resize-none")}

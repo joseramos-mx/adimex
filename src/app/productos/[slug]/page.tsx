@@ -14,6 +14,8 @@ import {
 import { Header } from "@/components/ui/header-04"
 import Footer from "@/components/footer"
 import { getProductBySlug, categoryMeta, getProducts } from "@/lib/products"
+import { mxnWithIva, formatMxnWithIva, formatRawCurrency } from "@/lib/pricing"
+import { extractShopifyNumericId } from "@/lib/shopify-id"
 import { Button } from "@/components/ui/button"
 import AddToCart from "@/components/add-to-cart"
 import ProductTabs from "@/components/product-tabs"
@@ -46,6 +48,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = product.seo?.title ?? product.name
   const description = product.seo?.description ?? product.tagline
   const imageAlt = product.imageAlt ?? product.name
+  // meta:content_id — mismo variant ID numérico que el feed g:id y que
+  // ViewContent (round-4 punto 1). Usado por el test de coincidencia y por
+  // integraciones externas que necesitan mapear la URL a un item del catálogo.
+  const metaContentId = product.variantId
+    ? extractShopifyNumericId(product.variantId)
+    : undefined
+
   return {
     title,
     description,
@@ -63,6 +72,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       images: [product.image],
     },
+    ...(metaContentId
+      ? { other: { "meta:content_id": metaContentId } }
+      : {}),
   }
 }
 
@@ -89,13 +101,19 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     { name: product.name, href: `/productos/${product.slug}` },
   ]
 
-  // Product JSON-LD — recuperado como rich result en Google Search
+  // Product JSON-LD — recuperado como rich result en Google Search.
+  // Publica el mismo precio con IVA que ve el usuario (fuente única: pricing.ts).
   const priceMXN =
     product.price && product.currencyCode
-      ? product.currencyCode === "MXN"
-        ? parseFloat(product.price)
+      ? product.currencyCode.toUpperCase() === "MXN"
+        ? mxnWithIva(product.price)
         : parseFloat(product.price) * 18
       : undefined
+  // priceValidUntil: 1 año — Google Merchant lo pide para offers con precio.
+  const priceValidUntil = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0]
+
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -105,6 +123,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     brand: { "@type": "Brand", name: "FLEXEM" },
     category: product.categoryLabel,
     sku: product.slug,
+    // mpn (Manufacturer Part Number) = modelo real del fabricante FLEXEM.
+    // Requerido por Google Merchant para productos sin GTIN. Prefiere el
+    // campo dedicado `mpn`; cae a `series` (familia) o slug si no existe.
+    mpn: product.mpn ?? product.series ?? product.slug,
     ...(product.series ? { model: product.series } : {}),
     ...(priceMXN
       ? {
@@ -113,11 +135,16 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             url: canonical,
             priceCurrency: "MXN",
             price: priceMXN.toFixed(2),
+            priceValidUntil,
             availability: product.availableForSale
               ? "https://schema.org/InStock"
               : "https://schema.org/OutOfStock",
             itemCondition: "https://schema.org/NewCondition",
-            seller: { "@type": "Organization", name: "ADIMEX" },
+            seller: {
+              "@type": "Organization",
+              name: "ADIMEX",
+              url: "https://adimex.io",
+            },
           },
         }
       : {
@@ -126,7 +153,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             url: canonical,
             priceCurrency: "MXN",
             availability: "https://schema.org/PreOrder",
-            seller: { "@type": "Organization", name: "ADIMEX" },
+            itemCondition: "https://schema.org/NewCondition",
+            seller: {
+              "@type": "Organization",
+              name: "ADIMEX",
+              url: "https://adimex.io",
+            },
           },
         }),
   }
@@ -141,12 +173,14 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       {product.faq && product.faq.length > 0 && (
         <ProductFAQSchema items={product.faq} />
       )}
-      <ViewContentTracker
-        contentId={product.slug}
-        contentName={product.name}
-        price={product.price}
-        currency={product.currencyCode ?? "MXN"}
-      />
+      {product.variantId && (
+        <ViewContentTracker
+          variantId={product.variantId}
+          contentName={product.name}
+          price={product.price}
+          currency={product.currencyCode ?? "MXN"}
+        />
+      )}
       <Header />
 
       {/* Breadcrumb */}
@@ -216,7 +250,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   availableForSale={product.availableForSale ?? false}
                   quantityAvailable={product.quantityAvailable ?? 0}
                   productName={product.name}
-                  sku={product.slug}
                 />
               ) : (
                 <div className="flex flex-col gap-3">
@@ -357,16 +390,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                       {rel.name}
                     </p>
                     <p className="text-[11px] text-gray-400 line-clamp-2">{rel.tagline}</p>
-                    <div className="mt-auto pt-3 flex items-center justify-between">
-                      {rel.price && (
-                        <span className="text-xs font-mono font-semibold text-[#07080c]">
-                          {new Intl.NumberFormat("es-MX", {
-                            style: "currency",
-                            currency: "MXN",
-                            minimumFractionDigits: 0,
-                          }).format(
-                            parseFloat(rel.price) * (rel.currencyCode !== "MXN" ? 18 : 1)
-                          )}
+                    <div className="mt-auto pt-3 flex items-center justify-between gap-2">
+                      {rel.price && rel.currencyCode && (
+                        <span className="text-xs font-mono font-semibold text-[#07080c] flex items-baseline gap-1.5">
+                          {rel.currencyCode.toUpperCase() === "MXN"
+                            ? formatMxnWithIva(rel.price)
+                            : formatRawCurrency(rel.price, rel.currencyCode)}
+                          <span className="text-[9px] text-gray-400 font-normal">IVA incluido</span>
                         </span>
                       )}
                       <ArrowRight
@@ -392,7 +422,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           currencyCode={product.currencyCode ?? "MXN"}
           availableForSale={product.availableForSale ?? false}
           productName={product.name}
-          sku={product.slug}
         />
       )}
     </div>

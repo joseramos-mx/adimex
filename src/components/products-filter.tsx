@@ -85,25 +85,27 @@ export default function ProductsFilter({
               </span>
             </button>
           </li>
-          {categoryOrder.map((cat) => {
-            const meta = categoryMeta[cat]
-            const isActive = activeCategory === cat
-            return (
-              <li key={cat}>
-                <button
-                  onClick={() => updateParam("category", isActive ? undefined : cat)}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-xs transition-colors ${
-                    isActive
-                      ? "bg-[#017bfd]/8 text-[#017bfd] font-medium"
-                      : "text-[#494F5F] hover:bg-gray-50 hover:text-[#07080c]"
-                  }`}
-                >
-                  <span>{meta.label}</span>
-                  <span className="text-[10px] font-mono text-gray-400">{counts[cat]}</span>
-                </button>
-              </li>
-            )
-          })}
+          {categoryOrder
+            .filter((cat) => counts[cat] > 0)
+            .map((cat) => {
+              const meta = categoryMeta[cat]
+              const isActive = activeCategory === cat
+              return (
+                <li key={cat}>
+                  <button
+                    onClick={() => updateParam("category", isActive ? undefined : cat)}
+                    className={`w-full flex items-center justify-between px-3 py-2 text-xs transition-colors ${
+                      isActive
+                        ? "bg-[#017bfd]/8 text-[#017bfd] font-medium"
+                        : "text-[#494F5F] hover:bg-gray-50 hover:text-[#07080c]"
+                    }`}
+                  >
+                    <span>{meta.label}</span>
+                    <span className="text-[10px] font-mono text-gray-400">{counts[cat]}</span>
+                  </button>
+                </li>
+              )
+            })}
         </ul>
       </div>
 

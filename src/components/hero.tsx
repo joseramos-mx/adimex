@@ -181,7 +181,7 @@ export const Hero = () => {
             </li>
             <li className="flex items-center gap-1.5">
               <span className="w-1 h-1 bg-white/70 rounded-full" />
-              Precios en MXN + IVA
+              Precios en MXN, IVA incluido
             </li>
             <li className="flex items-center gap-1.5">
               <span className="w-1 h-1 bg-white/70 rounded-full" />

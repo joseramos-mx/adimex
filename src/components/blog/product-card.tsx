@@ -3,6 +3,7 @@ import Image from "next/image"
 import { ArrowRight, ShoppingCart } from "lucide-react"
 import { getProductBySlug } from "@/lib/products"
 import { WHATSAPP_NUMBER } from "@/lib/contact"
+import { formatMxnWithIva, formatRawCurrency } from "@/lib/pricing"
 import WaQuoteButton from "./wa-quote-button"
 
 /**
@@ -24,15 +25,11 @@ export default async function BlogProductCard({
   const product = await getProductBySlug(slug)
   if (!product) return null
 
-  const priceMXN =
+  const priceDisplay =
     product.price && product.currencyCode
-      ? new Intl.NumberFormat("es-MX", {
-          style: "currency",
-          currency: "MXN",
-          minimumFractionDigits: 0,
-        }).format(
-          parseFloat(product.price) * (product.currencyCode !== "MXN" ? 18 : 1)
-        )
+      ? product.currencyCode.toUpperCase() === "MXN"
+        ? formatMxnWithIva(product.price)
+        : formatRawCurrency(product.price, product.currencyCode)
       : null
 
   const waMsg = waContext
@@ -69,9 +66,9 @@ export default async function BlogProductCard({
         </p>
 
         <div className="flex flex-wrap items-center gap-4 mt-2">
-          {priceMXN && showBuy && (
+          {priceDisplay && showBuy && (
             <p className="text-lg font-semibold text-white">
-              {priceMXN}
+              {priceDisplay}
               <span className="text-xs text-white/40 font-normal ml-2">
                 IVA incluido
               </span>
@@ -94,7 +91,7 @@ export default async function BlogProductCard({
               Comprar en línea
             </Link>
           ) : (
-            <WaQuoteButton href={waHref} productSku={product.slug} />
+            <WaQuoteButton href={waHref} variantId={product.variantId} />
           )}
           <Link
             href={productHref}

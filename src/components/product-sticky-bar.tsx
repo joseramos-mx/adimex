@@ -5,13 +5,14 @@ import { Zap, MessageCircle } from "lucide-react"
 import { useCart } from "@/context/cart-context"
 import { useRegion, formatPriceForRegion } from "@/context/region-context"
 import { useCookieConsent } from "@/context/cookie-consent-context"
+import { pushEcommerceEvent } from "@/lib/gtm-datalayer"
 import { WHATSAPP_NUMBER } from "@/lib/contact"
 import {
   trackMetaEvent,
-  toMetaContentId,
   computeMetaValue,
   newEventId,
 } from "@/lib/meta-pixel"
+import { extractShopifyNumericId } from "@/lib/shopify-id"
 
 /**
  * Sticky bottom bar visible sólo en móvil (< md).
@@ -29,22 +30,20 @@ export default function ProductStickyBar({
   currencyCode,
   availableForSale,
   productName,
-  sku,
 }: {
   variantId: string
   price: string
   currencyCode: string
   availableForSale: boolean
   productName: string
-  sku?: string
 }) {
   const { addItem, goToCheckout } = useCart()
   const { region } = useRegion()
-  const { needsDecision } = useCookieConsent()
+  const { consent } = useCookieConsent()
   const [loading, setLoading] = useState(false)
 
   const priceDisplay = formatPriceForRegion(price, currencyCode, region)
-  const contentId = toMetaContentId(sku ?? variantId)
+  const contentId = extractShopifyNumericId(variantId)
   const value = computeMetaValue(price, currencyCode)
 
   const waMsg = `Hola, tengo dudas técnicas sobre el ${productName}. Vi la ficha en su sitio.`
@@ -68,30 +67,39 @@ export default function ProductStickyBar({
         },
         { eventID: newEventId("ic") }
       )
+      pushEcommerceEvent(
+        "begin_checkout",
+        {
+          currency: "MXN",
+          value,
+          items: [
+            {
+              item_id: contentId,
+              item_name: productName,
+              price: value,
+              quantity: 1,
+              item_brand: "FLEXEM",
+            },
+          ],
+        },
+        consent?.analytics ?? false,
+      )
       goToCheckout()
     } catch {
       setLoading(false)
     }
   }
 
-  // Mientras el usuario no haya decidido sobre cookies, ocultamos la barra —
-  // el cookie banner tapaba visualmente el botón Comprar y era mala UX competir.
-  // Una vez aceptadas (o rechazadas) las cookies, aparece con transición.
-  const hidden = needsDecision
-
   return (
     <>
       {/* Spacer para que el contenido no quede oculto detrás de la barra */}
-      {!hidden && <div className="md:hidden h-20" aria-hidden="true" />}
+      <div className="md:hidden h-20" aria-hidden="true" />
 
-      {/* La barra */}
+      {/* La barra — visible siempre; el banner de cookies vive arriba en móvil */}
       <aside
         role="region"
         aria-label="Barra de compra"
-        aria-hidden={hidden}
-        className={`md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-black/10 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] transition-transform duration-200 ${
-          hidden ? "translate-y-full pointer-events-none" : "translate-y-0"
-        }`}
+        className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-black/10 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="flex items-stretch gap-2 px-3 py-2">
@@ -105,6 +113,8 @@ export default function ProductStickyBar({
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-wa-manual="1"
+                data-wa-surface="product-sticky-bar"
                 onClick={() =>
                   trackMetaEvent("Contact", {
                     channel: "whatsapp",

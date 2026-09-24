@@ -1,6 +1,8 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'
+import { useCookieConsent } from './cookie-consent-context'
+import { gatherAttributionAttrs } from '@/lib/attribution-attrs'
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -36,7 +38,7 @@ interface CartContextValue {
   addItem: (variantId: string) => Promise<void>
   removeItem: (lineId: string) => Promise<void>
   updateQuantity: (lineId: string, quantity: number) => Promise<void>
-  goToCheckout: () => void
+  goToCheckout: () => Promise<void>
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -48,6 +50,7 @@ const CART_ID_KEY = 'adimex_cart_id'
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { consent } = useCookieConsent()
   const [cart, setCart] = useState<CartData | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -88,10 +91,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     async (variantId: string) => {
       setLoading(true)
       try {
+        // Sólo en la primera adición (cartCreate) enviamos atributos de
+        // atribución — Shopify no permite update de attributes sobre un
+        // cart existente vía Storefront, y así preservamos la fuente
+        // original de la sesión.
+        const isFirstAdd = !cart?.id
+        const attributes = isFirstAdd
+          ? gatherAttributionAttrs(consent?.marketing ?? false)
+          : undefined
         const res = await fetch('/api/cart', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ variantId, cartId: cart?.id ?? null }),
+          body: JSON.stringify({
+            variantId,
+            cartId: cart?.id ?? null,
+            ...(attributes && attributes.length > 0 ? { attributes } : {}),
+          }),
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error)
@@ -104,7 +119,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setLoading(false)
       }
     },
-    [cart?.id, persistCart]
+    [cart?.id, consent?.marketing, persistCart]
   )
 
   const removeItem = useCallback(
@@ -148,13 +163,70 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [cart?.id, persistCart, removeItem]
   )
 
-  const goToCheckout = useCallback(() => {
+  /**
+   * Empuja los atributos de atribución de la sesión actual al cart existente
+   * vía `cartAttributesUpdate` (round-5 p1). Merge preserva UTMs originales.
+   * No falla ruidosamente — es best-effort: si Shopify rechaza, seguimos.
+   */
+  const syncAttributionAttrs = useCallback(
+    async (): Promise<void> => {
+      if (!cart?.id) return
+      const attributes = gatherAttributionAttrs(consent?.marketing ?? false)
+      if (attributes.length === 0) return
+      try {
+        await fetch('/api/cart/attributes', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cartId: cart.id, attributes }),
+        })
+      } catch (err) {
+        // Silencioso — analytics no puede tumbar la UX.
+        console.warn('[Cart] syncAttributionAttrs failed', err)
+      }
+    },
+    [cart?.id, consent?.marketing],
+  )
+
+  // (a) Cuando el usuario acepta marketing y ya existe un carrito, adjunta
+  //     fbp/fbc/user_agent que no pudimos setear en el cartCreate original.
+  useEffect(() => {
+    if (!consent?.marketing || !cart?.id) return
+    void syncAttributionAttrs()
+    // Dependencia sobre marketing: sólo dispara al pasar de false→true.
+  }, [consent?.marketing, cart?.id, syncAttributionAttrs])
+
+  const goToCheckout = useCallback(async () => {
     if (!cart?.checkoutUrl) return
+    // (b) Antes de redirigir, refrescamos atributos por si el fbc/UA cambió
+    //     o el usuario aceptó marketing después de crear el carrito.
+    //
+    // Timeout duro de 1500 ms: si Shopify Storefront tarda o falla, seguimos
+    // al checkout de todos modos — atribución nunca puede bloquear la compra
+    // (round-6 p3). El sync es best-effort.
+    const SYNC_TIMEOUT_MS = 1500
+    let timeoutHit = false
+    try {
+      await Promise.race([
+        syncAttributionAttrs(),
+        new Promise<void>((_, reject) =>
+          setTimeout(() => {
+            timeoutHit = true
+            reject(new Error('sync timeout'))
+          }, SYNC_TIMEOUT_MS),
+        ),
+      ])
+    } catch (err) {
+      if (timeoutHit) {
+        console.warn('[Cart] syncAttributionAttrs excedió 1500ms — checkout continúa sin refresh de atributos')
+      } else {
+        console.warn('[Cart] syncAttributionAttrs falló — checkout continúa', err)
+      }
+    }
     // `return_to` sets the "Continue shopping" button destination in Shopify checkout
     const url = new URL(cart.checkoutUrl)
     url.searchParams.set('return_to', '/')
     window.location.href = url.toString()
-  }, [cart?.checkoutUrl])
+  }, [cart?.checkoutUrl, syncAttributionAttrs])
 
   const itemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0
 

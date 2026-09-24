@@ -43,6 +43,8 @@ export default function WhatsAppButton() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Contactar por WhatsApp"
+        data-wa-manual="1"
+        data-wa-surface="floating-button"
         onClick={() => {
           setTooltip(false)
           trackMetaEvent("Contact", { channel: "whatsapp", surface: "floating-button" })

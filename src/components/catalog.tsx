@@ -13,7 +13,7 @@ const directory = [
     },
     {
         title: "Casos de éxito",
-        description: "Hemos resuelto los desafíos de automatización de nuestros clientes durante años. Descubra cómo.",
+        description: "Hemos resuelto los desafíos de automatización de nuestros clientes durante años. Mira cómo lo resolvimos.",
         link: "/casos",
         label: "Ver casos de éxito",
     },
@@ -25,7 +25,7 @@ const directory = [
     },
     {
         title: "Contacto",
-        description: "¿Tiene preguntas sobre nuestros productos o soluciones? Estamos listos para ayudarle.",
+        description: "¿Dudas sobre un equipo o un proyecto? Escríbenos y te contesta un ingeniero.",
         link: "/soporte#contacto",
         label: "Contactar a ADIMEX",
     },

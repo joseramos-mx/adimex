@@ -3,11 +3,12 @@
 import { useEffect, useRef } from "react"
 import {
   trackMetaEvent,
-  toMetaContentId,
   computeMetaValue,
   newEventId,
 } from "@/lib/meta-pixel"
+import { extractShopifyNumericId } from "@/lib/shopify-id"
 import { useCookieConsent } from "@/context/cookie-consent-context"
+import { pushEcommerceEvent } from "@/lib/gtm-datalayer"
 
 /**
  * Dispara `ViewContent` de Meta Pixel al cargar la ficha de producto.
@@ -21,12 +22,13 @@ import { useCookieConsent } from "@/context/cookie-consent-context"
  * define. Usa `didFire` ref para no duplicar entre remontajes.
  */
 export default function ViewContentTracker({
-  contentId,
+  variantId,
   contentName,
   price,
   currency = "MXN",
 }: {
-  contentId: string
+  /** GID de la variante Shopify (`gid://shopify/ProductVariant/...`). */
+  variantId: string
   contentName: string
   price?: string | number
   currency?: string
@@ -37,8 +39,32 @@ export default function ViewContentTracker({
   useEffect(() => {
     if (!consent?.marketing || didFire.current) return
 
+    const contentId = extractShopifyNumericId(variantId)
+    if (!contentId) return
+
     const value =
       price !== undefined ? computeMetaValue(price, currency) : undefined
+
+    // Empuja al dataLayer de GA4 en paralelo (respeta consent.analytics).
+    if (value !== undefined) {
+      pushEcommerceEvent(
+        "view_item",
+        {
+          currency: "MXN",
+          value,
+          items: [
+            {
+              item_id: contentId,
+              item_name: contentName,
+              price: value,
+              quantity: 1,
+              item_brand: "FLEXEM",
+            },
+          ],
+        },
+        consent?.analytics ?? false,
+      )
+    }
 
     // El init del pixel es async — reintenta hasta ~2s hasta que fbq
     // esté listo (o hasta que aparezca en el queue temprano).
@@ -50,7 +76,7 @@ export default function ViewContentTracker({
         trackMetaEvent(
           "ViewContent",
           {
-            content_ids: [toMetaContentId(contentId)],
+            content_ids: [contentId],
             content_type: "product",
             content_name: contentName,
             ...(value !== undefined ? { value, currency: "MXN" } : {}),
@@ -65,7 +91,7 @@ export default function ViewContentTracker({
     }, 100)
 
     return () => clearInterval(interval)
-  }, [consent?.marketing, contentId, contentName, price, currency])
+  }, [consent?.marketing, consent?.analytics, variantId, contentName, price, currency])
 
   return null
 }

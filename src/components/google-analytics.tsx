@@ -3,6 +3,7 @@
 import Script from "next/script"
 import { useCookieConsent } from "@/context/cookie-consent-context"
 import { GA_MEASUREMENT_ID } from "@/lib/analytics-ids"
+import { shouldLoadAnalytics } from "@/lib/consent-mode"
 
 /**
  * Etiqueta de Google (gtag.js) para GA4. Igual que `GoogleTagManager` y
@@ -15,7 +16,8 @@ import { GA_MEASUREMENT_ID } from "@/lib/analytics-ids"
 export default function GoogleAnalytics() {
   const { consent } = useCookieConsent()
 
-  if (!GA_MEASUREMENT_ID || !consent?.analytics) return null
+  if (!GA_MEASUREMENT_ID) return null
+  if (!shouldLoadAnalytics(consent?.analytics ?? false)) return null
 
   return (
     <>

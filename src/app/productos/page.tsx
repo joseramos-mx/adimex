@@ -23,10 +23,27 @@ interface PageProps {
 }
 
 export const metadata = {
-  title: "Productos",
+  title: "PLC y HMI Flexem con precio publicado",
   description:
     "Catálogo completo de productos FLEXEM: servomotores, PLCs, HMI, gateways IoT, SCADA y plataforma cloud. Distribuidor autorizado en México.",
   alternates: { canonical: "https://adimex.io/productos" },
+  openGraph: {
+    type: "website",
+    locale: "es_MX",
+    url: "https://adimex.io/productos",
+    siteName: "American Digital de México",
+    title: "PLC y HMI Flexem con precio publicado | ADIMEX",
+    description:
+      "Catálogo completo FLEXEM en México con precio publicado. PLCs, HMI capacitiva, SCADA e IoT.",
+    images: [
+      {
+        url: "/og-banner.png",
+        width: 1200,
+        height: 630,
+        alt: "Catálogo ADIMEX — productos FLEXEM",
+      },
+    ],
+  },
 }
 
 export default async function ProductosPage({ searchParams }: PageProps) {
