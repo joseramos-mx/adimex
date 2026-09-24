@@ -29,6 +29,27 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Analítica
+
+Los eventos GA4 de ecommerce (`view_item`, `add_to_cart`, `begin_checkout`) y
+el `generate_lead` de WhatsApp se envían por **dos canales en paralelo**:
+
+1. `window.dataLayer.push({ event, ecommerce })` — para que si algún día se
+   configuran etiquetas GA4 en el contenedor GTM `GTM-MSLKT9D9`, funcionen
+   sin cambios de código.
+2. `window.gtag('event', ...)` — llega directo a GA4 vía la instancia cargada
+   por `src/components/google-analytics.tsx`. Hoy este es el único canal que
+   efectivamente llega a GA4 porque no controlamos el contenedor GTM y no
+   hay etiquetas de GA4 configuradas ahí.
+
+**Si algún día se agregan etiquetas GA4 en GTM que emitan estos mismos
+eventos**, hay que **quitar las llamadas a `window.gtag('event', ...)`** en
+`src/lib/gtm-datalayer.ts` (funciones `pushEcommerceEvent` y `pushGenerateLead`)
+para evitar que GA4 reciba cada evento **duplicado**.
+
+Consent gate: ambos canales respetan `consent.analytics` vía
+`shouldLoadAnalytics()` — no envían nada sin consentimiento.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
