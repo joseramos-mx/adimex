@@ -98,6 +98,29 @@ function attrValue(order: ShopifyOrder, key: string): string | undefined {
 }
 
 /**
+ * Mínimo user_data para pedidos SIN consent marketing. Meta CAPI rechaza
+ * un evento con user_data vacío (error 400 subcode 2804050). Enviamos
+ * sólo campos que no son PII de matching cross-eventos:
+ *   - external_id (hash del order.id): identificador único de este pedido,
+ *     no sirve como llave de matching persistente porque cambia por orden.
+ *   - country: geografía agregada, no personal.
+ * Si el pedido no trae shipping/billing (raro), sólo va external_id.
+ */
+async function buildMinimalUserData(order: ShopifyOrder) {
+  const ud: Record<string, string | string[]> = {
+    external_id: [await hashSha256(String(order.id))],
+  }
+  const country = normalizeCountry(
+    firstNonEmpty(
+      order.shipping_address?.country_code,
+      order.billing_address?.country_code,
+    ),
+  )
+  if (country) ud.country = [await hashSha256(country)]
+  return ud
+}
+
+/**
  * user_data para Meta CAPI. Normaliza cada campo según la spec de Meta
  * (`@/lib/meta-user-data`), skip si vacío tras normalización.
  *
@@ -244,7 +267,17 @@ export async function POST(req: NextRequest) {
   const consentAttr = attrValue(order, `${META_ATTR_PREFIX}consent`)
   const hasMarketingConsent = consentAttr === "true"
   const includePii = SEND_ORDER_PII_WITHOUT_CONSENT || hasMarketingConsent
-  const userData = includePii ? await buildUserData(order) : {}
+
+  // Hotfix: Meta CAPI exige al menos UN parámetro en user_data — si va
+  // vacío devuelve error 400 "No agregaste suficientes datos" (subcode
+  // 2804050). Cuando no hay consent para PII, adjuntamos el mínimo no-PII
+  // que Meta acepta:
+  //   - external_id (hash del order.id): identificador de pedido, no
+  //     persistente cross-customer, no viola opt-out.
+  //   - country: geografía agregada, no PII.
+  const userData = includePii
+    ? await buildUserData(order)
+    : await buildMinimalUserData(order)
   if (!includePii) {
     console.info(
       "[meta-capi] Purchase sin PII — meta_consent no era true",
