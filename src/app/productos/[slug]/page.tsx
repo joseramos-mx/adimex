@@ -32,6 +32,12 @@ const TRUST = [
   { Icon: RotateCcw,   title: "Devoluciones",      sub: "30 días sin cargo" },
 ]
 
+/**
+ * Sin esto la página se genera una vez y se congela: los cambios de stock y
+ * precio hechos en Shopify nunca llegarían al sitio hasta el siguiente deploy.
+ */
+export const revalidate = 60
+
 export async function generateStaticParams() {
   const all = await getProducts({})
   return all.map((p) => ({ slug: p.slug }))
