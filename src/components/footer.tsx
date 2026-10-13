@@ -7,7 +7,7 @@ import { ArrowUpRight, Check, Linkedin, Phone, Mail, MapPin } from "lucide-react
 import { WHATSAPP_NUMBER } from "@/lib/contact"
 
 const LINKEDIN_URL = "https://www.linkedin.com/company/americandimex/"
-const CONTACT_EMAIL = "contacto@adimex.io"
+const CONTACT_EMAIL = "ioadimex@gmail.com"
 const CONTACT_CITY = "Ciudad de México, México"
 // Formato humano del WhatsApp: +52 56 3569 8469
 const CONTACT_PHONE_DISPLAY = `+${WHATSAPP_NUMBER.slice(0, 2)} ${WHATSAPP_NUMBER.slice(3, 5)} ${WHATSAPP_NUMBER.slice(5, 9)} ${WHATSAPP_NUMBER.slice(9)}`

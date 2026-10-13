@@ -85,10 +85,10 @@ export default function LegalLayout({
                   solicitar aclaraciones: escríbenos a
                   <br />
                   <a
-                    href="mailto:contacto@adimex.io"
+                    href="mailto:ioadimex@gmail.com"
                     className="text-[#017bfd] hover:underline break-all"
                   >
-                    contacto@adimex.io
+                    ioadimex@gmail.com
                   </a>
                 </p>
               </div>

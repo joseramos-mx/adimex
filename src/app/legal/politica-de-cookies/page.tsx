@@ -219,7 +219,7 @@ export default function PoliticaCookiesPage() {
       <p>
         Si tienes dudas sobre esta política o el tratamiento de tus
         datos, escríbenos a{" "}
-        <a href="mailto:contacto@adimex.io">contacto@adimex.io</a>.
+        <a href="mailto:ioadimex@gmail.com">ioadimex@gmail.com</a>.
       </p>
 
       <hr />

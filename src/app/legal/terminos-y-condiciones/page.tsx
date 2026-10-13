@@ -214,8 +214,7 @@ export default function TerminosCondicionesPage() {
       <h3>8.4. Proceso para solicitar devolución (RMA)</h3>
       <ol>
         <li>
-          Escribe a <a href="mailto:devoluciones@adimex.io">devoluciones@adimex.io</a>{" "}
-          — o si prefieres, a <a href="mailto:contacto@adimex.io">contacto@adimex.io</a> —
+          Escribe a <a href="mailto:ioadimex@gmail.com">ioadimex@gmail.com</a>{" "}
           indicando folio de la orden, SKU, motivo de la devolución y
           fotografías del producto y del empaque recibidos.
         </li>
@@ -314,7 +313,7 @@ export default function TerminosCondicionesPage() {
       <h3>8.9. Contacto</h3>
       <p>
         Para cualquier aclaración sobre esta política escribe a{" "}
-        <a href="mailto:devoluciones@adimex.io">devoluciones@adimex.io</a>{" "}
+        <a href="mailto:ioadimex@gmail.com">ioadimex@gmail.com</a>{" "}
         o llama a nuestro WhatsApp de atención a clientes. Para
         inconformidades no resueltas puedes acudir a la{" "}
         <strong>Procuraduría Federal del Consumidor (PROFECO)</strong>:{" "}
