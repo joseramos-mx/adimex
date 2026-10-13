@@ -24,7 +24,7 @@ export default function TerminosCondicionesPage() {
 
       <h1>Términos y Condiciones</h1>
       <p className="text-gray-500! text-xs! font-mono">
-        Última actualización: 6 de julio de 2026 · Versión 1.0
+        Última actualización: 24 de septiembre de 2026 · Versión 1.1
       </p>
 
       <p>
@@ -173,34 +173,154 @@ export default function TerminosCondicionesPage() {
         </li>
       </ul>
 
-      <h2>8. Devoluciones</h2>
+      <h2 id="devoluciones">8. Política de Devoluciones</h2>
+
+      <h3>8.1. Alcance</h3>
       <p>
-        Aceptamos devoluciones dentro de los <strong>30 días naturales</strong>{" "}
-        posteriores a la entrega, siempre que el producto se encuentre en
-        su empaque original, sin uso, con todos sus accesorios y con la
-        factura correspondiente.
+        Esta política aplica a toda compra de productos realizada a
+        través del sitio adimex.io, incluyendo pedidos pagados en línea
+        y pedidos bajo cotización. No aplica a servicios de ingeniería,
+        capacitación, puesta en marcha, licencias de software activadas
+        ni a órdenes con configuración o programación personalizada
+        (ver sección 8.6).
       </p>
+
+      <h3>8.2. Derecho de retracto (5 días hábiles)</h3>
       <p>
-        No proceden devoluciones sobre:
+        En cumplimiento del artículo 56 de la{" "}
+        <strong>Ley Federal de Protección al Consumidor</strong>, el
+        Cliente puede cancelar la operación y solicitar reembolso total
+        sin necesidad de justificar su decisión dentro de los{" "}
+        <strong>5 días hábiles</strong> posteriores a la entrega del
+        producto, siempre que éste no haya sido usado y se mantenga en
+        su empaque original. El reembolso se procesa por el mismo medio
+        de pago utilizado.
+      </p>
+
+      <h3>8.3. Plazo comercial extendido (30 días naturales)</h3>
+      <p>
+        Como política comercial adicional al derecho de retracto,
+        ADIMEX acepta devoluciones dentro de los{" "}
+        <strong>30 días naturales</strong> posteriores a la entrega
+        siempre que:
       </p>
       <ul>
-        <li>Productos configurados o programados a solicitud del Cliente.</li>
-        <li>Licencias de software activadas.</li>
+        <li>El producto esté en su empaque original, sellado o reempaquetado sin daños.</li>
+        <li>Se incluyan todos los accesorios, manuales y componentes recibidos.</li>
+        <li>El producto no muestre señales de uso, instalación ni programación.</li>
+        <li>Se presente la factura CFDI 4.0 de la operación.</li>
+      </ul>
+
+      <h3>8.4. Proceso para solicitar devolución (RMA)</h3>
+      <ol>
         <li>
-          Refacciones sujetas a diagnóstico previo cuando la instalación
-          hubiere sido incorrecta.
+          Escribe a <a href="mailto:devoluciones@adimex.io">devoluciones@adimex.io</a>{" "}
+          — o si prefieres, a <a href="mailto:contacto@adimex.io">contacto@adimex.io</a> —
+          indicando folio de la orden, SKU, motivo de la devolución y
+          fotografías del producto y del empaque recibidos.
         </li>
         <li>
-          Productos con daños derivados de manejo, instalación fuera de
-          especificaciones o alteración del sello de fábrica.
+          ADIMEX responde en un plazo máximo de <strong>2 días hábiles</strong>{" "}
+          con un número de autorización de devolución (RMA) y las
+          instrucciones de envío.
+        </li>
+        <li>
+          Empaca el producto con el RMA visible en el exterior y envíalo
+          a la dirección que te indiquemos dentro de los{" "}
+          <strong>10 días hábiles</strong> siguientes a la emisión del
+          RMA. Las devoluciones recibidas sin RMA pueden ser rechazadas.
+        </li>
+        <li>
+          Al recibir la mercancía, ADIMEX inspecciona en un plazo máximo
+          de <strong>5 días hábiles</strong> y comunica el resultado
+          (aprobación, rechazo o solicitud de información adicional) por
+          correo.
+        </li>
+      </ol>
+
+      <h3>8.5. Costos de envío y reembolso</h3>
+      <ul>
+        <li>
+          <strong>Causa atribuible a ADIMEX</strong> (producto equivocado,
+          defecto de fábrica detectado al desempacar, daño en tránsito con
+          empaque intacto, descripción incorrecta en el sitio): el costo
+          de la devolución corre por cuenta de ADIMEX. Enviamos guía
+          prepagada o reembolsamos el costo de la mensajería.
+        </li>
+        <li>
+          <strong>Cambio de opinión o selección incorrecta por el Cliente</strong>{" "}
+          (dentro del plazo comercial de 30 días): el costo de envío de
+          la devolución corre por cuenta del Cliente. Se descuenta además
+          del reembolso el costo original de envío si éste fue bonificado
+          por promoción.
+        </li>
+        <li>
+          <strong>Plazo del reembolso:</strong> una vez aprobada la
+          devolución, el reembolso se procesa en un máximo de{" "}
+          <strong>10 días hábiles</strong>. Para tarjeta de crédito o
+          débito el abono puede tardar 1 a 2 ciclos de corte adicionales
+          según tu banco emisor. Para transferencia SPEI se reembolsa a
+          la misma cuenta ordenante.
         </li>
       </ul>
+
+      <h3>8.6. Casos no sujetos a devolución</h3>
       <p>
-        Para iniciar el trámite escribe a{" "}
-        <a href="mailto:contacto@adimex.io">contacto@adimex.io</a> con el
-        folio de la orden. Los gastos de mensajería para la devolución
-        corren por cuenta del Cliente, salvo cuando la causa sea
-        atribuible a ADIMEX.
+        Por su naturaleza, los siguientes productos y servicios{" "}
+        <strong>no admiten devolución</strong>, salvo defecto de fábrica
+        cubierto por la garantía (ver sección 9):
+      </p>
+      <ul>
+        <li>
+          Productos configurados o programados a solicitud del Cliente
+          (ej. parámetros preestablecidos en PLC o HMI).
+        </li>
+        <li>Licencias de software activadas o descargadas.</li>
+        <li>
+          Refacciones y módulos de reemplazo cuando el equipo original
+          haya sido manipulado o la instalación hubiere sido incorrecta.
+        </li>
+        <li>
+          Productos con daños derivados de manejo posterior a la entrega,
+          instalación fuera de las especificaciones del datasheet o
+          alteración del sello de fábrica.
+        </li>
+        <li>
+          Pedidos de productos bajo pedido o fabricación especial
+          después de iniciada su producción, salvo cancelación dentro de
+          las 24 horas posteriores a la confirmación del anticipo.
+        </li>
+      </ul>
+
+      <h3>8.7. Producto dañado al recibirlo</h3>
+      <p>
+        Inspecciona el empaque antes de firmar la carta porte. Si
+        detectas daño visible (caja aplastada, perforaciones, sello
+        roto), anótalo en el comprobante de entrega y notifícanos dentro
+        de las <strong>24 horas siguientes</strong> adjuntando
+        fotografías. Daños reportados fuera de este plazo pueden ser
+        considerados daños de uso y no proceden como devolución, aunque
+        podrás escalarlos vía garantía si aplica.
+      </p>
+
+      <h3>8.8. Cambios de producto</h3>
+      <p>
+        Si prefieres cambiar el producto por uno de modelo distinto en
+        lugar de solicitar reembolso, indícalo en el correo inicial de
+        RMA. El procedimiento es el mismo; la diferencia en precio se
+        cobra o reembolsa según corresponda.
+      </p>
+
+      <h3>8.9. Contacto</h3>
+      <p>
+        Para cualquier aclaración sobre esta política escribe a{" "}
+        <a href="mailto:devoluciones@adimex.io">devoluciones@adimex.io</a>{" "}
+        o llama a nuestro WhatsApp de atención a clientes. Para
+        inconformidades no resueltas puedes acudir a la{" "}
+        <strong>Procuraduría Federal del Consumidor (PROFECO)</strong>:{" "}
+        <a href="https://www.gob.mx/profeco" target="_blank" rel="noopener noreferrer">
+          gob.mx/profeco
+        </a>.
       </p>
 
       <h2>9. Garantía</h2>
