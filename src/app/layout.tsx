@@ -63,6 +63,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://adimex.io",
   },
+  // Verificación de propiedad del dominio para Google Search Console / Merchant
+  // Center. Next.js lo renderiza como <meta name="google-site-verification" ...>
+  // en <head>. No tocar sin confirmar con el equipo — romperlo quita el acceso
+  // a Search Console y bloquea el feed en Merchant.
+  verification: {
+    google: "NrYY865pUMA_BE3DkWAHavCTYV_nRJLC185ty0uobao",
+  },
   icons: {
     icon: [
       { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
