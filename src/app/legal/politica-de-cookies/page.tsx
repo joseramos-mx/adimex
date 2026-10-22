@@ -192,18 +192,30 @@ export default function PoliticaCookiesPage() {
 
       <h2>4. Cookies de publicidad</h2>
       <p>
-        Actualmente ejecutamos <strong>Meta Pixel</strong> para medir el
-        rendimiento de campañas en Facebook e Instagram. El pixel se carga
-        únicamente cuando aceptas la categoría de marketing en el banner
-        de consentimiento. Puedes cambiar tu preferencia en cualquier
-        momento borrando las cookies de este sitio o desactivando marketing
-        en el próximo banner que aparezca.
+        Actualmente ejecutamos dos etiquetas publicitarias, ambas bajo la
+        categoría de marketing del banner de consentimiento:
+      </p>
+      <ul>
+        <li>
+          <strong>Meta Pixel</strong> — mide el rendimiento de campañas en
+          Facebook e Instagram.
+        </li>
+        <li>
+          <strong>Google Ads</strong> — mide conversiones y permite
+          remarketing en la red de Google. Establece cookies propias de
+          Google como <code>_gcl_*</code>.
+        </li>
+      </ul>
+      <p>
+        Ninguna de las dos carga si no aceptas marketing. Puedes cambiar tu
+        preferencia en cualquier momento borrando las cookies de este sitio
+        o desactivando marketing en el próximo banner que aparezca.
       </p>
       <p>
-        Cuando habilitemos otros píxeles (LinkedIn Insight, Google Ads,
-        TikTok Pixel), actualizaremos esta política y bumpearemos la
-        versión del consentimiento — el banner reaparecerá para pedir tu
-        decisión de nuevo.
+        Cuando habilitemos otros píxeles (LinkedIn Insight, TikTok Pixel),
+        actualizaremos esta política y bumpearemos la versión del
+        consentimiento — el banner reaparecerá para pedir tu decisión de
+        nuevo.
       </p>
 
       <h2>5. Cambios a esta política</h2>

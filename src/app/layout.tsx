@@ -13,6 +13,7 @@ import GoogleTagManager from "@/components/google-tag-manager";
 import GoogleAnalytics from "@/components/google-analytics";
 import Contentsquare from "@/components/contentsquare";
 import MetaPixel from "@/components/meta-pixel";
+import GoogleAds from "@/components/google-ads";
 import WhatsAppEnhancer from "@/components/whatsapp-enhancer";
 import { GTM_ID } from "@/lib/analytics-ids";
 import { Toaster } from "sileo";
@@ -165,6 +166,7 @@ export default function RootLayout({
                   <GoogleAnalytics />
                   <Contentsquare />
                   <MetaPixel />
+                  <GoogleAds />
                   <WhatsAppEnhancer />
                 </CartProvider>
               </CookieConsentProvider>

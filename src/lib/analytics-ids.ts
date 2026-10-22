@@ -22,3 +22,12 @@ export const GA_MEASUREMENT_ID =
  */
 export const CONTENTSQUARE_TAG_ID =
   process.env.NEXT_PUBLIC_CONTENTSQUARE_TAG_ID ?? "60db6e6f43e01"
+
+/**
+ * ID de Google Ads (etiqueta AW-) — conversiones y remarketing.
+ *
+ * Carga bajo consentimiento de **marketing**, no de analítica: es un tag
+ * publicitario, no de medición. Vacío desactiva la carga.
+ */
+export const GOOGLE_ADS_ID =
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? "AW-18503955181"
