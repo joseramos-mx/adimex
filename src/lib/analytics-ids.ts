@@ -13,7 +13,7 @@ export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "GTM-KRTTWGW6"
  * constante para no duplicar el conteo de páginas.
  */
 export const GA_MEASUREMENT_ID =
-  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-8XQTCY1DRC"
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-ZZNR9KZL8Z"
 
 /**
  * Tag ID de Contentsquare (Hotjar) — mapas de calor, grabaciones de sesión
