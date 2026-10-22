@@ -2,7 +2,7 @@
 //
 // Contexto: GA4 se carga directamente vía gtag('config') en el sitio
 // (ver src/components/google-analytics.tsx). GTM está cargado también, pero
-// no controlamos su contenedor (GTM-MSLKT9D9 es del cliente), y no hay
+// no controlamos su contenedor (GTM-KRTTWGW6 es del cliente), y no hay
 // etiquetas de GA4 configuradas ahí que consuman el dataLayer. Por eso los
 // eventos ecommerce se enviaban al dataLayer pero nunca llegaban a GA4.
 //
