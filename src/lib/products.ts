@@ -238,7 +238,28 @@ const fetchAllShopifyProducts = cache(async (): Promise<Product[]> => {
 
     if (allNodes.length === 0) return staticProducts
 
-    return allNodes.map(mapShopifyProduct)
+    // Fusión, no reemplazo. El catálogo estático es la referencia completa de
+    // producto (ficha técnica, specs, aplicaciones); Shopify es la capa de
+    // comercio que se monta encima donde el handle coincide.
+    //
+    // Devolver sólo `allNodes` dejaba 404 toda página cuyo producto aún no
+    // está publicado en Shopify — 30 de 33 — mientras el sitemap seguía
+    // anunciándolas. Un producto sin contraparte en Shopify conserva su
+    // página y cae al CTA de cotización, que la ficha ya soporta.
+    const fromShopify = allNodes.map(mapShopifyProduct)
+    const shopifyBySlug = new Map(fromShopify.map((p) => [p.slug, p]))
+
+    // 1. Los estáticos, en su orden, enriquecidos con Shopify si existe allá.
+    const merged: Product[] = staticProducts.map(
+      (sp) => shopifyBySlug.get(sp.slug) ?? sp
+    )
+
+    // 2. Los que sólo viven en Shopify (altas hechas en el admin, sin ficha
+    //    estática todavía) se agregan al final.
+    const staticSlugs = new Set(staticProducts.map((sp) => sp.slug))
+    const onlyInShopify = fromShopify.filter((p) => !staticSlugs.has(p.slug))
+
+    return [...merged, ...onlyInShopify]
   } catch (err) {
     console.error('[Shopify] fetchAllProducts failed, using static data:', err)
     return staticProducts
