@@ -44,7 +44,7 @@ export default function AvisoPrivacidadPage() {
       <p>
         Para efectos legales, cualquier notificación puede dirigirse al
         correo electrónico{" "}
-        <a href="mailto:contacto@adimex.io">contacto@adimex.io</a> o al
+        <a href="mailto:ioadimex@gmail.com">ioadimex@gmail.com</a> o al
         domicilio de nuestras oficinas comerciales dentro del territorio
         mexicano.
       </p>
@@ -122,7 +122,7 @@ export default function AvisoPrivacidadPage() {
       <p>
         Si no deseas que tus datos se usen para las finalidades secundarias,
         envía un correo a{" "}
-        <a href="mailto:contacto@adimex.io">contacto@adimex.io</a>{" "}
+        <a href="mailto:ioadimex@gmail.com">ioadimex@gmail.com</a>{" "}
         indicando explícitamente tu negativa.
       </p>
 
@@ -176,7 +176,7 @@ export default function AvisoPrivacidadPage() {
       <ol>
         <li>
           Envía tu solicitud al correo{" "}
-          <a href="mailto:contacto@adimex.io">contacto@adimex.io</a> con el
+          <a href="mailto:ioadimex@gmail.com">ioadimex@gmail.com</a> con el
           asunto <code>Solicitud ARCO</code>.
         </li>
         <li>
@@ -198,7 +198,7 @@ export default function AvisoPrivacidadPage() {
       <h2>6. Medios para limitar el uso o divulgación</h2>
       <p>
         Puedes solicitar tu inclusión en un listado de exclusión interno
-        escribiendo a <a href="mailto:contacto@adimex.io">contacto@adimex.io</a>.
+        escribiendo a <a href="mailto:ioadimex@gmail.com">ioadimex@gmail.com</a>.
         Adicionalmente, puedes inscribirte en el Registro Público para Evitar
         Publicidad (REPEP) de la PROFECO en{" "}
         <a

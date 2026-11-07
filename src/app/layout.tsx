@@ -101,7 +101,7 @@ const organizationSchema = {
     {
       "@type": "ContactPoint",
       contactType: "sales",
-      email: "contacto@adimex.io",
+      email: "ioadimex@gmail.com",
       telephone: "+525635698469",
       areaServed: "MX",
       availableLanguage: ["Spanish"],
@@ -109,7 +109,7 @@ const organizationSchema = {
     {
       "@type": "ContactPoint",
       contactType: "technical support",
-      email: "contacto@adimex.io",
+      email: "ioadimex@gmail.com",
       telephone: "+525635698469",
       areaServed: "MX",
       availableLanguage: ["Spanish"],

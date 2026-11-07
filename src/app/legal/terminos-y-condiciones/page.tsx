@@ -197,7 +197,7 @@ export default function TerminosCondicionesPage() {
       </ul>
       <p>
         Para iniciar el trámite escribe a{" "}
-        <a href="mailto:contacto@adimex.io">contacto@adimex.io</a> con el
+        <a href="mailto:ioadimex@gmail.com">ioadimex@gmail.com</a> con el
         folio de la orden. Los gastos de mensajería para la devolución
         corren por cuenta del Cliente, salvo cuando la causa sea
         atribuible a ADIMEX.
